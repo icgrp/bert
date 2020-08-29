@@ -16,15 +16,17 @@ Adding the newer versions to a local SDK installation allows the libraries be ad
 ## BSP Configuration
 BERT runs on the standalone platform (v7.1). First, generate a board support package using xilfpga v5.1, xilsecure v4.1, and standalone v7.1. xilfpga has additional parameters to configure. The only change required from the default settings is `secure_mode` should be set to `false`.
 
-TODO: Example images of BSP configuration
+![Example of BSP configuration](../images/bspsettings.png)
+
+![Example of xilfpga configuration](../images/xilfpgasettings.png)
 
 Since BERT takes advantage of custom API calls, xilfpga must be overwritten with the version found at `bert/embedded/libsrc/xilfpga_v5_1`. This could be installed SDK-wide using the previous instructions, but it is best to use the custom xilfpga library at the bsp level for version control. After a bsp is generated, overwrite the xilfpga library found at `xxx_bsp/psu_xxxx_x/libsrc/xilfpga_v5_1` with the version in the BERT repo. The overwrite should trigger the SDK to recompile the bsp libraries. If additional bsp parameters are changed in `system.mss` or the `Re-generate BSP Sources` button is clicked, the bsp will be overwritten with the vanilla xilfpga version found in the local SDK installation. Thus, it is best to completely configure the rest of the BSP before emplacing the custom xilfpga library. Once configured, the same bsp can be used for multiple applications.
 
-TODO: Example images of BSP file tree
+![Example of BSP directory structure](../images/bspdirectory.png)
 
 ## Adding BERT to application project
 
-The files that need to be added to an application are found at `bert/embedded/src/bert`. The user application should include `readback.h`, `bert.h`, and the design's `mydesign.h` produced by `bert_gen`. If the application project is created after the bsp is configured, the linker flags should already be set properly. If the application will not compile, verify the linker flags:
+All the files that need to be added to an application are found at `bert/embedded/src/bert`. The c file with the user's main method should `include` `readback.h`, `bert.h`, and the design's `mydesign.h` produced by `bert_gen`. If the application project is created after the bsp is configured, the linker flags should already be set properly. If the application will not compile, verify the linker flags:
 
 * `-Wl,--start-group,-lxilfpga,-lxil,-lxilsecure,-lgcc,-lc,--end-group`
 *  `-Wl,--start-group,-lxilsecure,-lxil,-lgcc,-lc,--end-group`
