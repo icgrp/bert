@@ -32,6 +32,3 @@ The files that need to be added to an application are found at `bert/embedded/sr
 The linker flags are found under the project properties. Go to C/C++ Build -> Settings -> ARM v8 gcc linker -> Inferred Options -> Software Platform.
 
 TODO: Example images of linker flags
-
-## Using BERT API
-TODO
