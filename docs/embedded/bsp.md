@@ -11,7 +11,7 @@ Since SDK 2018.3 predates the distribution of xilfpga being used, the [2019.2 di
 * Extract `embeddedsw/lib/sw_services/xilsecure` to `SDK/20xx.x/data/embeddedsw/lib/sw_services/xilsecure_v4_1`.
 * Extract `embeddedsw/lib/bsp/standalone` to `SDK/20xx.x/data/embeddedsw/lib/bsp/standalone_v7_1`.
 
-Adding the newer versions to a local SDK installation allows the libraries be added to the bsp using the normal procedure. The new versions of xilfpga and xilsecure should show up in the drop down menu of Board Support Package settings window. Some additional tweaking may be required for C++: [Extern "C" closure should not include "extern c", but only the curly brackets](https://github.com/Xilinx/embeddedsw/pull/115)
+Adding the newer versions to a local SDK installation allows the libraries be added to the bsp using the [normal procedure](../tutorials/sdksetup.md). The new versions of xilfpga and xilsecure should show up in the drop down menu of Board Support Package settings window. Some additional tweaking may be required for C++: [Extern "C" closure should not include "extern c", but only the curly brackets](https://github.com/Xilinx/embeddedsw/pull/115)
 
 ## BSP Configuration
 BERT runs on the standalone platform (v7.1). First, generate a board support package using xilfpga v5.1, xilsecure v4.1, and standalone v7.1. xilfpga has additional parameters to configure. The only change required from the default settings is `secure_mode` should be set to `false`.
