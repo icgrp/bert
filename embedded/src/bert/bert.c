@@ -7,9 +7,9 @@
 
 // maybe change dummy_xilinx.h to readback.h to match easier with real stuff?
 
-//#include "readback.h"
+#include "readback.h"
 
-#include "dummy_xilinx.h"
+//#include "dummy_xilinx.h"
 #include "ctrl.h"
 
 #include "bert.h"
