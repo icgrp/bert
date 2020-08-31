@@ -1,3 +1,4 @@
+#include "xilfpga.h"
 #define BERT_OPERATION_WRITE 1
 #define BERT_OPERATION_READ 2
 #define BERT_OPERATION_ACCELERATED_WRITE 3
