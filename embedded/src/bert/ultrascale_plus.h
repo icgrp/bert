@@ -10,3 +10,8 @@
 #define WORDS_AFTER_FRAMES 54
 #define WORDS_BEFORE_FRAMES 196
 
+// for ultrascale+
+#define WE_BITS_PER_FRAME 12
+
+extern int bitlocation[12]; // write enables
+extern int bram_starts[13]; // for groups of bits
