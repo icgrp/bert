@@ -10,7 +10,6 @@
 #include "readback.h"
 
 //#include "dummy_xilinx.h"
-#include "ctrl.h"
 
 #include "bert.h"
 
