@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
     return 0;
 }
 ```
-`bert_read` and `bert_write` can be used in loops to test all memories, but they are inefficient to use on BRAMs that coincide within the same frames. Thus, using `bert_transfuse` can limit the amount of redundant DMA operations. To further reduce time, `meminfo` can be saved and resused. This will perform faster than other BERT calls, since `bert_read` and `bert_write` are aliases to `bert_transfuse` anyway.
+`bert_read` and `bert_write` can be used in loops to test all memories, but they are inefficient to use on BRAMs that coincide within the same frames. Thus, using `bert_transfuse` can limit the amount of redundant DMA operations. To further reduce time spent on memory transfusions, `meminfo` can be saved and reused. This will achieve better throughput than individual BERT read/write calls, because each `bert_read` and `bert_write` reference calls `bert_transfuse`.
 ```c
 void clearAllBRAMs() {
 
