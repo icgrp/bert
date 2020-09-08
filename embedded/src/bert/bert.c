@@ -1,20 +1,13 @@
 #include "stdint.h"
 #include "bert_types.h"
-//#include "mydesign.h"
 #include "ultrascale_plus.h"
 #include "stdio.h"
 #include "stdlib.h"
-
-// maybe change dummy_xilinx.h to readback.h to match easier with real stuff?
-
 #include "readback.h"
-
-//#include "dummy_xilinx.h"
 
 #include "bert.h"
 
 // note: instead of linking against mydesign.h
-
 extern const char * logical_names[];
 extern struct logical_memory logical_memories[];
 
@@ -412,10 +405,14 @@ void bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logi
       exit(22);
     }
 
-  if (ms.slots_in_repeat!=u64_per_lookup)
+  int slots_per_u64=64/wordlen; // will be 0 for wordlen between 65 and 72
+  uint64_t word_mask = (((uint64_t)1)<<wordlen)-1; // only used with wordlen<=32
+
+  if (((wordlen<=64) && (ms.slots_in_repeat!=u64_per_lookup*slots_per_u64))
+      || ((wordlen>64) && (ms.slots_in_repeat!=u64_per_lookup)))
     {
-      printf("bert_accelerated_to_logical mismatch between slots_in_repeat %d and u64_per_lookup %d\n",
-	     ms.slots_in_repeat,u64_per_lookup);
+      printf("bert_accelerated_to_logical mismatch between slots_in_repeat %d and u64_per_lookup %d, slots_per_u64=%d\n",
+	     ms.slots_in_repeat,u64_per_lookup,slots_per_u64);
       exit(23);
       
     }
@@ -441,6 +438,7 @@ void bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logi
 					     the_frame_set);
   uint64_t mask_quanta=(((uint64_t) 1)<<lookup_quanta)-1;
   int offset_in_frame=logical_memories[logical].repeats[0].frame_bits[0].bit_loc[0];
+
   
   for (int r=repeat_start;r<num_repeats;r++)
     {
@@ -464,13 +462,50 @@ void bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logi
 	    }
 	  printf("\n");
 #endif	  
-	  for (int j=0;j<u64_per_lookup;j++)
-	    new_logical_data[j]|=translation_tables[i][key*u64_per_lookup+j];
+	  //	  for (int j=0;j<u64_per_lookup;j++)
+	  // new_logical_data[j]|=translation_tables[i][key*u64_per_lookup+j];
+	  // unroll loop
+	  switch(u64_per_lookup)
+	    {
+	    case 1:
+	      new_logical_data[0]|=translation_tables[i][key*u64_per_lookup+0];
+	      break;
+	    case 2:
+	      new_logical_data[0]|=translation_tables[i][key*u64_per_lookup+0];
+	      new_logical_data[1]|=translation_tables[i][key*u64_per_lookup+1];
+	      break;
+	    case 3:
+	      new_logical_data[0]|=translation_tables[i][key*u64_per_lookup+0];
+	      new_logical_data[1]|=translation_tables[i][key*u64_per_lookup+1];
+	      new_logical_data[2]|=translation_tables[i][key*u64_per_lookup+2];
+	      break;
+	    default:
+	      printf("accelerated_to_logical: Expect u64_per_lookup to be 1--3, got %d\n",
+		     u64_per_lookup);
+	      exit(33);
+	    }
 	}
       
       for (int j=0;j<(u64_per_lookup);j++)
-	logical_data[loc+j]=new_logical_data[j];
+	{
+	  //0 or 1 ... things are in the correct place
+	  if (slots_per_u64>1)
+	    {
+	      for (int k=0;k<slots_per_u64;k++)
+		{
+		  uint64_t packed_data=new_logical_data[j];
+		  logical_data[loc+j*slots_per_u64+k]=
+		    ((packed_data>>(k*wordlen)) & word_mask);
+		}
+	    }
+	  else //0 or 1 ... things are in the correct place
+	    {
+	      logical_data[loc+j]=new_logical_data[j];
+	    }
+	}
 
+
+      
 #ifdef DEBUG_ACCELERATED_TO_LOGICAL
       printf("loc %d: ",loc);
       for (int j=0;j<(u64_per_lookup);j++)
@@ -481,6 +516,8 @@ void bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logi
       
       loc+=ms.slots_in_repeat;
     }
+
+  
 
 }
 
@@ -678,345 +715,41 @@ void bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *log
 
 int  bert_read(int logicalm, uint64_t *data, XFpga* XFpgaInstance)
 {
+  struct bert_meminfo *meminfo=(struct bert_meminfo *)malloc(sizeof(struct bert_meminfo));
+  meminfo->logical_mem=logicalm;
+  meminfo->operation=BERT_OPERATION_READ;
+  meminfo->data=data;
+  meminfo->start_addr=0;
+  meminfo->data_length=logical_memories[logicalm].words;
 
-  s32 Status;
-
-  int num_frame_ranges=logical_memories[logicalm].nframe_ranges;
-    // allocate frame ranges data
-  struct frame_range_offset *frame_range_offset_data=(struct frame_range_offset *)malloc(sizeof(struct frame_range_offset)*num_frame_ranges); 
-  int offset=WORDS_PER_FRAME+PAD_WORDS+DATA_DMA_OFFSET/4;
-  for (int i=0;i<num_frame_ranges;i++)
-    {
-      frame_range_offset_data[i].frame_base=logical_memories[logicalm].frame_ranges[i].first_frame;
-      frame_range_offset_data[i].len=logical_memories[logicalm].frame_ranges[i].len;
-      frame_range_offset_data[i].offset=offset;
-      offset+=WORDS_PER_FRAME*frame_range_offset_data[i].len+WORDS_BETWEEN_FRAMES; 
-    }
-  struct frame_set the_frame_set;
-  the_frame_set.num_ranges=num_frame_ranges;
-  the_frame_set.ranges=frame_range_offset_data;
-  offset+=WORDS_AFTER_FRAMES;
-
-  // allocate frame data
-  uint32_t *frame_data=(uint32_t *)malloc(sizeof(uint32_t)*offset);
-
-  // read back to front due to padding data that comes with readback
-  for (int i=num_frame_ranges-1;i>-1;i--)
-    {
-      uint32_t WrdCnt = WORDS_PER_FRAME * (frame_range_offset_data[i].len + 1)
-	+ PAD_WORDS;
-      Status = XFpga_GetPlConfigData(XFpgaInstance,
-				     (UINTPTR)&frame_data[frame_range_offset_data[i].offset-(WORDS_PER_FRAME+PAD_WORDS+DATA_DMA_OFFSET/4)],
-				     WrdCnt,
-				     frame_range_offset_data[i].frame_base);
-      if (Status != XST_SUCCESS) {
-	return XST_FAILURE;
-      }
-    }
-
-  //  uint32_t *pointer_from_readback=&frame_data[WORDS_PER_FRAME + PAD_WORDS + DATA_DMA_OFFSET/4];
-  
-  bert_to_logical(logicalm, frame_data, data, 0, logical_memories[logicalm].words, &the_frame_set);
-  
-  free(frame_data);
-  free(frame_range_offset_data);
-  
-  return XST_SUCCESS;
-  
+  int res=bert_transfuse(1,meminfo,XFpgaInstance);
+  free(meminfo);
+  return(res);
 }
+
 
 
 int  bert_write(int logicalm, uint64_t *data, XFpga* XFpgaInstance)
 {
-  s32 Status;
+  struct bert_meminfo *meminfo=(struct bert_meminfo *)malloc(sizeof(struct bert_meminfo));
+  meminfo->logical_mem=logicalm;
+  meminfo->operation=BERT_OPERATION_WRITE;
+  meminfo->data=data;
+  meminfo->start_addr=0;
+  meminfo->data_length=logical_memories[logicalm].words;
 
-  int num_frame_ranges=logical_memories[logicalm].nframe_ranges;
-    // allocate frame ranges data
-  struct frame_range_offset *frame_range_offset_data=(struct frame_range_offset *)malloc(sizeof(struct frame_range_offset)*num_frame_ranges); 
-  int offset=WORDS_PER_FRAME+PAD_WORDS+DATA_DMA_OFFSET/4;
-  for (int i=0;i<num_frame_ranges;i++)
-    {
-      frame_range_offset_data[i].frame_base=logical_memories[logicalm].frame_ranges[i].first_frame;
-      frame_range_offset_data[i].len=logical_memories[logicalm].frame_ranges[i].len;
-      frame_range_offset_data[i].offset=offset;
-      offset+=WORDS_PER_FRAME*frame_range_offset_data[i].len+WORDS_BETWEEN_FRAMES+WORDS_PER_FRAME; 
-    }
-  struct frame_set the_frame_set;
-  the_frame_set.num_ranges=num_frame_ranges;
-  the_frame_set.ranges=frame_range_offset_data;
-  offset+=WORDS_AFTER_FRAMES;
+  int res=bert_transfuse(1,meminfo,XFpgaInstance);
+  free(meminfo);
+  return(res);
+}  
 
-  // allocate frame data
-  uint32_t *frame_data=(uint32_t *)malloc(sizeof(uint32_t)*offset);
-
-  // read back to front due to padding data that comes with readback
-  for (int i=num_frame_ranges-1;i>-1;i--)
-    {
-      uint32_t WrdCnt = WORDS_PER_FRAME * (frame_range_offset_data[i].len + 1)
-	+ PAD_WORDS;
-      Status = XFpga_GetPlConfigData(XFpgaInstance,
-				     (UINTPTR)&frame_data[frame_range_offset_data[i].offset-(WORDS_PER_FRAME+PAD_WORDS+DATA_DMA_OFFSET/4)],
-				     WrdCnt,
-				     frame_range_offset_data[i].frame_base);
-      if (Status != XST_SUCCESS) {
-	return XST_FAILURE;
-      }
-    }
-
-    
-  // 2: update with logical data provided
-  bert_to_physical(logicalm,frame_data,data,0,logical_memories[logicalm].words,&the_frame_set);
-
-  // write control data into slots left in frame data
-  int len=0;
-  for (int i = 0; i < num_frame_ranges; i++) {
-    uint32_t* arr = &frame_data[frame_range_offset_data[i].offset - WORDS_BETWEEN_FRAMES];
-    // Add ctrl commands
-    arr[0] = 0x30002001; // COR 0
-    arr[1] = frame_range_offset_data[i].frame_base;
-    arr[2] = 0x30008001; // write CMD
-    arr[3] = 0x00000001; //  WCFG
-    arr[4] = 0x20000000;
-    arr[5] = 0x30004000;
-    int wrds = (frame_range_offset_data[i].len + 1) * WORDS_PER_FRAME;
-    arr[6] = 0x50000000 | wrds;
-    len += wrds + WORDS_BETWEEN_FRAMES;
-    // Clear write mask bits
-    for (int j = 0; j < frame_range_offset_data[i].len; j++) {
-      arr = &frame_data[frame_range_offset_data[i].offset + j*WORDS_PER_FRAME];
-      for (int k = 0; k < WE_BITS_PER_FRAME; k++) {
-        int b = bitlocation[k];
-        arr[b / 32] &= ~(1 << (31 - (b % 32)));
-      }
-    }
-  }
-  u32 Flags=XFPGA_PARTIAL_EN | XFPGA_ONLY_BIN_EN;
-  
-  // 3: write back
-  Status=XFpga_PL_Frames_Load(XFpgaInstance,(UINTPTR)frame_data,Flags,len);
-  if (Status != XST_SUCCESS) {
-    return XST_FAILURE;
-  }
-  
-  // return memory allocated
-  free(frame_data);
-  free(frame_range_offset_data);
-  
-  return XST_SUCCESS;
-
-
-}
-
-
-// test version that uses write enables -- becomes bert_write if this works
-int  bert_write_we(int logicalm, uint64_t *data, XFpga* XFpgaInstance)
-{
-  s32 Status;
-
-  int num_frame_ranges=logical_memories[logicalm].nframe_ranges;
-    // allocate frame ranges data
-  struct frame_range_offset *frame_range_offset_data=(struct frame_range_offset *)malloc(sizeof(struct frame_range_offset)*num_frame_ranges); 
-  // don't need stuff at beginning now -- I believe
-  int offset=WORDS_PER_FRAME+PAD_WORDS+DATA_DMA_OFFSET/4;
-  for (int i=0;i<num_frame_ranges;i++)
-    {
-      frame_range_offset_data[i].frame_base=logical_memories[logicalm].frame_ranges[i].first_frame;
-      frame_range_offset_data[i].len=logical_memories[logicalm].frame_ranges[i].len;
-      frame_range_offset_data[i].we_bits=logical_memories[logicalm].frame_ranges[i].we_bits;
-      frame_range_offset_data[i].offset=offset;
-      offset+=WORDS_PER_FRAME*frame_range_offset_data[i].len+WORDS_BETWEEN_FRAMES+WORDS_PER_FRAME; 
-    }
-  struct frame_set the_frame_set;
-  the_frame_set.num_ranges=num_frame_ranges;
-  the_frame_set.ranges=frame_range_offset_data;
-  offset+=WORDS_AFTER_FRAMES;
-
-  // allocate frame data
-  uint32_t *frame_data=(uint32_t *)malloc(sizeof(uint32_t)*offset);
-    
-  // put into frames
-  bert_to_physical(logicalm,frame_data,data,0,logical_memories[logicalm].words,&the_frame_set);
-
-  // write control data into slots left in frame data
-  int len=0;
-  for (int i = 0; i < num_frame_ranges; i++) {
-    uint32_t* arr = &frame_data[frame_range_offset_data[i].offset - WORDS_BETWEEN_FRAMES];
-    // Add ctrl commands
-    arr[0] = 0x30002001; // COR 0
-    arr[1] = frame_range_offset_data[i].frame_base;
-    arr[2] = 0x30008001; // write CMD
-    arr[3] = 0x00000001; //  WCFG
-    arr[4] = 0x20000000;
-    arr[5] = 0x30004000;
-    int wrds = (frame_range_offset_data[i].len + 1) * WORDS_PER_FRAME;
-    arr[6] = 0x50000000 | wrds;
-    len += wrds + WORDS_BETWEEN_FRAMES;
-    // Clear write mask bits
-    int we_bits=frame_range_offset_data[i].we_bits;
-    for (int j = 0; j < frame_range_offset_data[i].len; j++) {
-      arr = &frame_data[frame_range_offset_data[i].offset + j*WORDS_PER_FRAME];
-      for (int k = 0; k < WE_BITS_PER_FRAME; k++) {
-        int b = bitlocation[k];
-	if (((we_bits>>k) & 0x01)==1)
-	  arr[b / 32] &= ~(1 << (31 - (b % 32)));
-	else
-	  arr[b / 32] |= (1 << (31 - (b % 32)));
-      }
-    }
-  }
-  u32 Flags=XFPGA_PARTIAL_EN | XFPGA_ONLY_BIN_EN;
-  
-  // 3: write back
-  Status=XFpga_PL_Frames_Load(XFpgaInstance,(UINTPTR)frame_data,Flags,len);
-  if (Status != XST_SUCCESS) {
-    return XST_FAILURE;
-  }
-  
-  // return memory allocated
-  free(frame_data);
-  free(frame_range_offset_data);
-  
-  return XST_SUCCESS;
-
-}
-
-
-int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
-{
-
-  s32 Status;
-
-  struct frame_set *the_frame_set=bert_union(num,meminfo);
-
-#ifdef DEBUG_UNION
-  print_frame_set(the_frame_set);
-#endif  
-
-  //gives a composite frame set, but still needs to calculate the offsets
-  int offset=WORDS_PER_FRAME+PAD_WORDS+DATA_DMA_OFFSET/4;
-  for (int i=0;i<the_frame_set->num_ranges;i++)
-    {
-      the_frame_set->ranges[i].offset=offset;
-      offset+=WORDS_PER_FRAME*the_frame_set->ranges[i].len+WORDS_BETWEEN_FRAMES+WORDS_PER_FRAME; 
-    }
-  offset+=WORDS_AFTER_FRAMES;
-
-  // allocate frame data
-  uint32_t *frame_data=(uint32_t *)malloc(sizeof(uint32_t)*offset);
-
-  // read back to front due to padding data that comes with readback
-  for (int i=the_frame_set->num_ranges-1;i>-1;i--)
-    {
-      uint32_t WrdCnt = WORDS_PER_FRAME * (the_frame_set->ranges[i].len + 1)
-	+ PAD_WORDS; // AMD: to match corrections above  + DATA_DMA_OFFSET/4;
-      Status = XFpga_GetPlConfigData(XFpgaInstance,
-				     (UINTPTR)&frame_data[the_frame_set->ranges[i].offset-(WORDS_PER_FRAME+PAD_WORDS+DATA_DMA_OFFSET/4)],
-				     WrdCnt,
-				     the_frame_set->ranges[i].frame_base);
-      if (Status != XST_SUCCESS) {
-	return XST_FAILURE;
-      }
-    }
-
-  //  uint32_t *pointer_from_readback=&frame_data[WORDS_PER_FRAME + PAD_WORDS + DATA_DMA_OFFSET/4];
-
-  for (int i=0;i<num;i++)
-    {
-      if (meminfo[i].operation==BERT_OPERATION_READ)
-	bert_to_logical(meminfo[i].logical_mem,
-			frame_data,
-			meminfo[i].data,
-			meminfo[i].start_addr, meminfo[i].data_length,
-			the_frame_set);
-
-      if (meminfo[i].operation==BERT_OPERATION_ACCELERATED_READ)
-	bert_accelerated_to_logical(meminfo[i].logical_mem,
-				     frame_data,
-				     meminfo[i].data,
-				     meminfo[i].start_addr,
-				     meminfo[i].data_length,
-				     the_frame_set,
-				     meminfo[i].lookup_quanta,
-				     meminfo[i].lookup_tables,
-				     meminfo[i].u64_per_lookup,
-				     meminfo[i].tabsize,
-				     meminfo[i].pointer_to_trans_tables
-				     );      
-    }
-  
-  for (int i=0;i<num;i++)
-    {
-      if (meminfo[i].operation==BERT_OPERATION_WRITE)
-	bert_to_physical(meminfo[i].logical_mem,
-			 frame_data,
-			 meminfo[i].data,
-			 meminfo[i].start_addr, meminfo[i].data_length,
-			 the_frame_set);
-      if (meminfo[i].operation==BERT_OPERATION_ACCELERATED_WRITE)
-	bert_accelerated_to_physical(meminfo[i].logical_mem,
-				     frame_data,
-				     meminfo[i].data,
-				     meminfo[i].start_addr,
-				     meminfo[i].data_length,
-				     the_frame_set,
-				     meminfo[i].lookup_quanta,
-				     meminfo[i].lookup_tables,
-				     meminfo[i].u64_per_lookup,
-				     meminfo[i].tabsize,
-				     meminfo[i].pointer_to_trans_tables
-				     );      
-    }
-
-
-
-    // write control data into slots left in frame data .... and find length of write data
-  int len=0;
-  for (int i = 0; i < the_frame_set->num_ranges; i++) {
-      if (the_frame_set->ranges[i].we_bits==0)
-	break; // drop out when hit first read
-      uint32_t* arr = &frame_data[the_frame_set->ranges[i].offset - WORDS_BETWEEN_FRAMES];
-      // Add ctrl commands
-      arr[0] = 0x30002001; // COR 0
-      arr[1] = the_frame_set->ranges[i].frame_base;
-      arr[2] = 0x30008001; // write CMD
-      arr[3] = 0x00000001; //  WCFG
-      arr[4] = 0x20000000;
-      arr[5] = 0x30004000;
-      int wrds = (the_frame_set->ranges[i].len + 1) * WORDS_PER_FRAME;
-      arr[6] = 0x50000000 | wrds;
-      len += wrds + WORDS_BETWEEN_FRAMES;
-      // Clear write mask bits
-      for (int j = 0; j < the_frame_set->ranges[i].len; j++) {
-	arr = &frame_data[the_frame_set->ranges[i].offset + j*WORDS_PER_FRAME];
-	for (int k = 0; k < WE_BITS_PER_FRAME; k++) {
-	  int b = bitlocation[k];
-	  arr[b / 32] &= ~(1 << (31 - (b % 32)));
-	}
-      }
-  }
-  u32 Flags=XFPGA_PARTIAL_EN | XFPGA_ONLY_BIN_EN;
-  
-  // 3: write back
-  Status=XFpga_PL_Frames_Load(XFpgaInstance,(UINTPTR)frame_data,Flags,len);
-  if (Status != XST_SUCCESS) {
-    return XST_FAILURE;
-  }
-
-  
-
-  free(frame_data);
-  free(the_frame_set->ranges);
-  free(the_frame_set);
-  
-  return XST_SUCCESS;
-  
-}
 
 //TODO -- not properly deal with case where a frame range only needs part of the data written
 //   (a) will need to more carefuly extract the write frame ranges from the rest
 //   (b) if only write part of data in a frame, will need to still do readback on that frame
 // Should work in cases where writing entire memories
-int  bert_transfuse_we(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
+// was: int  bert_transfuse_we(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
+int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 {
 
   s32 Status;
@@ -1143,7 +876,6 @@ int  bert_transfuse_we(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstan
     return XST_FAILURE;
   }
 
-  
 
   free(frame_data);
   free(the_frame_set->ranges);
