@@ -123,7 +123,25 @@ not 0 on Failure
 | Type | Name | Description |
 | ---- | ---- | ----------- |
 | int | num | The number of read/write operations being performed, i.e. the length of meminfo array |
-| struct bert_meminfo * | meminfo | The array that defines each read/write operation. The fields of a `bert_meminfo` operation are as follows: <br><br> `logical_mem` - Index of memory to operate on defined in mydesign header <br> `operation` - Operation type, e.g. `BERT_OPERATION_READ` <br> `data` - logical memory buffer to read/write to/from <br> `start_addr` - TODO <br> `data_length` - TODO <br> `lookup_quanta` - TODO <br> `lookup_tables` - TODO <br> `u64_per_lookup - TODO` <br> `tabsize` - TODO <br> `pointer_to_trans_tables` - TODO  |
+| struct bert_meminfo * | meminfo | The array that defines each read/write
+operation. The fields of a `bert_meminfo` operation are as follows:
+<br><br> `logical_mem` - Index of memory to operate on defined in mydesign
+header <br> `operation` - Operation type, e.g. `BERT_OPERATION_READ` <br>
+`data` - logical memory buffer to read/write to/from <br> `start_addr` -
+first logical address to read or write from when performing an operation on a
+portion of the memory; this is 0 if you reading the full memory<br>
+`data_length` - how many logical words to read or write; this should be
+memory length if reading/writing entire memory. <br> `lookup_quanta` - omit
+for normal read or write operations; for accelerated operations use the
+macro of the same name<br> `lookup_tables` - omit
+for normal read or write operations; for accelerated operations use the
+macro of the same name <br> `u64_per_lookup - omit
+for normal read or write operations; for accelerated operations use the
+macro of the same name` <br> `tabsize` - omit
+for normal read or write operations; for accelerated operations use the
+macro of the same name <br> `pointer_to_trans_tables` - omit
+for normal read or write operations; for accelerated operations this is the
+translation table |
 |  XFpga * | XFpgaInstance | Pointer to xilfpga object initialized by `readback_Init` |
 
 #### Returns
