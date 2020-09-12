@@ -42,7 +42,7 @@ int find_offset_base(int frame, struct frame_set *the_frame_set)
 	      the_frame_set->ranges[i].len);
     }
 
-  exit(1);
+  return BST_GENERAL_FAIL;
 }
 
 int find_offset_from_base(int frame, struct frame_set *the_frame_set)
@@ -65,7 +65,7 @@ int find_offset_from_base(int frame, struct frame_set *the_frame_set)
 	      the_frame_set->ranges[i].len);
     }
 
-  exit(1);
+  return BST_GENERAL_FAIL;
 }
 
 int which_frame(int which_mem, int frame_base)
@@ -272,13 +272,13 @@ void print_frame_set (struct frame_set *the_frame_set)
 }
 
 
-void bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
+int bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 			       int start_addr, int data_length, struct frame_set *the_frame_set)
 {
 
   
   if (logical_memories[logical].nframe_ranges<1)
-    return; // nothing to translate
+    return BST_SUCCESS; // nothing to translate
 
 
   int wordlen=logical_memories[logical].wordlen;
@@ -317,8 +317,12 @@ void bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 		  int frame=fbits.frame_address;
 		  int offset_base=find_offset_base(frame+repeat_start,
 						   the_frame_set);
+		  if (offset_base == -1)
+		    return BST_OFFSET_NOT_FOUND;
 		  int offset_from_base=find_offset_from_base(frame+repeat_start,
 						   the_frame_set);
+		  if (offset_from_base == -1)
+		    return BST_OFFSET_NOT_FOUND;
 		  int frame_offset=offset_base+(offset_from_base+(r-repeat_start))*WORDS_PER_FRAME;
 		  int nbits=fbits.num_bits;
 		  int *bit_location=fbits.bit_loc;
@@ -326,7 +330,7 @@ void bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 		    {
 		      // don't go through the stuff that isn't in range
 		      if (loc>=(start_addr+data_length))
-			return;
+			return BST_SUCCESS;
 		      if ((loc>=start_addr) & (loc<(start_addr+data_length)))
 			{
 		  
@@ -363,10 +367,10 @@ void bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 	} // skip segements
 
     } // for each segment
-
+  return BST_SUCCESS;
 }
 
-void bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
+int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				 int start_addr, int data_length, struct frame_set *the_frame_set,
 				  int lookup_quanta,
 				  int lookup_tables,
@@ -377,7 +381,7 @@ void bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logi
 
   
   if (logical_memories[logical].nframe_ranges<1)
-    return; // nothing to translate
+    return BST_SUCCESS; // nothing to translate
 
   int wordlen=logical_memories[logical].wordlen;
   int b64_per_word=(wordlen+63)/64;
@@ -434,8 +438,12 @@ void bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logi
   int nbits=fbits.num_bits;
   int offset_base=find_offset_base(frame+repeat_start,
 				   the_frame_set);
+  if (offset_base == -1)
+    return BST_OFFSET_NOT_FOUND;
   int offset_from_base=find_offset_from_base(frame+repeat_start,
 					     the_frame_set);
+  if (offset_from_base == -1)
+    return BST_OFFSET_NOT_FOUND;
   uint64_t mask_quanta=(((uint64_t) 1)<<lookup_quanta)-1;
   int offset_in_frame=logical_memories[logical].repeats[0].frame_bits[0].bit_loc[0];
 
@@ -517,18 +525,18 @@ void bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logi
       loc+=ms.slots_in_repeat;
     }
 
-  
+  return BST_SUCCESS;
 
 }
 
 
-void bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
+int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				int start_addr, int data_length, struct frame_set *the_frame_set)
 {
 
 
   if (logical_memories[logical].nframe_ranges<1)
-    return; // nothing to translate
+    return BST_SUCCESS; // nothing to translate
 
 
     int num_segments=logical_memories[logical].num_segments;
@@ -567,6 +575,8 @@ void bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 		  // TODO: may not work if unioned with something...
 		  int offset_base=find_offset_base(frame+repeat_start,
 						   the_frame_set);
+		  if (offset_base == -1)
+		    return BST_OFFSET_NOT_FOUND;
 		  int frame_offset=offset_base+(r-repeat_start)*WORDS_PER_FRAME;
 		  //  to here
 		  int nbits=fbits.num_bits;
@@ -575,7 +585,7 @@ void bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 		    {
 		      // don't go through the stuff that isn't in range
 		      if (loc>=(start_addr+data_length))
-			return;
+			return BST_SUCCESS;
 		      if ((loc>=start_addr) & (loc<(start_addr+data_length)))
 			{		      
 			  // only needs to be in one, but this gets called first...
@@ -613,10 +623,10 @@ void bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 	} // skip ahead 
 
     }
-
+  return BST_SUCCESS;
 }
 
-void bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
+int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				  int start_addr, int data_length, struct frame_set *the_frame_set,
 				  int lookup_quanta,
 				  int lookup_tables,
@@ -627,7 +637,7 @@ void bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *log
 
 
   if (logical_memories[logical].nframe_ranges<1)
-    return; // nothing to translate
+    return BST_SUCCESS; // nothing to translate
 
   int wordlen=logical_memories[logical].wordlen;
   int words=logical_memories[logical].words;
@@ -709,7 +719,7 @@ void bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *log
 #ifdef DEBUG
   printf("bert_accelerated_to_physical returning...\n");
 #endif  
-
+  return BST_SUCCESS;
 } 
 
 
