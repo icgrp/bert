@@ -18,19 +18,27 @@ struct bert_meminfo {
     
 };
 
+enum {
+  BST_GENERAL_FAIL = -1,
+  BST_SUCCESS,
+  BST_XILFPGA_FAILURE,
+  BST_OFFSET_NOT_FOUND,
+
+};
+
 int  bert_read(int logicalm, uint64_t *data, XFpga* XFpgaInstance);
 int  bert_write(int logicalm, uint64_t *data, XFpga* XfpgaInstance);
 //int  bert_write_we(int logicalm, uint64_t *data, XFpga* XfpgaInstance);
 int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance);
 //int  bert_transfuse_we(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance);
 
-void bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
+int bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 			       int start_addr, int data_length, struct frame_set *the_frame_set);
 
-void bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
+int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				int start_addr, int data_length, struct frame_set *the_frame_set);
 
-void bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
+int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				 int start_addr, int data_length, struct frame_set *the_frame_set,
 				  int lookup_quanta,
 				  int lookup_tables,
@@ -38,7 +46,7 @@ void bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logi
 				  int tabsize,
 				 uint64_t translation_tables[][tabsize]);
 
-void bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
+int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				  int start_addr, int data_length, struct frame_set *the_frame_set,
 				  int lookup_quanta,
 				  int lookup_tables,
