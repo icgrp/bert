@@ -815,17 +815,17 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
     for (int i=0;i<num;i++)
     {
       if (meminfo[i].operation==BERT_OPERATION_READ) {
-	    status = bert_to_logical(meminfo[i].logical_mem,
+        status = bert_to_logical(meminfo[i].logical_mem,
 			frame_data,
 			meminfo[i].data,
 			meminfo[i].start_addr, meminfo[i].data_length,
 			the_frame_set);
-	    if (status != BST_SUCCESS)
-	      return status;
-	  }
+        if (status != BST_SUCCESS)
+          return status;
+      }
 
       if (meminfo[i].operation==BERT_OPERATION_ACCELERATED_READ) {
-	    status = bert_accelerated_to_logical(meminfo[i].logical_mem,
+        status = bert_accelerated_to_logical(meminfo[i].logical_mem,
 				     frame_data,
 				     meminfo[i].data,
 				     meminfo[i].start_addr,
@@ -837,24 +837,24 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 				     meminfo[i].tabsize,
 				     meminfo[i].pointer_to_trans_tables
 				     );      
-		if (status != BST_SUCCESS)
-	      return status;
-	  }
+        if (status != BST_SUCCESS)
+          return status;
+      }
     }
   
   for (int i=0;i<num;i++)
     {
       if (meminfo[i].operation==BERT_OPERATION_WRITE) {
-	    status = bert_to_physical(meminfo[i].logical_mem,
+        status = bert_to_physical(meminfo[i].logical_mem,
 			 frame_data,
 			 meminfo[i].data,
 			 meminfo[i].start_addr, meminfo[i].data_length,
 			 the_frame_set);
-	    if (status != BST_SUCCESS)
+	if (status != BST_SUCCESS)
 	      return status;
-	  }
+      }
       if (meminfo[i].operation==BERT_OPERATION_ACCELERATED_WRITE) {
-	    status = bert_accelerated_to_physical(meminfo[i].logical_mem,
+        status = bert_accelerated_to_physical(meminfo[i].logical_mem,
 				     frame_data,
 				     meminfo[i].data,
 				     meminfo[i].start_addr,
@@ -866,9 +866,9 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 				     meminfo[i].tabsize,
 				     meminfo[i].pointer_to_trans_tables
 				     );    
-		if (status != BST_SUCCESS)
-	      return status;
-	  }  
+        if (status != BST_SUCCESS)
+          return status;
+      }  
     }
 
 
@@ -917,6 +917,6 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
   free(the_frame_set->ranges);
   free(the_frame_set);
   
-  return XST_SUCCESS;
+  return BST_SUCCESS;
   
 }
