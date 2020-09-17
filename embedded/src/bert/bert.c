@@ -42,7 +42,7 @@ int find_offset_base(int frame, struct frame_set *the_frame_set)
 	      the_frame_set->ranges[i].len);
     }
 
-  return BST_GENERAL_FAIL;
+  return -1;
 }
 
 int find_offset_from_base(int frame, struct frame_set *the_frame_set)
@@ -65,7 +65,7 @@ int find_offset_from_base(int frame, struct frame_set *the_frame_set)
 	      the_frame_set->ranges[i].len);
     }
 
-  return BST_GENERAL_FAIL;
+  return -1;
 }
 
 int which_frame(int which_mem, int frame_base)
@@ -74,7 +74,7 @@ int which_frame(int which_mem, int frame_base)
     if (logical_memories[which_mem].frame_ranges[i].first_frame==frame_base)
       return(i);
   printf("bert.which_frame: frame %x not found in logical memory %d\n",frame_base,which_mem);
-  return BST_GENERAL_FAIL;
+  return -1;
   
 }
 struct frame_set *bert_union(int num, struct bert_meminfo *info)
