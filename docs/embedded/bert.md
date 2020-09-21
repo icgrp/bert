@@ -14,8 +14,15 @@ TODO: Example images of linker flags
 
 ## Usage Overview
 
-One basic test for checking that BERT is working is to write and then read a BRAM in the design. When testing BERT for functionality, it is important to allocate the right amount of space for everything. Otherwise, out of bounds writes are very likely to happen and cause confusion when debugging. Additionally, since BRAM frame data is transferred into DDR memory, the heap size will need to be increased from the default size. Increasing by a factor of 4x from the default should be safe.
+The basic test to check that BERT is working is to write and then read a BRAM in the design.
 
+### Source and Destination Buffers
+When testing BERT for functionality, it is important to allocate the right amount of space for the source and destination buffers passed to the BERT API. Otherwise, out of bounds writes are very likely to happen and cause confusion when debugging. All buffers should be of type `uint64_t`, no matter the word size of the logical memory. When the logical memory has word sizes larger than 64b, two 64b values need to be allocated such that the lower bits are stored in `bram[i]` and the high bits in `bram[i+1]`.
+
+### Dynamic Memory Usage
+Since BRAM frame data is transferred into DDR memory, the size of the heap is something to consider. The default heap size is 2 * 16^3 = 8192 bytes, or just around 8kB. BRAMs take up more space in the physical format (as configuration frames), so the heap size should be set accordingly. For example, using all 216 BRAMs on the xczu3eg will take 216 / 12 BRAMs per frameset * 257 frames per set * 372 bytes per frame = 1.72MB of space on the heap. When including other sources of overhead, you are looking at 1.73MB. However, in the general case it cannot be assumed that BRAMs coincide within the same configuration frames. Thus, it is best to allocate one frameset's worth of space (~96kB) for each BRAM or 1.73MB for all BRAMs on the chip. Setting the heap and stack size in Xilinx SDK is covered in the [setup tutorial](../tutorials/sdksetup.md).
+
+### Code for Testing BERT
 The following code can be used to test basic setup of BERT.\
 TODO: Check that it compiles
 
