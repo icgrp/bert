@@ -68,15 +68,27 @@ int main(int argc, char **argv) {
     return 0;
 }
 ```
-`bert_read` and `bert_write` can be used in loops to test all memories, but they are inefficient to use on BRAMs that coincide within the same frames. Thus, using `bert_transfuse` can limit the amount of redundant DMA operations. To further reduce time spent on memory transfusions, `meminfo` can be saved and reused. This will achieve better throughput than individual BERT read/write calls, because each `bert_read` and `bert_write` reference calls `bert_transfuse`.
-```c
-void clearAllBRAMs() {
+`bert_read` and `bert_write` can be used in loops to operate on all memories, but they are inefficient to use on BRAMs that coincide within the same frames. Thus, using `bert_transfuse` can limit the amount of redundant DMA operations. Furthermore, `bert_tranfuse` allows the `meminfo` struct to be saved and reused. This will achieve higher throughput than individual BERT read/write calls, because each `bert_read` and `bert_write` call is a wrapper around `bert_transfuse`.
 
-    struct bert_meminfo *meminfo=(struct bert_meminfo *)malloc(sizeof(struct bert_meminfo)*NUM_LOGICAL);
-    for (int i = 0; i < )
-    // TODO
-    // TODO
+The following function is an example of how you could write a function to initalize BRAMs in a design in one fell swoop.
+```c
+XFpga instance = {0U}; // Make sure to call readback_Init to initialize the XFpga object somewhere
+
+void writeAllBRAMs() {
     
+    // Initialize BRAM data; assumes all logical memories are same size
+    static uint64_t data[CEIL(WIDTH, 64) * WORD_COUNT] = {0UL};
+    
+    struct bert_meminfo *meminfo=(struct bert_meminfo *)malloc(sizeof(struct bert_meminfo) * NUM_LOGICAL);
+    for (int i = 0; i < NUM_LOGICAL; i++) {
+        meminfo[i].logical_mem=i;
+        meminfo[i].operation=BERT_OPERATION_WRITE;
+	   meminfo[i].data=data;
+	   meminfo[i].start_addr=0;
+	   meminfo[i].data_length=WORD_COUNT; // Assuming all BRAMs are same size
+    }
+    bert_transfuse(NUM_LOGICAL, meminfo, &instance);
+    free(meminfo);
 }
 ```
 
@@ -97,7 +109,7 @@ void clearAllBRAMs() {
 
 #### Returns
 0 on success\
-not 0 on Failure
+int other than 0 on failure
 
 -----
 
@@ -115,7 +127,7 @@ not 0 on Failure
 
 #### Returns
 0 on success\
-not 0 on Failure
+int other than 0 on failure
 
 -----
 
@@ -133,4 +145,4 @@ not 0 on Failure
 
 #### Returns
 0 on success\
-not 0 on Failure
+int other than 0 on failure
