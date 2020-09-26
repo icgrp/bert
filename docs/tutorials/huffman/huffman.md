@@ -2,17 +2,21 @@ Huffman Encoder Tutorial
 ========================
 
 ## Overview
-The hardware for this projects inclues multiple logical memories with multiple BRAMs:
+The hardware for this projects includes multiple logical memories with multiple BRAMs:
 * A 1024x8b memory with 8b characters that will be encoded, called `rawTextMem`
 * A 256x20b memory with character encodings, called `huffmanMem`
 * A 512x16b memory with that stores the encoding of `rawTextMem`, called `resultsMem`
 * A 256x16b memory that stores a histogram of `rawTextMem`'s values, called `histMem`
 
-From the software side of things, we can toggle a register bit that causes `resultsMem` to be updated with the decoding of `rawTextMem`, based on the current values of `histMem`. Additionally, `histMem` is updated with the histogram of `resultsMem`.
+TODO: pix show application flow
+rawTextMem->encode(huffmanMem)-->resultMem
+                    |->histMem
+
+From the software side of things, we can toggle a register bit that causes `resultsMem` to be updated with the encoding of `rawTextMem`, based on the current values of `huffmanMem`. Additionally, `histMem` is updated with the histogram of `rawTextMem`.
 
 During runtime, we may desire the following abilities from the PS side:
-* Seting the text that needs to be encoded
-* Providing different Huffman dictionaries for the hardware decoder as needed
+* Setting the text that needs to be encoded
+* Providing different Huffman dictionaries for the hardware encoder as needed
 * Debugging by reading memories that wouldn't ordinarilly be exposed to AXI, like `histMem`
 
 This tutorial will cover performing these hypothetical scenarios with the BERT API. The example design also allows us to read `resultsMem` and `histMem` over AXI, so we can verify that BERT is actually working.
