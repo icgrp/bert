@@ -23,6 +23,7 @@ Since BRAM frame data is transferred into DDR memory, the size of the heap is so
 ### Code for Testing BERT
 The basic test to check that BERT is working is to write and then read from a BRAM in the design. The following code can be used to verify BERT write operations.\
 TODO: Check that it compiles
+TODO: doe this need an associated design for them to use this with?
 
 ```c
 #include "bert.h"
