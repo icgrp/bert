@@ -1,5 +1,11 @@
 # bert - Bitstream Embedded RAM Transfusion
 
+
+Start with [Huffman Tutorial](docs/tutorials/huffman/huffman.md).
+
+
+---
+
 We can put put our notes here to document our project.  As shown by the following link, we can include links to sub-pages of the repo and they get rendered when viewed on Github:
 * [Nelson Notes 8/17/2020](NOTES.md) - these are Nelson's notes from the 8/17 phone call.  As we do things we can just check them off.
 
