@@ -1,7 +1,7 @@
 Configuring Board Support Package (BSP) for xilfpga (v5.1) library
 ========================
 
-For the loading and reading of configuration frames, BERT uses a modified version of xilfpga v5.1, found in the [2019.2 distribution of embeddedsw](https://github.com/Xilinx/embeddedsw/releases/tag/xilinx-v2019.2). xilfpga depends on xilsecure, which can also be found at the 2019.2 link. These two libraries must be imported into the board support package and linked against the application code.
+For the loading and reading of configuration frames, BERT uses a modified version of xilfpga v5.1, found in the [2019.2 distribution of embeddedsw](https://github.com/Xilinx/embeddedsw/releases/tag/xilinx-v2019.2). xilfpga depends on xilsecure, which can also be found at the 2019.2 link. These two libraries must be imported into the board support package and linked against the application code. The [SDK setup tutorial](../tutorials/sdksetup.md) outlines how to prepare the SDK before configuring the BSP.
 
 ## Xilinx SDK 2018.3 Installation
 
@@ -20,7 +20,7 @@ BERT runs on the standalone platform (v7.1). First, generate a board support pac
 
 ![Example of xilfpga configuration](../images/xilfpgasettings.png)
 
-Since BERT takes advantage of custom API calls, xilfpga must be overwritten with the version found at `bert/embedded/libsrc/xilfpga_v5_1`. This could be installed SDK-wide using the previous instructions, but it is best to use the custom xilfpga library at the bsp level for version control. After a bsp is generated, overwrite the xilfpga library found at `xxx_bsp/psu_xxxx_x/libsrc/xilfpga_v5_1` with the version in the BERT repo. The overwrite should trigger the SDK to recompile the bsp libraries. If additional bsp parameters are changed in `system.mss` or the `Re-generate BSP Sources` button is clicked, the bsp will be overwritten with the vanilla xilfpga version found in the local SDK installation. Thus, it is best to completely configure the rest of the BSP before emplacing the custom xilfpga library. Once configured, the same bsp can be used for multiple applications.
+Since BERT takes advantage of custom API calls, xilfpga must be overwritten in the BSP with the version found at `bert/embedded/libsrc/xilfpga_v5_1`. After a bsp is generated, overwrite the xilfpga library found at `xxx_bsp/psu_xxxx_x/libsrc/xilfpga_v5_1` with the version in the BERT repo. The overwrite should trigger the SDK to recompile the bsp libraries. If additional bsp parameters are changed in `system.mss` or the `Re-generate BSP Sources` button is clicked, the bsp will be overwritten with the vanilla xilfpga version found in the local SDK installation. Thus, it is best to completely configure the rest of the BSP before emplacing the custom xilfpga library. Once configured, the same bsp can be used for multiple applications.
 
 ![Example of BSP directory structure](../images/bspdirectory.png)
 
