@@ -23,9 +23,8 @@ This tutorial will cover performing these hypothetical scenarios with the BERT A
 
 ## Steps
 1. Use BERT host tools to generate the headers needed for your hardware design. [Information here](../../../host_tools/README.md)
-    a. build BERT host tools for your platform [see build instrutions](../../../host_tools/README.md)
-    b. run BERT tools on your design to produce files needed for your BERT
-    application (minimal instructions below)
+     a. build BERT host tools for your platform [see build instrutions](../../../host_tools/README.md)
+     b. run BERT tools on your design to produce files needed for your BERT  application (minimal instructions below)
 2. Set up Xilinx SDK environment. [Information here](../sdksetup.md)
 3. Write user code
 4. Test on hardware
