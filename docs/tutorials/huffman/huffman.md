@@ -23,6 +23,9 @@ This tutorial will cover performing these hypothetical scenarios with the BERT A
 
 ## Steps
 1. Use BERT host tools to generate the headers needed for your hardware design. [Information here](../../../host_tools/README.md)
+    a. build BERT host tools for your platform [see build instrutions](../../../host_tools/README.md)
+    b. run BERT tools on your design to produce files needed for your BERT
+    application (minimal instructions below)
 2. Set up Xilinx SDK environment. [Information here](../sdksetup.md)
 3. Write user code
 4. Test on hardware
@@ -30,11 +33,12 @@ This tutorial will cover performing these hypothetical scenarios with the BERT A
 ## Generating mydesign.h with bert_gen
 Once the hardware design has been generated for our platform, we need to generate the header files BERT will use to map physical bits to logical, and vice versa.
 
-TODO\
-*JAMES* - Could you help with writing this section?
-* What files are needed?
-* Directory structure presumed by bert_gen?
-* Command that needs to be run
+TODO: *JAMES* - review:
+* Create a .dcp file for the fully complete placed and routed design.
+  Command below assumes this is called  `design.dcp`
+* Run: `.gen.sh -gen design.dcp designHeaderName`
+* This should create `deignHeaderName.h` and `designHeaderName.c` that will
+  be used with BERT applications below.
 
 ## Integrating BERT into our project
 Presuming we have an [application project established](../sdksetup.md), we can dump all the files from `embedded/src/bert` into our application project. Or we copy the `bert` directory if we'd like to maintain some heirarchy within our `src` directory. This will only change how `#include` directives are written.
