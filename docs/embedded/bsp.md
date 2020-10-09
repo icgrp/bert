@@ -24,4 +24,4 @@ Since BERT takes advantage of custom API calls, xilfpga must be overwritten in t
 
 ![Example of BSP directory structure](../images/bspdirectory.png)
 
-Once the BSP is set up, it can be used for all application projects in the SDK workspace. Instructions for integrating BERT into an application are found [here](bert.md).
+Once the BSP is set up, it can be used for all application projects in the SDK workspace. The next step is to integrate BERT into an application.  Instructions for doing so can be found [here](bert.md).
