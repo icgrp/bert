@@ -15,7 +15,7 @@ where 20xx.x is a SDK installation version before 2019.2. Notice the snake case 
 
 Adding the newer versions to a local SDK installation allows the libraries be added to the bsp using the [normal procedure](../tutorials/sdksetup.md). The new versions of xilfpga and xilsecure should show up in the drop down menu of a Board Support Package's settings window.
 
-Some additional tweaking may be required for C++ code. Since xilfpga and Xilinx bsp libraries in general are compiled with C, `extern "C"` blocks need to be used to ensure the code compiles. Xilinx libraries have there `extern "C"` blocks, but with typos that prevent compilation. For C++ code to compile, you must manually fix these typos: [Extern "C" closure should not include "extern c", but only the curly brackets](https://github.com/Xilinx/embeddedsw/pull/115). C code should compile fine without any of these concerns.
+Some additional tweaking may be required for C++ code. Since xilfpga and Xilinx bsp libraries in general are written in C, `extern "C"` blocks need to be used to ensure the code compiles. Xilinx libraries have these `extern "C"` blocks, but with typos that prevent compilation. For C++ code to compile, you must manually fix these typos: [Extern "C" closure should not include "extern c", but only the curly brackets](https://github.com/Xilinx/embeddedsw/pull/115). C code should compile fine without any of these concerns.
 
 TODO: mention how BERT is affected when using C++ linkage depending on how we change bert.h
 
