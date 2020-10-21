@@ -3,7 +3,7 @@ Using BERT API
 
 ## Adding BERT to application project
 
-All the files that need to be added to an application are found at `bert/embedded/src/bert`. A c file using BERT should include `readback.h`, `bert.h`, and the design's `mydesign.h` produced by `bert_gen`. The application project should be created after the [bsp is configured](bsp.md), so that linker-related flags are set properly. If the application will not compile, verify the linker flags manually:
+All the files that need to be added to an application are found at `bert/embedded/src/bert`. Code using the BERT API should `#include` `readback.h`, `bert.h`, and the design's `mydesign.h` produced by `bert_gen`. The application project should be created after the [bsp is configured](bsp.md), so that linker-related flags are set properly. If the application will not compile, verify the SDK project's linker flags manually:
 
 * `-Wl,--start-group,-lxilfpga,-lxil,-lxilsecure,-lgcc,-lc,--end-group`
 *  `-Wl,--start-group,-lxilsecure,-lxil,-lgcc,-lc,--end-group`
