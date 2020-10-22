@@ -59,6 +59,7 @@ TODO:
 * Make sure application works with new changes of BERT (readback_Init takes a IDCODE).
 * Create #ifdef macros so the code has the same functionality using bert_read/write or bert_transfuse
 * Make sure code runs without buffers excessively sized like they are right now.
+* Reduce amount of repeated code so its more easily understandable
 
 ## Test on hardware
 
