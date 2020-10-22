@@ -39,7 +39,7 @@ TODO: doe this need an associated design for them to use this with?
 #define PART_IDCODE 0xFFFFFFFF // Part number's IDCODE, change this or bert calls will silently fail
 
 uint64_t mem_read[CEIL(WIDTH, 64) * WORD_COUNT]; // Twos 64b words are needed for 72b
-uint64_t mem_write[CEIL(WIDTH, 64) * WORD_COUNT];
+uint64_t mem_write[CEIL(WIDTH, 64) * WORD_COUNT] = {0xDEADBEEF};
 
 XFpga XFpgaInstance = {0U};
 
@@ -84,9 +84,9 @@ void writeAllBRAMs() {
     for (int i = 0; i < NUM_LOGICAL; i++) {
         meminfo[i].logical_mem=i;
         meminfo[i].operation=BERT_OPERATION_WRITE;
-	   meminfo[i].data=data;
-	   meminfo[i].start_addr=0;
-	   meminfo[i].data_length=WORD_COUNT; // Assuming all BRAMs are same size
+        meminfo[i].data=data;
+        meminfo[i].start_addr=0;
+        meminfo[i].data_length=WORD_COUNT; // Assuming all BRAMs are same size
     }
     bert_transfuse(NUM_LOGICAL, meminfo, &instance);
     free(meminfo);
