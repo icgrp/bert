@@ -55,6 +55,18 @@ We provied a sample application [hellobert.c](hellobert.c) that
 * Uses a bzip2 implementation of Huffmann encoding to create a new dictionary on the PS side and transfer it via BERT.
 * Writes ascending input to the `rawTextMem` and an identity encoding as the Huffman dictionary.
 
-
+TODO:
+* Make sure application works with new changes of BERT (readback_Init takes a IDCODE).
+* Create #ifdef macros so the code has the same functionality using bert_read/write or bert_transfuse
+* Make sure code runs without buffers excessively sized like they are right now.
 
 ## Test on hardware
+
+If the code compiles, we can attempt to run it on hardware.
+
+TODO:
+* Mention opening serial port
+* Mention the on button and reset button on board
+* Setting up debug configuration (Point to right bitstream)
+* Mention compiling BERT with -O3 (Perhaps find a way for SDK to only compile BERT -O3)
+* Section on how to Debug
