@@ -4,7 +4,7 @@ Huffman Encoder Tutorial
 ## Overview
 The hardware for this projects includes multiple logical memories with multiple BRAMs:
 * A 1024x8b memory with 8b characters that will be encoded, called `rawTextMem`
-* A 256x20b memory with character encodings, called `huffmanMem`
+* A 256x20b memory with character encodings, called `huffmanMem`. Bits [0:15] of each word are the encoding. Bits [16:19] are the length of the encoding.
 * A 512x16b memory with that stores the encoding of `rawTextMem`, called `resultsMem`
 * A 256x16b memory that stores a histogram of `rawTextMem`'s values, called `histMem`
 
@@ -44,13 +44,16 @@ A hardware specification (.hdf file) was mentioned earlier, because we need to e
 
 Now that we have an basic application project and board support package for our hardware design, we need to modify the bsp to support the expanded version of xilfpga. The detailed steps for doing this is found [here](../../embedded/bsp.md).
 
-Now that we have an application project and bsp established, we can dump the BERT source files from `embedded/src/bert` into our application project. Or we copy the `bert` directory if we'd like to maintain some heirarchy within our `src` directory. Just adjust the `#include` directives to reflect this. The easiest way is to do this is to just copy and paste the files using your OS's file manager, but alternatively you could use the import feature since Xilinx SDK is Eclipse-based. After adding the files, our project should rebuild without error. Refer to [bert.md](../../embedded/bert.md) for more details about this step and the BERT API in general. If there are no compiler problems to sort out, the BERT API can now be used.
+Now that we have an application project and bsp established, we can dump the BERT source files from `embedded/src/bert` into our application project. Or we copy the whole `bert` directory if we'd like to maintain some heirarchy within our `src` directory. Just adjust the `#include` directives to reflect this. The easiest way is to do this is to just copy and paste the files using your OS's file manager, but alternatively you could use the import feature since Xilinx SDK is Eclipse-based. After adding the files, our project should rebuild without error. Refer to [bert.md](../../embedded/bert.md) for more details about this step and the BERT API in general. If there are no compiler problems to sort out, the BERT API can now be used.
 
 TODO:
 Picture of application projects directory structure
 
 ## User code
-[hellobert.c](hellobert.c)
+We provied a sample application [hellobert.c](hellobert.c) that
+* Reads the memories over AXI and BERT to verify BERT is working
+* Uses a bzip2 implementation of Huffmann encoding to create a new dictionary on the PS side and transfer it via BERT.
+* Writes ascending input to the `rawTextMem` and an identity encoding as the Huffman dictionary.
 
 
 
