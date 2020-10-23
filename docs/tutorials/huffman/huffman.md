@@ -49,8 +49,8 @@ Now that we have an application project and bsp established, we can dump the BER
 TODO:
 Picture of application projects directory structure
 
-## User code
-We provied a sample application [hellobert.c](hellobert.c) that
+## 3. User code
+We provied a sample application [hellobert.c](./sw_huffman/hellobert.c) that
 * Reads the memories over AXI and BERT to verify BERT is working
 * Uses a bzip2 implementation of Huffmann encoding to create a new dictionary on the PS side and transfer it via BERT.
 * Writes ascending input to the `rawTextMem` and an identity encoding as the Huffman dictionary.
@@ -61,13 +61,23 @@ TODO:
 * Make sure code runs without buffers excessively sized like they are right now.
 * Reduce amount of repeated code so its more easily understandable
 
-## Test on hardware
+## 4. Test on hardware
 
-If the code compiles, we can attempt to run it on hardware.
+If the code compiles, we can attempt to run it on hardware. Start by opening "Debug Configurations."
+
+![Opening debug configurations](../../images/huffmanlaunchalt.png)
+
+Double clicking on "Xilinx C/C++ application (System Debugger) will create a new debug launch configuration. Here is an example of a configuration:
+
+![Example debug configuration](../../images/huffmanlaunchconfig.png)
+
+Notice the "Bitstream File" field. If you are developing different versions of the hardware design concurrently (the BRAMs do not change), one can just point to the different bitstream. This way, one can avoid establishing a new SDK workspace and generating a new BSP for every change to the hardware. From a practical standpoint, nothing prevents having two projects in the same SDK workspace for two different hardware designs (for the same part).
+
+Before or during the launch of the debugger, open the serial port to the board so we can observe the program output. Clicking the green plus sign in the "SDK Terminal" window accomplishes this.
+
+![Opening the serial port](../../images/openserialport.png)
 
 TODO:
-* Mention opening serial port
 * Mention the on button and reset button on board
-* Setting up debug configuration (Point to right bitstream)
 * Mention compiling BERT with -O3 (Perhaps find a way for SDK to only compile BERT -O3)
 * Section on how to Debug
