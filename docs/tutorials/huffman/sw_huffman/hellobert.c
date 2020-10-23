@@ -145,7 +145,7 @@ void recompute_huffman(int *result_code) {
 int main()
 {
     init_platform();
-    readback_Init(&XFpgaInstance);
+    readback_Init(&XFpgaInstance, U96_IDCODE);
 
     uint64_t new_code[512];
 
