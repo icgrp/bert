@@ -40,7 +40,7 @@ TODO: *JAMES* - review:
   be used with BERT applications below. This is what is being referred to whenever the docs generically mention `mydesign.h`.
 
 ## 2. Integrating BERT into our project
-A hardware specification (.hdf file) was mentioned earlier, because we need to establish a SDK workspace. In Vivado 2018.3, this file is created by going to File > Export > Export Hardware. Then, File > Launch SDK will launch the SDK within the Vivado project's working directory. Steps to create a new application and board support package is covered [here](../sdksetup.md).
+A hardware specification (.hdf file) was mentioned earlier, because we need to establish a SDK workspace. In Vivado 2018.3, this file is created by going to File > Export > Export Hardware. The tutorial includes a precompiled version of the design for the U96 board, so there is already a hdf file provided in the repo. Steps to create a new application and board support package with the hdf is covered in detail here[here](../sdksetup.md).
 
 Now that we have an basic application project and board support package for our hardware design, we need to modify the bsp to support the expanded version of xilfpga. The detailed steps for doing this is found [here](../../embedded/bsp.md).
 
