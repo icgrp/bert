@@ -5,13 +5,13 @@ For the loading and reading of configuration frames, BERT uses a modified versio
 
 ## Xilinx SDK 2018.3 Installation
 
-Since SDK 2018.3 predates the distribution of xilfpga being used, the [2019.2 distribution of embeddedsw](https://github.com/Xilinx/embeddedsw/releases/tag/xilinx-v2019.2) must be manually added to the SDK installation. If Vitis (2019.2 or newer) is being used, this portion of the document can be skipped. Extract the .zip archive and...
+Since SDK 2018.3 predates the distribution of xilfpga being used, the [2019.2 distribution of embeddedsw](https://github.com/Xilinx/embeddedsw/releases/tag/xilinx-v2019.2) must be manually added to the SDK installation. If Vitis (2019.2 or newer) is being used, this portion of the document can be skipped. Extract the .zip archive.  Assuming you extracted it to /tmp (and SDK below is the Xilinx installation SDK directory) then you would want to copy (recursive):
 
-* Copy `embeddedsw/lib/sw_services/xilfpga` to `SDK/20xx.x/data/embeddedsw/lib/sw_services/xilfpga_v5_1`
-* Copy `embeddedsw/lib/sw_services/xilsecure` to `SDK/20xx.x/data/embeddedsw/lib/sw_services/xilsecure_v4_1`.
-* Copy `embeddedsw/lib/bsp/standalone` to `SDK/20xx.x/data/embeddedsw/lib/bsp/standalone_v7_1`.
-
-where 20xx.x is a SDK installation version before 2019.2. Notice the snake case version endings added onto the destination folders. 
+* `cp -r /tmp/embeddedsw-xilinx-v2019.2/lib/sw_services/xilfpga SDK/2018.3/data/embeddedsw/lib/sw_services/xilfpga_v5_1`
+* `cp -r /tmp/embeddedsw-xilinx-v2019.2/lib/sw_services/xilsecure SDK/2018.3/data/embeddedsw/lib/sw_services/xilsecure_v4_1`.
+* `cp -r /tmp/embeddedsw-xilinx-v2019.2/lib/bsp/standalone SDK/2018.3/data/embeddedsw/lib/bsp/standalone_v7_1`.
+ (recur
+where 2018.3 can be replaced with the version you are using (would be an SDK installation version before 2019.2, only needed if your SDK is prior to 2019.2). Notice the snake case version endings added onto the destination folders. 
 
 Adding the newer versions to a local SDK installation allows the libraries be added to the bsp using the [normal procedure](../tutorials/sdksetup.md). The new versions of xilfpga and xilsecure should show up in the drop down menu of a Board Support Package's settings window.
 
