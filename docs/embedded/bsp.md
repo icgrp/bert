@@ -13,7 +13,7 @@ Since SDK 2018.3 predates the distribution of xilfpga being used, the [2019.2 di
 
 where 2018.3 can be replaced with the version you are using (only needed if your SDK is prior to 2019.2). Notice the snake case version endings added onto the destination folders. 
 
-Adding the newer versions to a local SDK installation allows the libraries be added to the bsp using the [normal procedure](../tutorials/sdksetup.md). The new versions of xilfpga and xilsecure should show up in the drop down menu of a Board Support Package's settings window.
+Adding the newer versions to a local SDK installation allows the libraries be added to the bsp using the [normal procedure](../tutorials/sdksetup.md). **Doesw the user need to do something here?  Not sure what the reference to sdksetup.md here is suggesting.**  The new versions of xilfpga and xilsecure should show up in the drop down menu of a Board Support Package's settings window.
 
 Some additional tweaking may be required for C++ code. Since xilfpga and Xilinx bsp libraries in general are written in C, `extern "C"` blocks need to be used to ensure the code compiles. Xilinx libraries have these `extern "C"` blocks, but with typos that prevent compilation. For C++ code to compile, you must manually fix these typos within the xilsecure library: [Extern "C" closure should not include "extern c", but only the curly brackets](https://github.com/Xilinx/embeddedsw/pull/115). C code should compile fine without any of these concerns.
 
