@@ -29,7 +29,7 @@ To create the platform, point to the hdf file in the 'Target Hardware Specificat
 We can click finish in the platform window and the project window. Now we have a project and BSP generated.
 
 ## 3. Adding libraries to BSP
-Libraries are added by opening the system.mss file within the bsp directory. Click 'Modify this BSP's Settings.' In this window, there is a dropdown to change the standalone OS version. In the overview tab, there are checkboxes for including a library of your choosing. The document [bsp.md](../docs/bsp.md) covers which libraries and versions you will need for BERT as well as other additional steps.  Complete those steps before proceeding.
+Libraries are added by opening the system.mss file within the bsp directory. Click 'Modify this BSP's Settings.' In this window, there is a dropdown to change the standalone OS version. In the overview tab, there are checkboxes for including a library of your choosing. The document [bsp.md](../embedded/bsp.md) covers which libraries and versions you will need for BERT as well as other additional steps.  Complete those steps before proceeding.
 
 While in this window, you should change stdout to 'psu_uart_1' in the standalone OS tab so print statements can be read over JTAG.
 
