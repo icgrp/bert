@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "platform.h"
 #include "xil_printf.h"
 #include "stdint.h"
 #include "bert.h"
@@ -9,13 +8,14 @@
 
 #define HIST_LEN 256
 #define RESULT_LEN 512
+#define U96_IDCODE 0x04A42093
 
 #define PRINT xil_printf
 
 unsigned int * raw =     (unsigned int *)0xA0001000;
-unsigned int * huff =    (unsigned int *)0xA0004000;
+unsigned int * huff =    (unsigned int *)0xA0003000;
 unsigned int * hist =    (unsigned int *)0xA0002000;
-unsigned int * results = (unsigned int *)0xA0005000;
+unsigned int * results = (unsigned int *)0xA0004000;
 unsigned int * huffRegs = (unsigned int *)0xA0000000;
 
 // double the space to decrease chance of out of bounds write
@@ -142,9 +142,7 @@ void recompute_huffman(int *result_code) {
 
 
 
-int main()
-{
-    init_platform();
+int main() {
     readback_Init(&XFpgaInstance, U96_IDCODE);
 
     uint64_t new_code[512];
