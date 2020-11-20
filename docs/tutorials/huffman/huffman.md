@@ -77,7 +77,10 @@ Before or during the launch of the debugger, open the serial port to the board s
 
 ![Opening the serial port](../../images/openserialport.png)
 
-TODO:
-* Mention the on button and reset button on board
-* Mention compiling BERT with -O3 (Perhaps find a way for SDK to only compile BERT -O3)
-* Section on how to Debug
+### Common Problems Encountered When Debugging
+* If the debugger cannot find the part, make sure the board is actually turned on. For example, the U96 board has a power button and reset button behind the USB ports. Also, make sure your board is set to boot from JTAG not SD card.
+* If the program aborts, check that the heap size is set large enough in lscript.ld. BERT's calls to `malloc` may be failing. Memory usage is covered within [bert.md](../../embedded/bert.md).
+* If there is no output in the SDK terminal, check that stdout is on the correct uart in the bsp settings. (Know that changing a bsp setting regenerates and recompiles it. This wipes out the custom xilfpga version.) 
+* The debugger by default has a breakpoint at the start of the program. There is a resume button in the toolbar to start the program.
+* Relaunching the debugger after a failed attempt is sometimes troublesome. Sometimes it is easier to just hit the reset button on the board before trying again.
+* As a tip, BERT can be drastically sped up by compiling it with `-O3`. You can selectively compile bert.c differently by right clicking on the file and adding `-O3` to the compiler flags.
