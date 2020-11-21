@@ -36,30 +36,51 @@ TODO: *JAMES* - review:
 * Create a .dcp file for the fully complete placed and routed design.
   Command below assumes this is called  `design.dcp`
 * Run: `.gen.sh -gen design.dcp designHeaderName`
+* For the one we provide in the repo....TODO
 * This should create `deignHeaderName.h` and `designHeaderName.c` that will
   be used with BERT applications below. This is what is being referred to whenever the docs generically mention `mydesign.h`.
 
 ## 2. Integrating BERT into our project
 A hardware specification (.hdf file) was mentioned earlier, because we need to establish a SDK workspace. In Vivado 2018.3, this file is created by going to File > Export > Export Hardware. The tutorial includes a precompiled version of the design for the U96 board, so there is already a hdf file provided in the repo. Steps to create a new application and board support package with the hdf is covered in detail [here](../sdksetup.md).
 
+TODO: say where to find the one in the repo?
+
 Now that we have an basic application project and board support package for our hardware design, we need to modify the bsp to support the expanded version of xilfpga. The detailed steps for doing this is found [here](../../embedded/bsp.md).
 
 Now that we have an application project and bsp established, we can dump the BERT source files from `embedded/src/bert` into our application project. Or we copy the whole `bert` directory if we'd like to maintain some heirarchy within our `src` directory. Just adjust the `#include` directives to reflect this. The easiest way is to do this is to just copy and paste the files using your OS's file manager, but alternatively you could use the import feature since Xilinx SDK is Eclipse-based. After adding the files, our project should rebuild without error. Refer to [bert.md](../../embedded/bert.md) for more details about this step and the BERT API in general. If there are no compiler problems to sort out, the BERT API can now be used.
+
+AMD: how compile --- Project > Build All ?
+
+AMD: once you've copied over the bert.h, things won't compile without huffmanCycle.c (a mydesign.c) that defines logical_memories -- so should they be told to copy that over around here?
 
 TODO:
 Picture of application projects directory structure
 
 ## 3. User code
-We provied a sample application [hellobert.c](./sw_huffman/hellobert.c) that
+We provide a sample application [hellobert.c](./sw_huffman/hellobert.c) that
 * Reads the memories over AXI and BERT to verify BERT is working
 * Uses a bzip2 implementation of Huffmann encoding to create a new dictionary on the PS side and transfer it via BERT.
 * Writes ascending input to the `rawTextMem` and an identity encoding as the Huffman dictionary.
 
+AMD: need to copy over everything in sw_huffman, not just hellobert.c -- include instructions here?
+
+AMD: huffmanyCycle.h defines MEM_0, MEM_1, MEM_2, MEM_3 -- I had to add definitions to bridge with hellobert.c
+#define MEM_INPUT MEM_0
+#define MEM_HUFFMAN MEM_1
+#define MEM_HIST MEM_2
+#define MEM_RESULT MEM_3
+
+
+AMD: need to remove helloworld.c to avoid second main function? 
+
 TODO:
 * Make sure application works with new changes of BERT (readback_Init takes a IDCODE).
+  * just replace U96_IDCODE with IDCODE?
 * Create #ifdef macros so the code has the same functionality using bert_read/write or bert_transfuse
 * Make sure code runs without buffers excessively sized like they are right now.
 * Reduce amount of repeated code so its more easily understandable
+
+AMD: currently hanging on AXI read in extractAXI for me
 
 ## 4. Test on hardware
 
@@ -82,5 +103,8 @@ Before or during the launch of the debugger, open the serial port to the board s
 * If the program aborts, check that the heap size is set large enough in lscript.ld. BERT's calls to `malloc` may be failing. Memory usage is covered within [bert.md](../../embedded/bert.md).
 * If there is no output in the SDK terminal, check that stdout is on the correct uart in the bsp settings. (Know that changing a bsp setting regenerates and recompiles it. This wipes out the custom xilfpga version.) 
 * The debugger by default has a breakpoint at the start of the program. There is a resume button in the toolbar to start the program.
+  * AMD don't think I've found this, yet.  Found a skip-all-breakpoints...
 * Relaunching the debugger after a failed attempt is sometimes troublesome. Sometimes it is easier to just hit the reset button on the board before trying again.
+  * AMD half the time (almost consistently every time I first resart) I get: XSDB Server ...SDK/2018.3/bin/loader ...Segmentation fault...; restarting from there usually works.
 * As a tip, BERT can be drastically sped up by compiling it with `-O3`. You can selectively compile bert.c differently by right clicking on the file and adding `-O3` to the compiler flags.
+* Appears to get stuck reading the AXI in extractAXI ???
