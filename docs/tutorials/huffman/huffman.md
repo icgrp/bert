@@ -71,7 +71,9 @@ AMD: huffmanCycle.h defines MEM_0, MEM_1, MEM_2, MEM_3 -- I had to add definitio
 #define MEM_RESULT MEM_3
 
 
-AMD: need to remove helloworld.c to avoid second main function? 
+AMD: need to remove helloworld.c to avoid second main function?
+
+AMD: need to tell them to set heap size ... and how large it needs to be for hellobert to run?
 
 **TODO:**
 * Make sure application works with new changes of BERT (readback_Init takes a IDCODE).
