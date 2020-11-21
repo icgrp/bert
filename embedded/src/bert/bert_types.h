@@ -1,7 +1,9 @@
 struct frame_range {
    int first_frame;
    int len;
-  int we_bits;
+   int we_bits;
+  // will need this to read newest compressed files -- looks like tolerates having it on old files?
+   int has_live_ramb18_partner; // coming soon
 };
 
 
@@ -37,7 +39,7 @@ struct frame_range_offset {
   int frame_base;
   int len;
   int we_bits;
-  int has_read;
+  int has_read; // may also need the has live partner bit
   int offset;
 };
 
