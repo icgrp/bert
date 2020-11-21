@@ -54,8 +54,7 @@ AMD: how compile --- Project > Build All ?
 
 AMD: once you've copied over the bert.h, things won't compile without huffmanCycle.c (a mydesign.c) that defines logical_memories -- so should they be told to copy that over around here?
 
-**TODO:
-Picture of application projects directory structure **
+**TODO: Picture of application projects directory structure**
 
 ## 3. User code
 We provide a sample application [hellobert.c](./sw_huffman/hellobert.c) that
@@ -110,5 +109,5 @@ AMD: when I run, it currently gets hung on AXI read in extractAXI
 * Relaunching the debugger after a failed attempt is sometimes troublesome. Sometimes it is easier to just hit the reset button on the board before trying again.
   * AMD half the time (almost consistently every time I first restart) I get: XSDB Server ...SDK/2018.3/bin/loader ...Segmentation fault...; restarting from there usually works.
 * As a tip, BERT can be drastically sped up by compiling it with `-O3`. You can selectively compile bert.c differently by right clicking on the file and adding `-O3` to the compiler flags.
-* Appears to get stuck reading the AXI in extractAXI ???
+* Appears to get stuck reading the AXI in extractAXI **TODO: ???**
 * AMD: At some point, it seemed to forget the libraries (so could complain about XFpga_ stuff not being defined during linking);  I had to go in and tell it to use xil, xilfpga, and xilsecure.  Maybe this was after I told it to run a clean.
