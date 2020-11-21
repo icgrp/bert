@@ -8,7 +8,8 @@ The hardware for this projects includes multiple logical memories with multiple 
 * A 512x16b memory with that stores the encoding of `rawTextMem`, called `resultsMem`
 * A 256x16b memory that stores a histogram of `rawTextMem`'s values, called `histMem`
 
-TODO: pix show application flow
+**TODO: pix show application flow**
+
 rawTextMem->encode(huffmanMem)-->resultMem
                     |->histMem
 
@@ -32,18 +33,18 @@ This tutorial will demonstrate performing these hypothetical scenarios with the 
 ## 1. Generating mydesign.h with bert_gen
 Once the hardware design has been compiled in Vivado, we need a hardware specification (.hdf file) and design checkpoint (.dcp file) to proceed. Both are provided within the repo for the Ultra96-V2 to save time. The design checkpoint is used by `bert_gen` to generate the header files BERT will use to map physical bits to logical, and vice versa.
 
-TODO: *JAMES* - review:
+**TODO: *JAMES* - review:**
 * Create a .dcp file for the fully complete placed and routed design.
   Command below assumes this is called  `design.dcp`
 * Run: `.gen.sh -gen design.dcp designHeaderName`
-* For the one we provide in the repo....TODO
+* For the one we provide in the repo....**TODO**
 * This should create `deignHeaderName.h` and `designHeaderName.c` that will
   be used with BERT applications below. This is what is being referred to whenever the docs generically mention `mydesign.h`.
 
 ## 2. Integrating BERT into our project
 A hardware specification (.hdf file) was mentioned earlier, because we need to establish a SDK workspace. In Vivado 2018.3, this file is created by going to File > Export > Export Hardware. The tutorial includes a precompiled version of the design for the U96 board, so there is already a hdf file provided in the repo. Steps to create a new application and board support package with the hdf is covered in detail [here](../sdksetup.md).
 
-TODO: say where to find the one in the repo?
+**TODO: say where to find the one in the repo?**
 
 Now that we have an basic application project and board support package for our hardware design, we need to modify the bsp to support the expanded version of xilfpga. The detailed steps for doing this is found [here](../../embedded/bsp.md).
 
@@ -53,8 +54,8 @@ AMD: how compile --- Project > Build All ?
 
 AMD: once you've copied over the bert.h, things won't compile without huffmanCycle.c (a mydesign.c) that defines logical_memories -- so should they be told to copy that over around here?
 
-TODO:
-Picture of application projects directory structure
+**TODO:
+Picture of application projects directory structure **
 
 ## 3. User code
 We provide a sample application [hellobert.c](./sw_huffman/hellobert.c) that
@@ -64,7 +65,7 @@ We provide a sample application [hellobert.c](./sw_huffman/hellobert.c) that
 
 AMD: need to copy over everything in sw_huffman, not just hellobert.c -- include instructions here?
 
-AMD: huffmanyCycle.h defines MEM_0, MEM_1, MEM_2, MEM_3 -- I had to add definitions to bridge with hellobert.c
+AMD: huffmanCycle.h defines MEM_0, MEM_1, MEM_2, MEM_3 -- I had to add definitions to bridge with hellobert.c
 #define MEM_INPUT MEM_0
 #define MEM_HUFFMAN MEM_1
 #define MEM_HIST MEM_2
@@ -73,14 +74,14 @@ AMD: huffmanyCycle.h defines MEM_0, MEM_1, MEM_2, MEM_3 -- I had to add definiti
 
 AMD: need to remove helloworld.c to avoid second main function? 
 
-TODO:
+**TODO:**
 * Make sure application works with new changes of BERT (readback_Init takes a IDCODE).
   * just replace U96_IDCODE with IDCODE?
+  * IDCODE also defined somewhere in xilfpga?  so need to remove that definition of IDCODE?
 * Create #ifdef macros so the code has the same functionality using bert_read/write or bert_transfuse
 * Make sure code runs without buffers excessively sized like they are right now.
 * Reduce amount of repeated code so its more easily understandable
 
-AMD: currently hanging on AXI read in extractAXI for me
 
 ## 4. Test on hardware
 
@@ -98,6 +99,8 @@ Before or during the launch of the debugger, open the serial port to the board s
 
 ![Opening the serial port](../../images/openserialport.png)
 
+AMD: when I run, it currently gets hung on AXI read in extractAXI 
+
 ### Common Problems Encountered When Debugging
 * If the debugger cannot find the part, make sure the board is actually turned on. For example, the U96 board has a power button and reset button behind the USB ports. Also, make sure your board is set to boot from JTAG not SD card.
 * If the program aborts, check that the heap size is set large enough in lscript.ld. BERT's calls to `malloc` may be failing. Memory usage is covered within [bert.md](../../embedded/bert.md).
@@ -105,6 +108,7 @@ Before or during the launch of the debugger, open the serial port to the board s
 * The debugger by default has a breakpoint at the start of the program. There is a resume button in the toolbar to start the program.
   * AMD don't think I've found this, yet.  Found a skip-all-breakpoints...
 * Relaunching the debugger after a failed attempt is sometimes troublesome. Sometimes it is easier to just hit the reset button on the board before trying again.
-  * AMD half the time (almost consistently every time I first resart) I get: XSDB Server ...SDK/2018.3/bin/loader ...Segmentation fault...; restarting from there usually works.
+  * AMD half the time (almost consistently every time I first restart) I get: XSDB Server ...SDK/2018.3/bin/loader ...Segmentation fault...; restarting from there usually works.
 * As a tip, BERT can be drastically sped up by compiling it with `-O3`. You can selectively compile bert.c differently by right clicking on the file and adding `-O3` to the compiler flags.
 * Appears to get stuck reading the AXI in extractAXI ???
+* AMD: At some point, it seemed to forget the libraries (so could complain about XFpga_ stuff not being defined during linking);  I had to go in and tell it to use xil, xilfpga, and xilsecure.  Maybe this was after I told it to run a clean.
