@@ -42,17 +42,17 @@ Once the hardware design has been compiled in Vivado, we need a hardware specifi
   be used with BERT applications below. This is what is being referred to whenever the docs generically mention `mydesign.h`.
 
 ## 2. Integrating BERT into our project
-A hardware specification (.hdf file) was mentioned earlier, because we need to establish a SDK workspace. In Vivado 2018.3, this file is created by going to File > Export > Export Hardware. The tutorial includes a precompiled version of the design for the U96 board, so there is already a hdf file provided in the repo. Steps to create a new application and board support package with the hdf is covered in detail [here](../sdksetup.md).
+A hardware specification (.hdf file) was mentioned earlier, because we need to establish a SDK workspace. In Vivado 2018.3, this file is created by going to File > Export > Export Hardware. The tutorial presumes the hardware design is already compiled, and there is an hdf file provided in the repo for the U96 board. Steps to create a new application and board support package with the hdf is covered in detail [here](../sdksetup.md).
 
-**TODO: say where to find the one in the repo?**
+The hdf file for this tutorial is provided in hw_huffman directory [here](./hw_huffman/design_1_wrapper.hdf).
 
 Now that we have an basic application project and board support package for our hardware design, we need to modify the bsp to support the expanded version of xilfpga. The detailed steps for doing this is found [here](../../embedded/bsp.md).
 
-Now that we have an application project and bsp established, we can dump the BERT source files from `embedded/src/bert` into our application project. Or we copy the whole `bert` directory if we'd like to maintain some heirarchy within our `src` directory. Just adjust the `#include` directives to reflect this. The easiest way is to do this is to just copy and paste the files using your OS's file manager, but alternatively you could use the import feature since Xilinx SDK is Eclipse-based. After adding the files, our project should rebuild without error. Refer to [bert.md](../../embedded/bert.md) for more details about this step and the BERT API in general. If there are no compiler problems to sort out, the BERT API can now be used.
+Now that we have an application project and bsp established, we can dump the BERT source files from `embedded/src/bert` into our application project. Or we copy the whole `bert` directory if we'd like to maintain some heirarchy within our `src` directory. Just adjust the `#include` directives to reflect this. The easiest way is to do this is to just copy and paste the files using your OS's file manager, but alternatively you could use the import feature since Xilinx SDK is Eclipse-based. After adding the files, our project should rebuild without error. Refer to [bert.md](../../embedded/bert.md) for more details about this step and the BERT API in general.
 
-AMD: how compile --- Project > Build All ?
+If there are no compiler problems to sort out, the BERT API can now be used. Make sure a mydesign.c/h is copied over into the project. The project should be automatically rebuilt everytime a source file is changed on disk. However, you can force the project to rebuild everything by right clicking the project, and choose 'Clean Project'.
 
-AMD: once you've copied over the bert.h, things won't compile without huffmanCycle.c (a mydesign.c) that defines logical_memories -- so should they be told to copy that over around here?
+TODO: Explain how to #define the different memories since the memories are indexed differently each time they are produced by bert_gen
 
 **TODO: Picture of application projects directory structure**
 
@@ -62,7 +62,12 @@ We provide a sample application [hellobert.c](./sw_huffman/hellobert.c) that
 * Uses a bzip2 implementation of Huffmann encoding to create a new dictionary on the PS side and transfer it via BERT.
 * Writes ascending input to the `rawTextMem` and an identity encoding as the Huffman dictionary.
 
-AMD: need to copy over everything in sw_huffman, not just hellobert.c -- include instructions here?
+If the project was initially created with any sample code (like helloworld) including a main method, delete it. Copy over all the code in sw_huffman into the project's src folder.
+
+* bzlib.h, bzlib_min.c, bzlib_private.h, huffman.c, spec.c, spec.h
+  * Code from bzip2 for Huffman encoding on the PS
+* hellobert.c
+  * Code that tests the BERT operations on the Huffman encoder memories
 
 AMD: huffmanCycle.h defines MEM_0, MEM_1, MEM_2, MEM_3 -- I had to add definitions to bridge with hellobert.c
 #define MEM_INPUT MEM_0
@@ -70,8 +75,6 @@ AMD: huffmanCycle.h defines MEM_0, MEM_1, MEM_2, MEM_3 -- I had to add definitio
 #define MEM_HIST MEM_2
 #define MEM_RESULT MEM_3
 
-
-AMD: need to remove helloworld.c to avoid second main function?
 
 AMD: need to tell them to set heap size ... and how large it needs to be for hellobert to run?
 
