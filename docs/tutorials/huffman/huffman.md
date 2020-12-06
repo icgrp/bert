@@ -36,10 +36,13 @@ Once the hardware design has been compiled in Vivado, we need a hardware specifi
 **TODO: *JAMES* - review:**
 * Create a .dcp file for the fully complete placed and routed design.
   Command below assumes this is called  `design.dcp`
-* Run: `.gen.sh -gen design.dcp designHeaderName`
-* For the one we provide in the repo....**TODO**
+* Run: `./gen.sh -gen design.dcp designHeaderName`
+    * For the one we provide in the repo: `./gen.sh -gen  ../examples/hw_huffman/huffmanCycle.dcp huffmanCycle`
 * This should create `deignHeaderName.h` and `designHeaderName.c` that will
-  be used with BERT applications below. This is what is being referred to whenever the docs generically mention `mydesign.h`.
+  be used with BERT applications below. This is what is being referred to
+  whenever the docs generically mention `mydesign.h`.
+    * For the command above, the files will be `huffmanCycle.h` and
+      `huffmanCycle.c` in the `../examples/hw_huffman/` directory.
 
 ## 2. Integrating BERT into our project
 A hardware specification (.hdf file) was mentioned earlier, because we need to establish a SDK workspace. In Vivado 2018.3, this file is created by going to File > Export > Export Hardware. The tutorial presumes the hardware design is already compiled, and there is an hdf file provided in the repo for the U96 board. Steps to create a new application and board support package with the hdf is covered in detail [here](../sdksetup.md).
