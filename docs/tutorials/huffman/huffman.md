@@ -42,7 +42,7 @@ Once the hardware design has been compiled in Vivado, we need a hardware specifi
   be used with BERT applications below. This is what is being referred to
   whenever the docs generically mention `mydesign.h`.
     * For the command above, the files will be `huffmanCycle.h` and
-      `huffmanCycle.c` in the `../examples/hw_huffman/` directory.
+      `huffmanCycle.c` in the `../examples/hw_huffman/bert_src/` directory.
 
 ## 2. Integrating BERT into our project
 A hardware specification (.hdf file) was mentioned earlier, because we need to establish a SDK workspace. In Vivado 2018.3, this file is created by going to File > Export > Export Hardware. The tutorial presumes the hardware design is already compiled, and there is an hdf file provided in the repo for the U96 board. Steps to create a new application and board support package with the hdf is covered in detail [here](../sdksetup.md).
