@@ -6,7 +6,8 @@ The hardware for this projects includes multiple logical memories with multiple 
 * A 512x16b memory with that stores the encoding of `rawTextMem`, called `resultsMem`
 * A 256x16b memory that stores a histogram of `rawTextMem`'s values, called `histMem`
 
-TODO: pix show application flow
+**TODO: pix show application flow**
+
 rawTextMem->encode(huffmanMem)-->resultMem
                     |->histMem
 
@@ -62,8 +63,9 @@ So, copy those files over now.  Also, you may notice that you have a `helloworld
 If there are no compiler problems to sort out, the BERT API can now be used.
 You can now refer to [the BERT API document](../../embedded/bert.md) for more details about BERT API in general. 
 
-TODO:
-Picture of application projects directory structure
+TODO: Explain how to #define the different memories since the memories are indexed differently each time they are produced by bert_gen
+
+**TODO: Picture of application projects directory structure**
 
 ## Write User code
 We provided a sample application [hellobert.c](./sw_huffman/hellobert.c) that
@@ -71,11 +73,30 @@ We provided a sample application [hellobert.c](./sw_huffman/hellobert.c) that
 * Uses a bzip2 implementation of Huffmann encoding to create a new dictionary on the PS side and transfer it via BERT.
 * Writes ascending input to the `rawTextMem` and an identity encoding as the Huffman dictionary.
 
-TODO:
+If the project was initially created with any sample code (like helloworld) including a main method, delete it. Copy over all the code in sw_huffman into the project's src folder.
+
+* bzlib.h, bzlib_min.c, bzlib_private.h, huffman.c, spec.c, spec.h
+  * Code from bzip2 for Huffman encoding on the PS
+* hellobert.c
+  * Code that tests the BERT operations on the Huffman encoder memories
+
+AMD: huffmanCycle.h defines MEM_0, MEM_1, MEM_2, MEM_3 -- I had to add definitions to bridge with hellobert.c
+#define MEM_INPUT MEM_0
+#define MEM_HUFFMAN MEM_1
+#define MEM_HIST MEM_2
+#define MEM_RESULT MEM_3
+
+
+AMD: need to tell them to set heap size ... and how large it needs to be for hellobert to run?
+
+**TODO:**
 * Make sure application works with new changes of BERT (readback_Init takes a IDCODE).
+  * just replace U96_IDCODE with IDCODE?
+  * IDCODE also defined somewhere in xilfpga?  so need to remove that definition of IDCODE?
 * Create #ifdef macros so the code has the same functionality using bert_read/write or bert_transfuse
 * Make sure code runs without buffers excessively sized like they are right now.
 * Reduce amount of repeated code so its more easily understandable
+
 
 ## 4. Test on hardware
 
