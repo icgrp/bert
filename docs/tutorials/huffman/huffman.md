@@ -1,6 +1,4 @@
-Huffman Encoder Tutorial
-========================
-
+# Huffman Encoder Tutorial
 ## Overview
 The hardware for this projects includes multiple logical memories with multiple BRAMs:
 * A 1024x8b memory with 8b characters that will be encoded, called `rawTextMem`
@@ -22,35 +20,53 @@ During runtime, we may desire the following abilities from the PS side:
 This tutorial will demonstrate performing these hypothetical scenarios with the BERT API. Additionally, this document serves to explain how to get BERT working with any hardware design. Every step is covered from start to finish, with links to documents providing further nuance. Finally, this tutorial is written with the Eclipse-based Xilinx SDK in mind. The [Xilinx article on migrating to Vitis](https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/migratingtovitis.html) may help in adapting these instructions for newer versions of the Xilinx tools.
 
 ## Steps At-A-Glance
-1. Use BERT host tools to generate the mydesign headers for your hardware design. [Information here](../../../host_tools/README.md)
-     1. build BERT host tools for your platform; [see build instrutions](../../../host_tools/README.md)
-     2. run BERT tools on your design to produce files needed for your BERT  application (minimal instructions below)
-2. Set up Xilinx SDK environment ([general setup](../sdksetup.md), [bsp configuration](../../embedded/bsp.md), [adding BERT to project](../../embedded/bert.md)).
-3. Write user code
-4. Test on hardware
+Using BERT is a 4-step process.  
+1. Use BERT host tools to generate the mydesign headers for your hardware design. You will do this each time you have a new design ready to run with BERT.  You do this on a "host" computer.   
+     1. You will first build the BERT host tools for your platform.  You do this only once.
+     2. You will then run the `bert_gen` tools on your design to produce the files needed by the SDK for your BERT  application.  This will produce a set of files which are used to build BERT applications to talk to our design.  You will do this every time you have a design to run through BERT.
+2. You will need to set up Xilinx SDK environment with the right versions of the xilfpga program from Xilinx as well as the needed files and libraries for BERT.  You should only need to do this once. 
+3. Once this is all in place, you will write user code which will compile into a BERT executable that uses BERT to talk to the board after you have programmed it with a bitstream.  
+4. You will finally test that application on hardware with a bitstream programmed onto the board.
 
-## 1. Generating mydesign.h with bert_gen
-Once the hardware design has been compiled in Vivado, we need a hardware specification (.hdf file) and design checkpoint (.dcp file) to proceed. Both are provided within the repo for the Ultra96-V2 to save time. The design checkpoint is used by `bert_gen` to generate the header files BERT will use to map physical bits to logical, and vice versa.
+The final 2 steps will be described herein as being done from the SDK GUI but there may be other approaches you could use if you have that experience and expertise.
 
-TODO: *JAMES* - review:
-* Create a .dcp file for the fully complete placed and routed design.
-  Command below assumes this is called  `design.dcp`
-* Run: `.gen.sh -gen design.dcp designHeaderName`
-* This should create `deignHeaderName.h` and `designHeaderName.c` that will
-  be used with BERT applications below. This is what is being referred to whenever the docs generically mention `mydesign.h`.
+# Step 0. Obtaining A Sample Design
+Before you begin the 4-step process above, you need to create your hardware design in Vivado and compile it to a bitstream and then write out a hardware specification (.hdf) file and a design checkpoint (.dcp) file.
 
-## 2. Integrating BERT into our project
-A hardware specification (.hdf file) was mentioned earlier, because we need to establish a SDK workspace. In Vivado 2018.3, this file is created by going to File > Export > Export Hardware. The tutorial includes a precompiled version of the design for the U96 board, so there is already a hdf file provided in the repo. Steps to create a new application and board support package with the hdf is covered in detail [here](../sdksetup.md).
+For this tutorial, a .hdf and .dcp file are provided foryou within the bert GIT repo for the Ultra96-V2 board to save time.  You can find those in this directory: `.../bert/docs/tutorials/huffman/hw_huffman` in the repo.  Copy the files in that directory into a directory where you intend to work through this tutorial.
 
-Now that we have an basic application project and board support package for our hardware design, we need to modify the bsp to support the expanded version of xilfpga. The detailed steps for doing this is found [here](../../embedded/bsp.md).
+# Step 1. Using bert_gen to Generate mydesign.c and mydesign.h
+The first step is to set up `bert_gen` and then use it to process your design  To learn how to do that go to the [bert_gen setup and usage page here](../../host_tools/README.md).  Note that when following the instructions there, the name to use for `headerName` as instructed must be `mydesign` for the rest of the flow to work properly.
 
-Now that we have an application project and bsp established, we can dump the BERT source files from `embedded/src/bert` into our application project. Or we copy the whole `bert` directory if we'd like to maintain some heirarchy within our `src` directory. Just adjust the `#include` directives to reflect this. The easiest way is to do this is to just copy and paste the files using your OS's file manager, but alternatively you could use the import feature since Xilinx SDK is Eclipse-based. After adding the files, our project should rebuild without error. Refer to [bert.md](../../embedded/bert.md) for more details about this step and the BERT API in general. If there are no compiler problems to sort out, the BERT API can now be used.
+# Step 2. Setup Xilinx SDK Environment With The Proper Libraries and Add Libraries to Your BSP
+The next step is to set up the Xilinx SDK environment.  This tutorial was written for Vivado 2018.3 but the BERT tools require `xilfpga` libraries for 2019.2 and so there are a number of steps required to get the proper libraries and files set up.
+
+* Step 2a - follow the instructions [here on SDK setup](../sdksetup.md).  This will set up your SDK environment.
+
+* Step 2b - you next need to add some required library to your BSP.  
+Libraries are added by opening the system.mss file within the bsp directory. You will need to add some new libraries to your board support package.  The document [bsp.md](../embedded/bsp.md) covers which libraries and versions you will need for BERT as well as other additional steps.  Complete those steps before proceeding.
+
+* Step 2c - adding a library to a bsp after a project has already been formulated sometimes causes an issue where the makefile is not updated to link against the new libary. If you are getting compiler errors, you can check that the right flags are set by opening the projects properties. Once there, go to C/C++ Build -> Settings -> ARM v8 gcc linker -> Inferred Options -> Software Platform. The specific flags you are looking for as they relate to BERT include:
+
+* `-Wl,--start-group,-lxilfpga,-lxil,-lxilsecure,-lgcc,-lc,--end-group`
+*  `-Wl,--start-group,-lxilsecure,-lxil,-lgcc,-lc,--end-group`
+
+# 3. Integrating BERT into Your Project and Writing Your Source Code
+Now that we have an application project and bsp established, we need to copy the BERT system's source files from `.../bert/embedded/src/bert` into our application project's `src`. (Or you could copy the whole `bert` directory if you'd like to maintain some heirarchy within your `src` directory. If you do so, just adjust the `#include` directives to reflect this.)
+
+The easiest way is to do this is to just copy and paste the files using your OS's file manager, but alternatively you could use the import feature since Xilinx SDK is Eclipse-based. After adding the files, your project should rebuild without error. 
+
+So, copy those files over now.  Also, you may notice that you have a `helloworld.c` file in the `src` directory (often automatically created by SDK when you create the application).  If so, remove the `helloworld.c` fle.
+
+
+If there are no compiler problems to sort out, the BERT API can now be used.
+You can now refer to [the BERT API document](../../embedded/bert.md) for more details about BERT API in general. 
 
 TODO:
 Picture of application projects directory structure
 
-## 3. User code
-We provied a sample application [hellobert.c](./sw_huffman/hellobert.c) that
+## Write User code
+We provided a sample application [hellobert.c](./sw_huffman/hellobert.c) that
 * Reads the memories over AXI and BERT to verify BERT is working
 * Uses a bzip2 implementation of Huffmann encoding to create a new dictionary on the PS side and transfer it via BERT.
 * Writes ascending input to the `rawTextMem` and an identity encoding as the Huffman dictionary.
@@ -81,3 +97,11 @@ TODO:
 * Mention the on button and reset button on board
 * Mention compiling BERT with -O3 (Perhaps find a way for SDK to only compile BERT -O3)
 * Section on how to Debug
+
+# Stuff That May Not Necessarily Belong Here in the Tutorial But Which We Don't Want to Lose
+TODO: *JAMES* - review:
+* Create a .dcp file for the fully complete placed and routed design.
+  Command below assumes this is called  `design.dcp`
+* Run: `.gen.sh -gen design.dcp designHeaderName`
+* This should create `deignHeaderName.h` and `designHeaderName.c` that will
+  be used with BERT applications below. This is what is being referred to whenever the docs generically mention `mydesign.h`.
