@@ -16,15 +16,11 @@ Give the project a name such as `huffman_demo`. Next, before clicking okay, next
 
 Then, browse to the .hdf file in your working directory (you copied above)
 in the 'Target Hardware Specification' field.  It will then fill in the
-hardware projct name based on that.
-
-AMD: *I think you need to add: Now click finish.'  Then another apply or
-finish.  I was looking for the stuff on the left side that doesn't come up
-until you complete out of these things you are in.*
+hardware projct name based on that.  Now click finish.
 
 ![Example of new application project](../images/newplatform.png)
 
-At this point you should have three items in the SDK left-side Project Explorer pane.  The first will be 'design_1_wrapper_hw_platform_0' and is the hardware for the project.  The second will be 'huffman_demo` which is the software application for the project.  The third will be 'huffman_demo_bsp' and is the board support package.
+Now click finish again and you are brought back to the Project Explorer.  At this point you should have three items in the SDK left-side Project Explorer pane.  The first will be 'design_1_wrapper_hw_platform_0' and is the hardware for the project.  The second will be 'huffman_demo` which is the software application for the project.  The third will be 'huffman_demo_bsp' and is the board support package.
 
 # Stuff Left Over We Might Need from Before And Don't Want to Delete Yet
 ## 1. Export hdf from Vivado

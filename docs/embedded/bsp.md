@@ -14,57 +14,42 @@ where 2018.3 can be replaced with the version you are using (only needed if your
 
 Now that these newer versions of these libraries have been added to the
 Xilinx installation, the new versions of xilfpga and xilsecure should show
-up in the drop down menu of a Board Support Package's settings window.
-
-AMD: *how see now?  I think don't see until a step below.*
+up in the drop down menu of a Board Support Package's settings window as will be shown below.
 
 ## BSP Configuration
-So, once again open the BSP and modify its settings.  BERT runs on the
-standalone platform (v7.1) (see below) and xilfpga v5.1 and xilsecure v4.1
-will show up as options to be selected in the figure below.
+Open the BSP and modify its settings.  To do this, you expand the BSP on the left of Project Explorer and then open `system.mss`.  From there you will see a "Modify This BSP Settings" button in the middle of the screen.  Click that.
 
-AMD: *"once again"?? when did we do this before?*
+BERT runs on the
+standalone platform (v7.1), xilfpga v5.1, and xilsecure v4.1 
+(see below and select as shown).
 
-Next, `secure_mode` should be set to `false`.  On the left of the screen
-you will see 'xilfpga' and 'xilsecure' optons.  Select both and ensure that
-the 'secure_environment' value is set to false.
+On the left side of the screen under 'standalone' you will see 'xilfpga' and 'xilsecure' options.  Select both and ensure that the 'secure_environment' and 'secure_mode' values are set to false.
 
-AMD: *I saw secure_environment, was this the wrong thing?*
+Finally, you should click "standalone"
+and set the stdout setting to 'psu_uart_1' so print statements can be read over JTAG.
 
-Finally, you should be sure that under "standalone"
-the stdout setting is 'psu_uart_1' so print statements can be read over JTAG.
+Then click OK and you will have configured your BSP.
 
 ![Example of BSP configuration](../images/bspsettings.png)
 
 ![Example of xilfpga configuration](../images/xilfpgasettings.png)
 
-AMD: *at the end of this you need to click on something (BSP modify?) --
-won't see xilfpga until you do that*
-
 ## Over-write xilfpga API Library Source Code in BSP
 Since BERT takes advantage of custom API calls, the xilfpga library source codemust be overwritten in the BSP with the modified version found at `bert/embedded/libsrc/xilfpga_v5_1/src`. 
 
 The files in that directory need to be copied to
-`xxx_bsp/psu_xxxx_x/libsrc/xilfpga_v5_1`. The preferred method is to use
-your OS's GUI to first copy the files, then go into the  SDK GUI and paste
-them into the right directory since this will trigger the SDK to recompile
-the bsp libraries. **IF NOT, DO WHAT?**  You will see cross compiler output
-in the 'Console' window as the BSP is regenerated.
+`xxx_bsp/psu_xxxx_x/libsrc/xilfpga_v5_1`. The preferred method is to use your OS's graphical (GUI) File Explorer program to first copy the files, then go into the  SDK GUI and paste them into the right directory since this will trigger the SDK to recompile the bsp libraries. You should see the cross compiler output in the 'Console' window as the BSP is regenerated.
 
-AMD: *this is one point where I keep getting hung up.  To me, the OS GUI is
- shell.  So when you say "copy files", I go to the comand line and use cp.  So, I copy
- the files.  Then I don't know what to do about PASTE.  How do I paste?
- But, then I finally realize you mean bring up some file browser,
- select/copy the files there to paste into SDK.  ...and that's probably
- what the instructions say...but it's not what I expect.*
+Alternatively, you can use a command shell to do the copy.  **IF YOU DO THIS, HOW DO YOU ENSURE THE BSP GETS RECOMPILED?**
+
+The picture shows the part of the bsp directory structure being overwritten.
+
+![Example of BSP directory structure](../images/bspdirectory.png)
 
 NOTE: If other bsp parameters are later changed in `system.mss` or the `Re-generate BSP Sources` button is clicked, the BSP code will be regenerated *and this modified version of xilfpga will be overwritten with the vanilla xilfpga version from the local SDK installation*, negating what you just did. Thus, it is best to completely configure the rest of the BSP before replacing the custom xilfpga library source code. 
 
 Once configured, the same bsp can be used for multiple applications. The BSP is setup in this roundabout way is because: (a) SDK 2018.3 does not have a recent enough version of xilfpga and (b) overwriting xilfpga within the BSP does not tamper with the software included in the SDK installation. 
 
-The picture shows the part of the bsp directory structure being overwritten.
-
-![Example of BSP directory structure](../images/bspdirectory.png)
 
 At this point you can return to the main tutorial to continue.
 # Stuff That Not Sure What to Do With But Don't Want To Delete
