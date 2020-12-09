@@ -1,6 +1,8 @@
 # Huffman Encoder Tutorial
 ## Overview
-The hardware for this projects includes multiple logical memories with multiple BRAMs:
+This tutorial will lead you through using BERT to read and write memories in a hardware design.
+
+The hardware for the project is a Huffman Encoder design where 4 memories are used:
 * A 1024x8b memory with 8b characters that will be encoded, called `rawTextMem`
 * A 256x20b memory with character encodings, called `huffmanMem`. Bits [0:15] of each word are the encoding. Bits [16:19] are the length of the encoding.
 * A 512x16b memory with that stores the encoding of `rawTextMem`, called `resultsMem`
@@ -11,14 +13,18 @@ The hardware for this projects includes multiple logical memories with multiple 
 rawTextMem->encode(huffmanMem)-->resultMem
                     |->histMem
 
-From the software side of things, we can toggle a register bit that causes `resultsMem` to be updated with the encoding of `rawTextMem`, based on the dictionary found in `huffmanMem`. Additionally, `histMem` is updated with a new histogram of `rawTextMem`. In order to verify that BERT is actually working, the design allows us to read `resultsMem` and `histMem` over AXI.
+In the design, the memories can be read and written by BERT.  However, we have also hooked some of the memories up to the AXI bus so we can also read and write them that way to verify that things are operating correctly.
 
-During runtime, we may desire the following abilities from the PS side:
+When the design is running, if the sotware  toggles a register bit on the AXI bus that will cause the encoder to run and the  `resultsMem` to be updated with the encoding of `rawTextMem`, based on the dictionary found in `huffmanMem`. Additionally, `histMem` is updated with a new histogram of `rawTextMem`. In order to verify that BERT is actually working, the design allows us to read `resultsMem` and `histMem` over AXI.
+
+During runtime, the software can also do the following by writing or reading the BRAMs in the hardware:
 * Setting the text that needs to be encoded
 * Providing different Huffman dictionaries for the hardware encoder as needed
-* Debugging by reading memories that wouldn't ordinarilly be exposed to AXI, like `histMem`
+* Debugging by reading memories that wouldn't ordinarilly be exposed to AXI, like `histMem`.
 
-This tutorial will demonstrate performing these hypothetical scenarios with the BERT API. Additionally, this document serves to explain how to get BERT working with any hardware design. Every step is covered from start to finish, with links to documents providing further nuance. Finally, this tutorial is written with the Eclipse-based Xilinx SDK in mind. The [Xilinx article on migrating to Vitis](https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/migratingtovitis.html) may help in adapting these instructions for newer versions of the Xilinx tools.
+This tutorial will demonstrate performing these hypothetical scenarios with the BERT API. Additionally, this document serves to explain how to get BERT working with any hardware design. Every step is covered from start to finish, with links to documents providing further information. 
+
+Finally, this tutorial is written with the Eclipse-based Xilinx SDK in mind. The [Xilinx article on migrating to Vitis](https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/migratingtovitis.html) may help in adapting these instructions for newer versions of the Xilinx tools.
 
 ## Steps At-A-Glance
 Using BERT is a 4-step process.  
