@@ -23,13 +23,13 @@ So, once again open the BSP and modify its settings.  BERT runs on the
 standalone platform (v7.1) (see below) and xilfpga v5.1 and xilsecure v4.1
 will show up as options to be selected in the figure below.
 
-AMD: * "once again"?? when did we do this before?*
+AMD: *"once again"?? when did we do this before?*
 
 Next, `secure_mode` should be set to `false`.  On the left of the screen
 you will see 'xilfpga' and 'xilsecure' optons.  Select both and ensure that
 the 'secure_environment' value is set to false.
 
-AMD: *I saw secure_environment, was this this wrong thing?*
+AMD: *I saw secure_environment, was this the wrong thing?*
 
 Finally, you should be sure that under "standalone"
 the stdout setting is 'psu_uart_1' so print statements can be read over JTAG.
@@ -51,8 +51,8 @@ them into the right directory since this will trigger the SDK to recompile
 the bsp libraries. **IF NOT, DO WHAT?**  You will see cross compiler output
 in the 'Console' window as the BSP is regenerated.
 
-AMD: *this is one point where I keep getting hung up.  TO me, the OS GUI is
- shell.  So when you say "copy files", I go to the comand line.  So, I copy
+AMD: *this is one point where I keep getting hung up.  To me, the OS GUI is
+ shell.  So when you say "copy files", I go to the comand line and use cp.  So, I copy
  the files.  Then I don't know what to do about PASTE.  How do I paste?
  But, then I finally realize you mean bring up some file browser,
  select/copy the files there to paste into SDK.  ...and that's probably
