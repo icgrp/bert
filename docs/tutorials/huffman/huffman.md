@@ -26,16 +26,21 @@ This tutorial will demonstrate performing these hypothetical scenarios with the 
 
 Finally, this tutorial is written with the Eclipse-based Xilinx SDK in mind. The [Xilinx article on migrating to Vitis](https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/migratingtovitis.html) may help in adapting these instructions for newer versions of the Xilinx tools.
 
+## Prerequisites
+This tutorial assumes the user has some experience with using the Xilinx SDK tool to create, configure, edit, compile, and run designs consisting of hardware and software on an FPGA board.
+
+TODO: could we point them at some introductory materials to use?  Can we articulate the level of expertise they might need?  A number of the problems BEN and AMD had with the tutorial as written was due to what looked to us to be omited details on the SDK operation that we were not familiar with.
+
 ## Steps At-A-Glance
 Using BERT is a 4-step process.  
 1. Use BERT host tools to generate the mydesign headers for your hardware design. You will do this each time you have a new design ready to run with BERT.  You do this on a "host" computer.   
      1. You will first build the BERT host tools for your platform.  You do this only once.
      2. You will then run the `bert_gen` tools on your design to produce the files needed by the SDK for your BERT  application.  This will produce a set of files which are used to build BERT applications to talk to our design.  You will do this every time you have a design to run through BERT.
-2. You will need to set up Xilinx SDK environment with the right versions of the xilfpga program from Xilinx as well as the needed files and libraries for BERT.  You should only need to do this once. 
+2. You will then set up Xilinx SDK environment with the right versions of the xilfpga program from Xilinx as well as the needed files and libraries for BERT.  You should only need to do this once. 
 3. Once this is all in place, you will install the BERT source code itself and then write user code, all of which will compile into a BERT executable that uses BERT to talk to the board after you have programmed it with a bitstream.  
 4. You will finally test that application on hardware with a bitstream programmed onto the board.
 
-NOTE: along the way you will be copying files into the SDK project directories.   As you do so you may see compile errors in the Project Explorer window on the left of the SDK.  You will have such compile errors until right at the end of Step 3 below so don't worry about them until you get to that point!  The tutorial will tell you when you should not have any compile errors any more.
+NOTE: along the way you will be copying files into the SDK project directories.   As you do so you may see compile errors in the Project Explorer window on the left of the SDK.  You will have such compile errors until right at the end of Step 3 below so don't worry about them until you get to that point!  The tutorial will tell you when you should not have compile errors any more.
 
 # Step 0. Obtaining A Sample Design
 Before you begin the 4-step process above, you need to create your hardware design in Vivado and compile it to a bitstream and then write out a hardware specification (.hdf) file and a design checkpoint (.dcp) file.
@@ -57,7 +62,8 @@ The next step is to set up the Xilinx SDK environment.  This tutorial was writte
 * `-Wl,--start-group,-lxilfpga,-lxil,-lxilsecure,-lgcc,-lc,--end-group`
 *  `-Wl,--start-group,-lxilsecure,-lxil,-lgcc,-lc,--end-group`
 
-NOTE: we have seen these get reset by the SDK when switching workspaces, among other things.  So. if you are getting compile errors, re-check them!
+NOTE: we have seen these get reset by the SDK when switching workspaces, among other things.  So. if at the end of the process you are getting compile errors, re-check these settings!
+
 # 3. Integrating BERT into Your Project and Writing Your Source Code
 1. Now that we have an application project and bsp established, we need to copy the BERT system's source files from `.../bert/embedded/src/bert` into our application project's `src`. (Or you could copy the whole `bert` directory if you'd like to maintain some heirarchy within your `src` directory. If you do so, just adjust the `#include` directives to reflect this.)
 2. The easiest way is to do this is to just copy and paste the files using your OS's file manager, but alternatively you could use the import feature since Xilinx SDK is Eclipse-based. 
@@ -90,11 +96,13 @@ AMD: *I believe every time bert_gen runs it generates a different order for
 these memories.  So, I don't believe a static definition like this will
 work (otherwise, just put it in hellobert.c.*
 
-BEN: there needs to be a better solution based on how bert_gen works. 
+BEN: there needs to be a better solution - how does bert_gen work in this respect?  Can something be done here? 
 
-Next, if the application project was initially created with any sample code (the Linux SDK will create a helloworld.c program), delete it now. 
+Next, if the application project was initially created with any sample code (the Linux SDK will likely have created a `helloworld.c` program), delete it now. 
 
-Finally, you need to tell the application how much memory to use.  In the `src` directory click the file `ldscript.ld`  file and increase the stack and heap sizes by adding two 0's to their values.
+Finally, you need to tell the application how much memory to use.  In the `src` directory click the file `ldscript.ld`  file and increase the stack and heap sizes (currently done by adding two 0's to their values).
+
+TODO: adding two 0's seems like a crude approximation to what needs to be done.  What is needed?  How to tell how much is enough?  Is this something someone who has used the SDK would know?
 
 At this point you FINALLY have a complete application and it should show no
 compile  errors in Project Explorer!  If you have followed the instructions above, every time something gets pasted into the the SDK's GUI a recompile should happen.  However, you can always force one to occur by right-clicking the application in the Project Explorer (`huffman_demo`) and selecting 'Clean Project'.
