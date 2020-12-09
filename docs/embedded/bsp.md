@@ -17,7 +17,7 @@ Now that these newer versions of these libraries have been added to the Xilinx i
 ## BSP Configuration
 So, once again open the BSP and modify its settings.  BERT runs on the standalone platform (v7.1) (see below) and xilfpga v5.1 and xilsecure v4.1 will show up as options to be selected in the figure below.
 
-Also, `secure_mode` should be set to `false`.  So, select 'xilsecure' in the upper left and verify that its 'secure_environment' value is set to false.
+Next, `secure_mode` should be set to `false`.  On the left of the screen you will see 'xilfpga' and 'xilsecure' optons.  Select both and ensure that the 'secure_environment' value is set to false.
 
 Finally, you should be sure that under "standalone
 the stdout setting is 'psu_uart_1' so print statements can be read over JTAG.
