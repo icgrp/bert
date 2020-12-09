@@ -45,12 +45,14 @@ For this tutorial, however, a .hdf and .dcp file are provided for you within the
 # Step 1. Using bert_gen to Generate mydesign.c and mydesign.h
 The first step is to set up `bert_gen` and then use it to process your design  To learn how to do that go to the [bert_gen setup and usage page here](../../host_tools/README.md).  Note that when following the instructions there, the name to use for `headerName` as instructed must be `mydesign` for the rest of the flow to work properly.
 
+AMD: *Is the link above intentionally broken?  There were, at least, instructions to follow before.*
+
 # Step 2. Setup Xilinx SDK Environment With The Proper Libraries and Add Libraries to Your BSP
 The next step is to set up the Xilinx SDK environment.  This tutorial was written for Vivado 2018.3 but the BERT tools require `xilfpga` libraries for 2019.2 and so there are a number of steps required to get the proper libraries and files set up.
 
 * Step 2a - follow the instructions [here on SDK setup](../sdksetup.md).  This will set up your SDK environment.
 
-* Step 2b - you next need to add some required library to your BSP.  Libraries are added by opening the system.mss file within the bsp directory. You will need to add some new libraries to your board support package.  The document [bsp.md](../embedded/bsp.md) covers which libraries and versions you will need for BERT as well as other additional steps.  Complete those steps before proceeding.
+* Step 2b - you next need to add some required library to your BSP.  Libraries are added by opening the system.mss file within the bsp directory. You will need to add some new libraries to your board support package.  The document [bsp.md](../../embedded/bsp.md) covers which libraries and versions you will need for BERT as well as other additional steps.  Complete those steps before proceeding.
 
 * Step 2c - adding a library to a bsp after a project has already been formulated sometimes causes an issue where the makefile is not updated to link against the new libary. If you are getting compiler errors, you can check that the right flags are set by opening the application project's properties (huffman_demo's properties). Once there, go to C/C++ Build -> Settings -> ARM v8 gcc linker -> Inferred Options -> Software Platform. The specific flags you are looking for as they relate to BERT include:
 
@@ -71,6 +73,12 @@ The next step is to write an actual application to use BERT to interact with you
 * Uses a bzip2 implementation of Huffmann encoding to create a new dictionary on the PS side and transfer it via BERT.
 * Writes ascending input to the `rawTextMem` and an identity encoding as the Huffman dictionary.
 
+AMD: *why is hellobert.c above a link to github?  I first asked why you gave me a
+github link for that when everything else has been a file path to copy.
+Later you tell me to copy an entire directory that includes hellobert.c.
+So, maybe don't confuse me by pointing to the application above like I'm
+suppossed to be grabbing it.*
+
 As mentioned above, if the project was initially created with any sample code (like helloworld.c or anything else that includes a main method), delete it now. Then, copy over all the code in `.../bert/docs/tutorials/huffman/sw_huffman` into the project application's `src` folder.
 
 This includes:
@@ -86,13 +94,20 @@ Next, the `hellobert.c` file you just copied over needs some `#defines` added to
 ```
 Add these up near the top of the file.
 
+AMD: *I believe every time bert_gen runs it generates a different order for
+these memories.  So, I don't believe a static definition like this will
+work (otherwise, just put it in hellobert.c.*
+
 Next, you need to tell the application how much memory to use.  In the `src` directory click the file `ldscript.ld`  file and increase the stack and heap sizes by adding two 0's to their values.
 
-At this point you FINALLY have a complete application and it should show no compile  errors in Project Explorer!
+At this point you FINALLY have a complete application and it should show no
+compile  errors in Project Explorer!
+
+AMD: *How do you make it compile?   Change and save something?*
 
 ## 4. Test on hardware
 
-If the code compiles, you are ready to run it on hardware. Start by opening "Debug Configurations."  You can do this by right-clicking on the project application ('huffman_demo') and selecting 'Debug As->Debug Configurations'.  Then choose the bottom option n the window that pops up ('Xilinx C/C++ application (System Debugger)').  
+If the code compiles, you are ready to run it on hardware. Start by opening "Debug Configurations."  You can do this by right-clicking on the project application ('huffman_demo') and selecting 'Debug As->Debug Configurations'.  Then choose the bottom option in the window that pops up ('Xilinx C/C++ application (System Debugger)').  
 
 In the Target Setup you need to select a number of reset options like below:
 
@@ -109,6 +124,13 @@ result[1] = 7F4D
 result[2] = FEFC
 result[3] = FF58
 ```
+
+AMD: *Is there something about it coming up in a breakpoint and need to
+click something to make it run?*
+
+AMD: *Now, I'm getting no output.  I don't even see it print the initial
+PRINTs.  When I hit suspend it ends up in
+XCsuDma_WaitForDoneTimeout on line 2277 of xilfpga_pcap.c*
 
 Congratulations!  You have run a successful demo application.
 
