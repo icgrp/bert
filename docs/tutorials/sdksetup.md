@@ -14,7 +14,13 @@ Give the project a name such as `huffman_demo`. Next, before clicking okay, next
 
 ![Example of new application project](../images/newproject.png)
 
-Then, browse to the .hdf file in your working directory (you copied above) in the 'Target Hardware Specification' field.  It will then fill in the hardware projct name based on that.
+Then, browse to the .hdf file in your working directory (you copied above)
+in the 'Target Hardware Specification' field.  It will then fill in the
+hardware projct name based on that.
+
+AMD: *I think you need to add: Now click finish.'  Then another apply or
+finish.  I was looking for the stuff on the left side that doesn't come up
+until you complete out of these things you are in.*
 
 ![Example of new application project](../images/newplatform.png)
 
