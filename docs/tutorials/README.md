@@ -1,5 +1,3 @@
-        Tutorials
-========================
-[Xilinx SDK 2018.3 Setup](sdksetup.md)
+# Tutorials
 
-[Huffman Encoding Example Project](huffman/huffman.md)
+The first tutorial to run is the [Huffman Encoding Example Tutorial](huffman/huffman.md)
