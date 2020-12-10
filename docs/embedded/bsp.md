@@ -23,10 +23,10 @@ BERT runs on the
 standalone platform (v7.1), xilfpga v5.1, and xilsecure v4.1 
 (see below and select as shown).
 
-On the left side of the screen under 'standalone' you will see 'xilfpga' and 'xilsecure' options.  Select both and ensure that the 'secure_environment' and 'secure_mode' values are set to false.
-
-Finally, you should click "standalone"
-and set the stdout setting to 'psu_uart_1' so print statements can be read over JTAG.
+On the left side of the screen under 'standalone' you will see 'xilfpga' and 'xilsecure' options.
+ * Select `xilfpga` and make sure `secure_mode` is set to false.
+ * Select `xilsecure` and make sure 'secure_environment' is set to false.
+ * Finally, you should click "standalone" and set the stdout setting to 'psu_uart_1' so print statements can be read over JTAG.
 
 Then click OK and you will have configured your BSP.
 
