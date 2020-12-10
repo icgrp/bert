@@ -102,7 +102,23 @@ Next, if the application project was initially created with any sample code (the
 
 Finally, you need to tell the application how much memory to use.  In the `src` directory click the file `ldscript.ld`  file and increase the stack and heap sizes (currently done by adding two 0's to their values).
 
-TODO: adding two 0's seems like a crude approximation to what needs to be done.  What is needed?  How to tell how much is enough?  Is this something someone who has used the SDK would know?
+TODO: adding two 0's seems like a crude approximation to what needs to be
+done.  What is needed?  How to tell how much is enough?  Is this something
+someone who has used the SDK would know?
+
+AMD: *We should specify some minimum size.  This is a property of our
+program.  So, a generic SDK user might know that 2K is a small, but unless
+they look carefully at our program, they won't know how large it needs to
+be.  ...and probably even then the reasoning is non-trivial.  BERT needs to
+allocate memories large enough to cover all the frames in the BRAM (both
+the parts that the user is reading/writing and the part they are not), so
+it will take a pretty sophisticated user to predict the space required.  I
+think I remember having some discussion with someone about what size we
+would need to cover all the BRAM frames on the device as a crude
+upper-bound for how much BERT might use behind the scenes.  ...and, of
+course, it's device specific, so the 9EG will need more memory than the 3EG.*
+
+
 
 At this point you FINALLY have a complete application and it should show no
 compile  errors in Project Explorer!  If you have followed the instructions above, every time something gets pasted into the the SDK's GUI a recompile should happen.  However, you can always force one to occur by right-clicking the application in the Project Explorer (`huffman_demo`) and selecting 'Clean Project'.
