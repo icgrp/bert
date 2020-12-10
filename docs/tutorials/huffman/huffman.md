@@ -145,9 +145,11 @@ As shown below, to run, click the arrow next to the green circle with white tria
 
 ![Starting a Run](../../images/RunDebug.png)
 
-Alternatively, you can debug using the debug icon just to the left of the run button (looks like a bug).  This will run the debugger.
-
-TODO: what to do if you run the debugger.
+Alternatively, you can debug using the debug icon just to the left of the
+run button (looks like a bug).  This will run the debugger.  The debugger
+will start up with a breakpoint at main.  To resume execution, select Core
+0 and press the `resume` button, which is shaped like a play button.
+(*check/resolve: same green circle with white triangle button mentioend above?*)
 
 Before or during the launch of the program, open the serial port to the board so we can observe the program output. Clicking the green plus sign in the "SDK Terminal" window accomplishes this.  On Windows it wll be a COM port, on Linux it will be /dev/ttyUSB1.
 
