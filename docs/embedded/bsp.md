@@ -23,16 +23,17 @@ BERT runs on the
 standalone platform (v7.1), xilfpga v5.1, and xilsecure v4.1 
 (see below and select as shown).
 
-On the left side of the screen under 'standalone' you will see 'xilfpga' and 'xilsecure' options.
- * Select `xilfpga` and make sure `secure_mode` is set to false.
- * Select `xilsecure` and make sure 'secure_environment' is set to false.
- * Finally, you should click "standalone" and set the stdout setting to 'psu_uart_1' so print statements can be read over JTAG.
-
-Then click OK and you will have configured your BSP.
-
 ![Example of BSP configuration](../images/bspsettings.png)
 
+On the left side of the screen under 'standalone' you will see 'xilfpga' and 'xilsecure' options.
+ * Select `xilfpga` and make sure `secure_mode` is set to false.
+ * Select `xilsecure` and make sure `secure_environment` is set to false.
+ * Finally, you should click "standalone" and set the stdout setting to 'psu_uart_1' so print statements can be read over JTAG.
+
+
 ![Example of xilfpga configuration](../images/xilfpgasettings.png)
+
+Then click OK and you will have configured your BSP.
 
 ## Over-write xilfpga API Library Source Code in BSP
 Since BERT takes advantage of custom API calls, the xilfpga library source codemust be overwritten in the BSP with the modified version found at `bert/embedded/libsrc/xilfpga_v5_1/src`. 
