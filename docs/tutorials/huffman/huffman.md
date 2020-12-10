@@ -139,23 +139,26 @@ In the Target Setup you need to select a number of reset options like below:
 
 ![Setting Debug Target Setup Options](../../images/huffmandebugconfigurations.png)
 
+Once you have done so, click Apply and then Close.  At this point you have a new configuration you can use when you run with or without the debugger.
 
-Before or during the launch of the debugger, open the serial port to the board so we can observe the program output. Clicking the green plus sign in the "SDK Terminal" window accomplishes this.  On Windows it wll be a COM port, on Linux it will be /dev/ttyUSB1.
+As shown below, to run, click the arrow next to the green circle with white triangle at the top center of the screen.  You can then select the top option which is the run configuration you just created.
+
+![Starting a Run](../../images/RunDebug.png)
+
+Alternatively, you can debug using the debug icon just to the left of the run button (looks like a bug).  This will run the debugger.
+
+TODO: what to do if you run the debugger.
+
+Before or during the launch of the program, open the serial port to the board so we can observe the program output. Clicking the green plus sign in the "SDK Terminal" window accomplishes this.  On Windows it wll be a COM port, on Linux it will be /dev/ttyUSB1.
 
 ![Opening the serial port](../../images/openserialport.png)
 
-If all goes well, the program will run and will print resujlts to the SDK Terminal.  As of the time of the writing of this the BERT readback is broken and so you will get a long series of mismatch errors terminating with the following:
+If all goes well, the program will run and will print results to the SDK Terminal.  As of the time of the writing of this tutorial the BERT readback is broken and so you will get a long series of mismatch errors terminating with the following:
 ```
 result[1] = 7F4D
 result[2] = FEFC
 result[3] = FF58
 ```
-
-AMD: *Is there something about it coming up in a breakpoint and need to
-click something to make it run?*
-
-BEN: When I run it there is no breakpoint - it just runs and the output shows up in the SDK Terminal.  Matthew can you answer this question for AMD?
-
 
 Congratulations!  You have run a successful demo application.
 
@@ -203,7 +206,7 @@ TODO: Explain how to #define the different memories since the memories are index
 
 ![Opening debug configurations](../../images/huffmanlaunchalt.png)
 
-Double clicking on "Xilinx C/C++ application (System Debugger) will create a new debug launch configuration. Here is an example of a configuration:
+Double clicking on "Xilinx C/C++ application (System Debugger) will create a new Run/Debug launch configuration. Here is an example of a configuration:
 
 ![Example debug configuration](../../images/huffmanlaunchconfig.png)
 
