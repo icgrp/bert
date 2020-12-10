@@ -65,15 +65,12 @@ The next step is to set up the Xilinx SDK environment.  This tutorial was writte
 NOTE: we have seen these get reset by the SDK when switching workspaces, among other things.  So. if at the end of the process you are getting compile errors, re-check these settings!
 
 # 3. Integrating BERT into Your Project and Writing Your Source Code
-1. Now that we have an application project and bsp established, we need to
-   copy the BERT system's source files from `.../bert/embedded/src/bert`
-   into our application project's `src`.  On the left menu, open the
-   application (huffman_demo), and then open the src directory under that.
+1. Now that we have an application project and bsp established, we need to copy the BERT system's source files from `.../bert/embedded/src/bert`  into our application project's `src`.  On the left menu, open the application (huffman_demo), and then open the src directory under that.
   * AMD: *suggest omitting -- just confuses things at this point:* (Or you could copy the whole `bert` directory if you'd like to maintain some heirarchy within your `src` directory. If you do so, just adjust the `#include` directives to reflect this.)
 2. The easiest way is to do this is to just copy and paste the files using your OS's file manager, dropping them in the src directory you just opened.
    * Alternatively you could use the import feature since Xilinx SDK is Eclipse-based. 
 3. So, copy those files over now.
-   *  AMD: *can we drop this?  it just adds confusion for me. Note that
+   *  AMD: *can we drop this (item 3)?  it just adds confusion for me. Note that
       "copy" here means perform the entire transfer, whereas "copy" in the
       previous bullet means just select the files to be pasted.  (but I
       guess copy is also used in the full copy way in item 1 and 5...).*
