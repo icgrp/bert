@@ -1,0 +1,613 @@
+#-----------------------------------------------------------
+# Vivado v2018.3 (64-bit)
+# SW Build 2405991 on Thu Dec  6 23:36:41 MST 2018
+# IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+# Start of session at: Sat Oct  3 20:17:05 2020
+# Process ID: 5439
+# Current directory: /home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.runs/design_1_top_0_0_synth_1
+# Command line: vivado -log design_1_top_0_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source design_1_top_0_0.tcl
+# Log file: /home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.runs/design_1_top_0_0_synth_1/design_1_top_0_0.vds
+# Journal file: /home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.runs/design_1_top_0_0_synth_1/vivado.jou
+#-----------------------------------------------------------
+source design_1_top_0_0.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/home/nelson/bert_dev/examples/hw_huffman/ip_repo'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/home/nelson/Xilinx/Vivado/2018.3/data/ip'.
+Command: synth_design -top design_1_top_0_0 -part xczu3eg-sbva484-1-i -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xczu3eg'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xczu3eg'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 5467 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 1388.238 ; gain = 0.000 ; free physical = 4578 ; free virtual = 5487
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'design_1_top_0_0' [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/bd/design_1/ip/design_1_top_0_0/synth/design_1_top_0_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'top' [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/top.v:3]
+INFO: [Synth 8-6157] synthesizing module 'huffman' [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/huffman.sv:9]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/huffman.sv:58]
+INFO: [Synth 8-6157] synthesizing module 'produce' [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/produce.sv:8]
+	Parameter TEXTLEN bound to: 1024 - type: integer 
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/produce.sv:29]
+INFO: [Synth 8-3876] $readmem data file './inMem.init' is read successfully [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/produce.sv:85]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/produce.sv:47]
+INFO: [Synth 8-6155] done synthesizing module 'produce' (1#1) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/produce.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'encode' [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/encode.sv:11]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/encode.sv:45]
+INFO: [Synth 8-3876] $readmem data file './huffman.init' is read successfully [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/encode.sv:132]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/encode.sv:67]
+INFO: [Synth 8-6157] synthesizing module 'shleft' [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/shleft.sv:7]
+INFO: [Synth 8-6157] synthesizing module 'm21' [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/shleft.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'm21' (2#1) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/shleft.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'shleft' (3#1) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/shleft.sv:7]
+INFO: [Synth 8-6157] synthesizing module 'histogram' [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/histogram.sv:12]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/histogram.sv:20]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/histogram.sv:71]
+INFO: [Synth 8-6155] done synthesizing module 'histogram' (4#1) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/histogram.sv:12]
+INFO: [Synth 8-6155] done synthesizing module 'encode' (5#1) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/encode.sv:11]
+INFO: [Synth 8-6157] synthesizing module 'consume' [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/consume.sv:8]
+	Parameter TEXTLEN bound to: 1024 - type: integer 
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/consume.sv:27]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/consume.sv:47]
+INFO: [Synth 8-6155] done synthesizing module 'consume' (6#1) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/consume.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'huffman' (7#1) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/huffman.sv:9]
+INFO: [Synth 8-6155] done synthesizing module 'top' (8#1) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/imports/sources_1/imports/huffmanControlSources/top.v:3]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_top_0_0' (9#1) [/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.srcs/sources_1/bd/design_1/ip/design_1_top_0_0/synth/design_1_top_0_0.v:58]
+WARNING: [Synth 8-3331] design encode has unconnected port psHistAddr[9]
+WARNING: [Synth 8-3331] design encode has unconnected port psHistAddr[8]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffAddr[9]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffAddr[8]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffDin[31]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffDin[30]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffDin[29]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffDin[28]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffDin[27]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffDin[26]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffDin[25]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffDin[24]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffDin[23]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffDin[22]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffDin[21]
+WARNING: [Synth 8-3331] design encode has unconnected port psHuffDin[20]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[31]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[30]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[29]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[28]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[27]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[26]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[25]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[24]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[23]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[22]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[21]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[20]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[19]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[18]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[17]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[16]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[15]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[14]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[13]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[12]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[11]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[10]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[9]
+WARNING: [Synth 8-3331] design produce has unconnected port psRawDin[8]
+WARNING: [Synth 8-3331] design top has unconnected port psResultsAddr[1]
+WARNING: [Synth 8-3331] design top has unconnected port psResultsAddr[0]
+WARNING: [Synth 8-3331] design top has unconnected port psHistAddr[1]
+WARNING: [Synth 8-3331] design top has unconnected port psHistAddr[0]
+WARNING: [Synth 8-3331] design top has unconnected port psRawAddr[1]
+WARNING: [Synth 8-3331] design top has unconnected port psRawAddr[0]
+WARNING: [Synth 8-3331] design top has unconnected port psHuffAddr[1]
+WARNING: [Synth 8-3331] design top has unconnected port psHuffAddr[0]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:03 . Memory (MB): peak = 1427.777 ; gain = 39.539 ; free physical = 4546 ; free virtual = 5457
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:02 ; elapsed = 00:00:03 . Memory (MB): peak = 1427.777 ; gain = 39.539 ; free physical = 4543 ; free virtual = 5453
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:02 ; elapsed = 00:00:03 . Memory (MB): peak = 1427.777 ; gain = 39.539 ; free physical = 4543 ; free virtual = 5453
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xczu3eg-sbva484-1-i
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00 . Memory (MB): peak = 2307.523 ; gain = 0.000 ; free physical = 3411 ; free virtual = 4322
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2307.523 ; gain = 0.000 ; free physical = 3411 ; free virtual = 4322
+WARNING: [Constraints 18-5210] No constraints selected for write.
+Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.07 ; elapsed = 00:00:00.11 . Memory (MB): peak = 2307.523 ; gain = 0.000 ; free physical = 3409 ; free virtual = 4320
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:14 ; elapsed = 00:00:24 . Memory (MB): peak = 2307.523 ; gain = 919.285 ; free physical = 3452 ; free virtual = 4363
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xczu3eg-sbva484-1-i
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:14 ; elapsed = 00:00:24 . Memory (MB): peak = 2307.523 ; gain = 919.285 ; free physical = 3452 ; free virtual = 4363
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:14 ; elapsed = 00:00:24 . Memory (MB): peak = 2307.523 ; gain = 919.285 ; free physical = 3452 ; free virtual = 4363
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'cs_reg' in module 'huffman'
+INFO: [Synth 8-5544] ROM "clrDla" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "clrPCE" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "done" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "ns" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "ns" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                histPrep |                              000 |                              000
+                huffPrep |                              001 |                              001
+                 huffRun |                              010 |                              010
+                 huffDla |                              011 |                              011
+               huffFinal |                              100 |                              100
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'cs_reg' using encoding 'sequential' in module 'huffman'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:15 ; elapsed = 00:00:24 . Memory (MB): peak = 2307.523 ; gain = 919.285 ; free physical = 3440 ; free virtual = 4351
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     16 Bit       Adders := 1     
+	   2 Input     10 Bit       Adders := 4     
+	   2 Input      8 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 2     
++---Registers : 
+	               32 Bit    Registers := 1     
+	               20 Bit    Registers := 1     
+	               16 Bit    Registers := 2     
+	               10 Bit    Registers := 2     
+	                8 Bit    Registers := 2     
+	                5 Bit    Registers := 2     
+	                3 Bit    Registers := 1     
+	                2 Bit    Registers := 3     
++---RAMs : 
+	              16K Bit         RAMs := 1     
+	               8K Bit         RAMs := 1     
+	               5K Bit         RAMs := 1     
+	               4K Bit         RAMs := 1     
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 5     
+	   2 Input      8 Bit        Muxes := 2     
+	   2 Input      5 Bit        Muxes := 1     
+	   7 Input      3 Bit        Muxes := 1     
+	   5 Input      3 Bit        Muxes := 1     
+	   2 Input      3 Bit        Muxes := 3     
+	   6 Input      2 Bit        Muxes := 1     
+	   5 Input      2 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 1     
+	   4 Input      1 Bit        Muxes := 7     
+	   5 Input      1 Bit        Muxes := 8     
+	   2 Input      1 Bit        Muxes := 8     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module produce 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     10 Bit       Adders := 2     
++---Registers : 
+	               10 Bit    Registers := 1     
+	                8 Bit    Registers := 1     
+	                2 Bit    Registers := 1     
++---RAMs : 
+	               8K Bit         RAMs := 1     
++---Muxes : 
+	   6 Input      2 Bit        Muxes := 1     
+	   4 Input      1 Bit        Muxes := 4     
+Module m21 
+Detailed RTL Component Info : 
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 1     
+Module histogram 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     16 Bit       Adders := 1     
+	   2 Input      8 Bit       Adders := 1     
++---Registers : 
+	               16 Bit    Registers := 1     
+	                8 Bit    Registers := 1     
+	                2 Bit    Registers := 1     
++---RAMs : 
+	               4K Bit         RAMs := 1     
++---Muxes : 
+	   2 Input      8 Bit        Muxes := 2     
+	   5 Input      2 Bit        Muxes := 1     
+	   5 Input      1 Bit        Muxes := 1     
+	   4 Input      1 Bit        Muxes := 3     
+Module encode 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      5 Bit       Adders := 1     
++---Registers : 
+	               32 Bit    Registers := 1     
+	               20 Bit    Registers := 1     
+	                5 Bit    Registers := 1     
+	                3 Bit    Registers := 1     
++---RAMs : 
+	               5K Bit         RAMs := 1     
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 1     
+	   2 Input      5 Bit        Muxes := 1     
+	   7 Input      3 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 1     
+	   5 Input      1 Bit        Muxes := 4     
+	   2 Input      1 Bit        Muxes := 1     
+Module consume 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     10 Bit       Adders := 2     
++---Registers : 
+	               16 Bit    Registers := 1     
+	               10 Bit    Registers := 1     
+	                2 Bit    Registers := 1     
++---RAMs : 
+	              16K Bit         RAMs := 1     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 6     
+Module huffman 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      5 Bit       Adders := 1     
++---Registers : 
+	                5 Bit    Registers := 1     
++---Muxes : 
+	   5 Input      3 Bit        Muxes := 1     
+	   2 Input      3 Bit        Muxes := 3     
+	   2 Input      1 Bit        Muxes := 1     
+	   5 Input      1 Bit        Muxes := 3     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 360 (col length:72)
+BRAMs: 432 (col length: RAMB18 72 RAMB36 36)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+Warning: Parallel synthesis criteria is not met 
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[31] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[30] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[29] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[28] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[27] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[26] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[25] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[24] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[23] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[22] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[21] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[20] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[19] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[18] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[17] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psResultsDout[16] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[31] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[30] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[29] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[28] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[27] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[26] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[25] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[24] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[23] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[22] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[21] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[20] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[19] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[18] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[17] driven by constant 0
+INFO: [Synth 8-3917] design design_1_top_0_0 has port psHistDout[16] driven by constant 0
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psResultsAddr[1]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psResultsAddr[0]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHistAddr[11]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHistAddr[10]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHistAddr[1]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHistAddr[0]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawAddr[1]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawAddr[0]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[31]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[30]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[29]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[28]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[27]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[26]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[25]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[24]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[23]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[22]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[21]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[20]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[19]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[18]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[17]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[16]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[15]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[14]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[13]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[12]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[11]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[10]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[9]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psRawDin[8]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffAddr[11]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffAddr[10]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffAddr[1]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffAddr[0]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffDin[31]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffDin[30]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffDin[29]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffDin[28]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffDin[27]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffDin[26]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffDin[25]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffDin[24]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffDin[23]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffDin[22]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffDin[21]
+WARNING: [Synth 8-3331] design design_1_top_0_0 has unconnected port psHuffDin[20]
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\inst/HUFFMAN/CONSUMER/cs_reg[1] )
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:15 ; elapsed = 00:00:25 . Memory (MB): peak = 2307.523 ; gain = 919.285 ; free physical = 3434 ; free virtual = 4348
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Preliminary Mapping  Report (see note below)
++-----------------+--------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+|Module Name      | RTL Object                           | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | Cascade Heights | 
++-----------------+--------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+|histogram:       | histMem_reg                          | 256 x 16(READ_FIRST)   | W |   | 256 x 16(WRITE_FIRST)  |   | R | Port A and B     | 1      | 0      |                 | 
+|consume:         | resultsMem_reg                       | 1 K x 16(READ_FIRST)   | W |   | 1 K x 16(WRITE_FIRST)  |   | R | Port A and B     | 1      | 0      |                 | 
+|design_1_top_0_0 | inst/HUFFMAN/PRODUCER/rawTextMem_reg | 1 K x 8(READ_FIRST)    | W |   | 1 K x 8(WRITE_FIRST)   |   | R | Port A and B     | 1      | 0      |                 | 
+|design_1_top_0_0 | inst/HUFFMAN/ENCODER/huffmanMem_reg  | 256 x 20(READ_FIRST)   | W |   | 256 x 20(WRITE_FIRST)  |   | R | Port A and B     | 1      | 0      |                 | 
++-----------------+--------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+
+Note: The table above is a preliminary report that shows the Block RAMs at the current stage of the synthesis flow. Some Block RAMs may be reimplemented as non Block RAM primitives later in the synthesis flow. Multiple instantiated Block RAMs are reported only once. 
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6837] The timing for the instance HUFFMANi_0/inst/HUFFMAN/ENCODER/HIST/histMem_reg_bram_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance HUFFMANi_1/inst/HUFFMAN/CONSUMER/resultsMem_reg_bram_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance i_2/inst/HUFFMAN/PRODUCER/rawTextMem_reg_bram_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance i_3/inst/HUFFMAN/ENCODER/huffmanMem_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:36 ; elapsed = 00:01:04 . Memory (MB): peak = 2559.367 ; gain = 1171.129 ; free physical = 2358 ; free virtual = 3274
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:36 ; elapsed = 00:01:04 . Memory (MB): peak = 2560.367 ; gain = 1172.129 ; free physical = 2358 ; free virtual = 3274
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Final Mapping  Report
++-----------------+--------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+|Module Name      | RTL Object                           | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | Cascade Heights | 
++-----------------+--------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+|histogram:       | histMem_reg                          | 256 x 16(READ_FIRST)   | W |   | 256 x 16(WRITE_FIRST)  |   | R | Port A and B     | 1      | 0      |                 | 
+|consume:         | resultsMem_reg                       | 1 K x 16(READ_FIRST)   | W |   | 1 K x 16(WRITE_FIRST)  |   | R | Port A and B     | 1      | 0      |                 | 
+|design_1_top_0_0 | inst/HUFFMAN/PRODUCER/rawTextMem_reg | 1 K x 8(READ_FIRST)    | W |   | 1 K x 8(WRITE_FIRST)   |   | R | Port A and B     | 1      | 0      |                 | 
+|design_1_top_0_0 | inst/HUFFMAN/ENCODER/huffmanMem_reg  | 256 x 20(READ_FIRST)   | W |   | 256 x 20(WRITE_FIRST)  |   | R | Port A and B     | 1      | 0      |                 | 
++-----------------+--------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+INFO: [Synth 8-3886] merging instance 'inst/HUFFMAN/PRODUCER/cnt_reg_rep[0]' (FDRE) to 'inst/HUFFMAN/PRODUCER/cnt_reg[0]'
+INFO: [Synth 8-3886] merging instance 'inst/HUFFMAN/PRODUCER/cnt_reg_rep[1]' (FDRE) to 'inst/HUFFMAN/PRODUCER/cnt_reg[1]'
+INFO: [Synth 8-3886] merging instance 'inst/HUFFMAN/PRODUCER/cnt_reg_rep[2]' (FDRE) to 'inst/HUFFMAN/PRODUCER/cnt_reg[2]'
+INFO: [Synth 8-3886] merging instance 'inst/HUFFMAN/PRODUCER/cnt_reg_rep[3]' (FDRE) to 'inst/HUFFMAN/PRODUCER/cnt_reg[3]'
+INFO: [Synth 8-3886] merging instance 'inst/HUFFMAN/PRODUCER/cnt_reg_rep[4]' (FDRE) to 'inst/HUFFMAN/PRODUCER/cnt_reg[4]'
+INFO: [Synth 8-3886] merging instance 'inst/HUFFMAN/PRODUCER/cnt_reg_rep[5]' (FDRE) to 'inst/HUFFMAN/PRODUCER/cnt_reg[5]'
+INFO: [Synth 8-3886] merging instance 'inst/HUFFMAN/PRODUCER/cnt_reg_rep[6]' (FDRE) to 'inst/HUFFMAN/PRODUCER/cnt_reg[6]'
+INFO: [Synth 8-3886] merging instance 'inst/HUFFMAN/PRODUCER/cnt_reg_rep[7]' (FDRE) to 'inst/HUFFMAN/PRODUCER/cnt_reg[7]'
+INFO: [Synth 8-3886] merging instance 'inst/HUFFMAN/PRODUCER/cnt_reg_rep[8]' (FDRE) to 'inst/HUFFMAN/PRODUCER/cnt_reg[8]'
+INFO: [Synth 8-3886] merging instance 'inst/HUFFMAN/PRODUCER/cnt_reg_rep[9]' (FDRE) to 'inst/HUFFMAN/PRODUCER/cnt_reg[9]'
+INFO: [Synth 8-6837] The timing for the instance inst/HUFFMAN/ENCODER/HIST/histMem_reg_bram_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance inst/HUFFMAN/CONSUMER/resultsMem_reg_bram_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance inst/HUFFMAN/PRODUCER/rawTextMem_reg_bram_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance inst/HUFFMAN/ENCODER/huffmanMem_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:36 ; elapsed = 00:01:04 . Memory (MB): peak = 2580.406 ; gain = 1192.168 ; free physical = 2355 ; free virtual = 3271
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:37 ; elapsed = 00:01:04 . Memory (MB): peak = 2580.406 ; gain = 1192.168 ; free physical = 2349 ; free virtual = 3265
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:37 ; elapsed = 00:01:04 . Memory (MB): peak = 2580.406 ; gain = 1192.168 ; free physical = 2349 ; free virtual = 3265
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:37 ; elapsed = 00:01:04 . Memory (MB): peak = 2580.406 ; gain = 1192.168 ; free physical = 2349 ; free virtual = 3265
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:37 ; elapsed = 00:01:04 . Memory (MB): peak = 2580.406 ; gain = 1192.168 ; free physical = 2349 ; free virtual = 3265
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:37 ; elapsed = 00:01:04 . Memory (MB): peak = 2580.406 ; gain = 1192.168 ; free physical = 2349 ; free virtual = 3265
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:37 ; elapsed = 00:01:04 . Memory (MB): peak = 2580.406 ; gain = 1192.168 ; free physical = 2349 ; free virtual = 3265
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-----------+------+
+|      |Cell       |Count |
++------+-----------+------+
+|1     |LUT1       |     4|
+|2     |LUT2       |    12|
+|3     |LUT3       |    20|
+|4     |LUT4       |    27|
+|5     |LUT5       |    55|
+|6     |LUT6       |    60|
+|7     |RAMB18E2   |     2|
+|8     |RAMB18E2_1 |     1|
+|9     |RAMB18E2_2 |     1|
+|10    |FDRE       |    79|
+|11    |FDSE       |     1|
++------+-----------+------+
+
+Report Instance Areas: 
++------+---------------+----------+------+
+|      |Instance       |Module    |Cells |
++------+---------------+----------+------+
+|1     |top            |          |   262|
+|2     |  inst         |top       |   262|
+|3     |    HUFFMAN    |huffman   |   262|
+|4     |      CONSUMER |consume   |    24|
+|5     |      ENCODER  |encode    |   189|
+|6     |        HIST   |histogram |   106|
+|7     |      PRODUCER |produce   |    31|
++------+---------------+----------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:37 ; elapsed = 00:01:04 . Memory (MB): peak = 2580.406 ; gain = 1192.168 ; free physical = 2349 ; free virtual = 3265
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 48 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:26 ; elapsed = 00:00:45 . Memory (MB): peak = 2580.406 ; gain = 312.422 ; free physical = 2386 ; free virtual = 3302
+Synthesis Optimization Complete : Time (s): cpu = 00:00:37 ; elapsed = 00:01:04 . Memory (MB): peak = 2580.414 ; gain = 1192.168 ; free physical = 2386 ; free virtual = 3302
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2605.414 ; gain = 0.000 ; free physical = 2307 ; free virtual = 3223
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+INFO: [Common 17-83] Releasing license: Synthesis
+100 Infos, 97 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:38 ; elapsed = 00:01:05 . Memory (MB): peak = 2605.414 ; gain = 1217.262 ; free physical = 2353 ; free virtual = 3269
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2605.414 ; gain = 0.000 ; free physical = 2353 ; free virtual = 3269
+WARNING: [Constraints 18-5210] No constraints selected for write.
+Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
+INFO: [Common 17-1381] The checkpoint '/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.runs/design_1_top_0_0_synth_1/design_1_top_0_0.dcp' has been generated.
+INFO: [Coretcl 2-1174] Renamed 6 cell refs.
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2629.426 ; gain = 0.000 ; free physical = 2320 ; free virtual = 3236
+WARNING: [Constraints 18-5210] No constraints selected for write.
+Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
+INFO: [Common 17-1381] The checkpoint '/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.runs/design_1_top_0_0_synth_1/design_1_top_0_0.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file design_1_top_0_0_utilization_synth.rpt -pb design_1_top_0_0_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Sat Oct  3 20:18:24 2020...
