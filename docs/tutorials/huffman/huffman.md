@@ -43,14 +43,14 @@ NOTE: along the way you will be copying files into the SDK project directories. 
 # Step 1. Obtaining A Sample Design
 As mentioned, you need to create your hardware design in Vivado and compile it to a bitstream and then write out the needed files for BERT to use your design.
 
-For this tutorial, however, a complete set of such files are provided for you within the bert GIT repo for the Ultra96-V2 board to save time.  You can find those in this directory: `.../bert/docs/tutorials/huffman/hw_huffman` in the repo.  Copy the files in that directory into a directory where you intend to work through this tutorial.  We will refer to this directory as `WORK` for the rest of the tutorial.  Also, when we refer to paths like `.../bert/` we are referring to the location where you have placed your BERT github repo files.
+For this tutorial, however, a complete set of such files are provided for you within the bert GIT repo for the Ultra96-V2 board to save time.  You can find those in this directory: `.../bert/docs/tutorials/huffman/hw_huffman` in the repo.  Copy the files in that directory into a directory where you intend to work through this tutorial.  We will refer to this directory as `WORK` for the rest of the tutorial.  Also, when we refer to paths like `.../bert/` we are referring to the location where you have checked out the github BERT repo into.
 
 # Step 2. Setup Xilinx SDK Environment With The Proper Libraries and Add Libraries to Your BSP
 The next step is to set up the Xilinx SDK environment.  This tutorial was written for Vivado 2018.3 but the BERT tools require `xilfpga` libraries for 2019.2 and so there are a number of steps required to get the proper libraries and files set up.
 
-* Step 2a - follow the instructions [here on SDK setup](../sdksetup.md).  This will set up your SDK environment.
+* Step 2a - follow the instructions [here on SDK setup](../sdksetup.md).  This will set up your SDK environment.  You should only have to do this once.
 
-* Step 2b - you next need to add some required libraries to your BSP.  The document [bsp.md](../../embedded/bsp.md) covers which libraries and versions you will need for BERT as well as other additional steps.  Complete those steps before proceeding.
+* Step 2b - you next need to add some required libraries to your BSP.  The document [bsp.md](../../embedded/bsp.md) covers which libraries and versions you will need for BERT as well as other additional steps.  You should only have to do this once.  Complete those steps before proceeding.
 
 * Step 2c - you now should check the project's link settings.  This is because adding a library to a BSP after a project has already been formulated sometimes causes an issue where the 'makefile' is not updated to link against the new libary. If you are getting compiler errors, you can check that the right flags are set by opening the application project's properties (huffman_demo's properties). Once there, go to C/C++ Build -> Settings -> ARM v8 gcc linker -> Inferred Options -> Software Platform. The specific flags you are looking for as they relate to BERT include:
 
