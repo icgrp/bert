@@ -22,6 +22,8 @@ hardware projct name based on that.  Now click finish.
 
 Now click finish again and you are brought back to the Project Explorer.  At this point you should have three items in the SDK left-side Project Explorer pane.  The first will be 'design_1_wrapper_hw_platform_0' and is the hardware for the project.  The second will be 'huffman_demo` which is the software application for the project.  The third will be 'huffman_demo_bsp' and is the board support package.
 
+At this point you can click Back to return to the main tutorial.
+
 # Stuff Left Over We Might Need from Before And Don't Want to Delete Yet
 ## 1. Export hdf from Vivado
 
