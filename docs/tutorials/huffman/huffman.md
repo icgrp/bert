@@ -43,7 +43,7 @@ NOTE: along the way you will be copying files into the SDK project directories. 
 # Step 1. Obtaining A Sample Design
 As mentioned, you need to create your hardware design in Vivado and compile it to a bitstream and then write out the needed files for BERT to use your design.
 
-For this tutorial, however, a complete set of such files are provided for you within the bert GIT repo for the Ultra96-V2 board to save time.  You can find those in this directory: `.../bert/docs/tutorials/huffman/hw_huffman` in the repo.  Copy the files in that directory into a directory where you intend to work through this tutorial.  We will refer to this directory as `WORK` for the rest of the tutorial.  Also, when we refer to paths like `.../bert/` we are referring to the location where you have checked out the github BERT repo into.
+For this tutorial, however, a complete set of such files are provided for you within the bert GIT repo for the Ultra96-V2 board to save time.  You can find those in this directory: `.../bert/docs/tutorials/huffman/hw_huffman` in the repo.  Copy the files in that directory into a directory where you intend to work through this tutorial.  We will refer to this directory as `WORK` for the rest of the tutorial.  Also, when we refer to paths like `.../bert/` we are referring to the location where you have checked out the github BERT repo into (an example would be `/home/steve/bert`).
 
 # Step 2. Setup Xilinx SDK Environment With The Proper Libraries and Add Libraries to Your BSP
 The next step is to set up the Xilinx SDK environment.  This tutorial was written for Vivado 2018.3 but the BERT tools require `xilfpga` libraries for 2019.2 and so there are a number of steps required to get the proper libraries and files set up.
@@ -60,31 +60,31 @@ The next step is to set up the Xilinx SDK environment.  This tutorial was writte
 NOTE: we have seen these get reset by the SDK when switching workspaces, among other things.  So. if at the end of the process you are getting compile errors, re-check these settings!
 
 # 3. Integrating BERT into Your Project and Writing Your Source Code
-1. Now that we have an application project and BSP established, we need to copy the actual BERT system's source files from `.../bert/embedded/src/bert`  into our application project's `src` directory (this would be `WORK/SDKWorkspace/huffman_demo/src`).  To get to this in the SDK, on the left side of the SDK, open the application (huffman_demo), and then open the src directory under that.
-2. The easiest way is to do the copy is to (a) copy the files using your OS's file manager, and then (b) paste them into the src directory you just opened in the SDK GUI.
-   * Alternatively you could use the import feature since Xilinx SDK is Eclipse-based.   
-   * Regardless. if a recompile does not occur automatically you can force a recompile as previously described.
-3. Next, you may see that your `src` directory has a `helloworld.c` file (often automatically created by SDK when you create the application).  If so, remove that file.
-4. Finally, copy the `mydesign.c` and `mydesign.h` files you copied into `WORK` at the start of this tutorial into `WORK/SDKWorkspace/huffman_demo/src` (your directory names may differ if you named them differently).
+Now that we have an application project and BSP established, we need to copy the actual BERT system's source files from `.../bert/embedded/src/bert`  into our application project's `src` directory (this would be `WORK/SDKWorkspace/huffman_demo/src`).  
 
+However, this was already done for you by the `copyfiles.py` script you ran when you configured your BSP above.
+
+Next, if you go into your applicaton's `src` directory you will see that a whole collectuon of new files were copied in as a part of that script.
+
+You may also see that directory has a `helloworld.c` file (often automatically created by SDK when you create the application).  If so, remove that file.
+
+Finally, you need the `mydesign.c` and `mydesign.h` files you copied into `WORK` at the start of this tutorial in your `WORK/SDKWorkspace/huffman_demo/src` directory.  However, as with the BERT system's files, those were also copied for you by the `copyfiles.py` script earlier.
 ## Write User code
 The next step is to write an actual application to use BERT to interact with your design.  We have provided a sample application `hellobert.c` that you can use for this.  It does the following:
 * Reads the memories over AXI and BERT to verify BERT is working.
 * Uses a bzip2 implementation of Huffmann encoding to create a new dictionary on the PS side and transfer it via BERT.
 * Writes ascending input to the `rawTextMem` and an identity encoding as the Huffman dictionary.
 
-So now, copy over all the code in `.../bert/docs/tutorials/huffman/sw_huffman` into `WORK/SDKWorkspace/huffman_demo/src`.
+As above, was already been copied over for you by the `copyfiles.py` script earlier when you configured the BSP.  For reference however, it was copied from `.../bert/docs/tutorials/huffman/sw_huffman` into `WORK/SDKWorkspace/huffman_demo/src`.
 
-This code includes:
-* bzlib.h, bzlib_min.c, bzlib_private.h, huffman.c, spec.c, spec.h - this is code from bzip2 for Huffman encoding on the PS
-* hellobert.c - this is code that tests the BERT operations on the Huffman encoder memories
-
-Finally, you need to tell the application how much memory to use.  Double-click the `WORK/SDKWorkspace/huffman_demo/src/ldscript.ld` file and increase the stack and heap sizes (currently done by adding two 0's to their values). 
+Finally, you need to tell the application how much memory to use.  Double-click the `WORK/SDKWorkspace/huffman_demo/src/lscript.ld` file and increase the stack and heap sizes (currently done by adding two 0's to their values). 
 
 TODO: We should specify the minimum size needed for this tutorial along with maybe a discussion
 of how to determine it for your own program (or that could into the 2nd tutorial where they learn how to do their own app).
 
 At this point you FINALLY have a complete application and it should show no compile  errors in Project Explorer!  As described above you may want to right-click the application in the Project Explorer (`huffman_demo`) and select 'Clean Project' to ensure that you now have a full, clean recompile.
+
+A lot has happened to get the source files in place in the SDK project.  This can be a source of great confusion.  In particular, in the BSP configuration step you ran a script called `copyfiles.py` which copied a variety of files as described above.  By examining the output printed out while running that script you should be able to figure out all the pieces of source code that were copied into your SDK project for both the BSP as well as the `hellobert.c` application program you are about to run.  You can use that as a guide when you get ready to do your new design later.
 
 ## 4. Test on hardware
 
@@ -102,6 +102,8 @@ As shown below, to run, click the green circle with white triangle at the top ce
 ![Starting a Run](../../images/RunDebug.png)
 
 Alternatively, you can run the debugger using the debug icon just to the left of the run button (this icon looks like a bug).  This will run the debugger.  The debugger will start up with a breakpoint at main.  To resume execution, select Core 0 and press the `resume` button, which is shaped like a play button (rectangle followed by green arrow, two icons over from the run button).
+
+*TODO: BEN - I can't get it work the same way twice in terms of setting up Run vs. Debug configurations.  Obviously I am not doing it the same way every time.  But we do need to get reliable instructions on how to get a non-debug run configuration created a run and then a debug configuration created and run.*
 
 Before or during the launch of the program, open the serial port to the board so we can observe the program output. Clicking the green plus sign in the "SDK Terminal" window accomplishes this.  On Windows it wll be a COM port, on Linux it will be /dev/ttyUSB1.
 
