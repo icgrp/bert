@@ -21,8 +21,8 @@ hardware project name based on that.  Now click finish.
 ![Example of new application project](../images/newplatform.png)
 
 Now click finish again and you are brought back to the Project Explorer.  At this point you should have three items in the SDK left-side Project Explorer pane:
-- The first will be `design_1_wrapper_hw_platform_0` and is the hardware for the project.  
+- One will be `top_hw_platform_0` and is the hardware for the project.  
 - One will be `huffman_demo` which is the software application for the project.
-- The third will be `huffman_demo_bsp` and is the board support package.
+- One will be `huffman_demo_bsp` and is the board support package.
 
 At this point you can click Back to return to the main tutorial.
