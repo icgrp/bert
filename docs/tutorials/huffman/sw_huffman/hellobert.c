@@ -6,9 +6,12 @@
 #include "bzlib_private.h"
 #include "mydesign.h"
 
+
 #define HIST_LEN 256
 #define RESULT_LEN 512
 #define U96_IDCODE 0x04A42093
+
+
 
 #define PRINT xil_printf
 
@@ -17,6 +20,7 @@ unsigned int * huff =    (unsigned int *)0xA0003000;
 unsigned int * hist =    (unsigned int *)0xA0002000;
 unsigned int * results = (unsigned int *)0xA0004000;
 unsigned int * huffRegs = (unsigned int *)0xA0000000;
+
 
 // double the space to decrease chance of out of bounds write
 uint64_t bert_results[1024*2];
@@ -41,7 +45,7 @@ void extractAxi(int hlen, int rlen) {
     }
 }
 
-void extractBert() {
+void extractBert(int raw, int hist, int result) {
 	// Clear just in case, remove later
 	for (int i = 0; i < HIST_LEN; i++) {
 		  bert_hist[i] = 0;
@@ -52,9 +56,9 @@ void extractBert() {
 	for (int i = 0; i < 1024; i++) {
 			  bert_raw[i] = 0;
 	}
-	  bert_read(MEM_HIST,bert_hist,&XFpgaInstance);
-	  bert_read(MEM_RESULT,bert_results,&XFpgaInstance);
-	  bert_read(MEM_INPUT,bert_raw,&XFpgaInstance);
+	  bert_read(hist,bert_hist,&XFpgaInstance);
+	  bert_read(result,bert_results,&XFpgaInstance);
+	  bert_read(raw,bert_raw,&XFpgaInstance);
 }
 
 
@@ -143,11 +147,36 @@ void recompute_huffman(int *result_code) {
 
 
 int main() {
+
+	PRINT("Testing huffman with bert compressed\n");
+
+	int mem_input_slot=logical_memory_slot("design_1_i/top_0/inst/HUFFMAN/PRODUCER/inst/HUFFMAN/PRODUCER/rawTextMem",NUM_LOGICAL);
+	int mem_huffman_slot=logical_memory_slot("design_1_i/top_0/inst/HUFFMAN/ENCODER/inst/HUFFMAN/ENCODER/huffmanMem",NUM_LOGICAL);
+	int mem_hist_slot=logical_memory_slot("design_1_i/top_0/inst/HUFFMAN/ENCODER/HIST/histMem",NUM_LOGICAL);
+	int mem_result_slot=logical_memory_slot("design_1_i/top_0/inst/HUFFMAN/CONSUMER/resultsMem",NUM_LOGICAL);
+
+
+	PRINT("input=%d huffman=%d hist=%d result=%d\n",mem_input_slot,mem_huffman_slot,mem_hist_slot,mem_result_slot);
+	if (mem_input_slot<0) {
+		PRINT("unable to find specified input slot\n");
+		return -1;
+	}
+	if (mem_huffman_slot<0) {
+		PRINT("unable to find specified huffman encoder slot\n");
+		return -1;
+	}
+	if (mem_hist_slot<0) {
+		PRINT("unable to find specified histogram slot\n");
+		return -1;
+	}
+	if (mem_result_slot<0) {
+		PRINT("unable to find specified result slot\n");
+		return -1;
+	}
     readback_Init(&XFpgaInstance, U96_IDCODE);
 
     uint64_t new_code[512];
 
-    PRINT("Testing huffmanreg4_bram36 with bert compressed\n");
 
     // On configuration, the huffman will run since it initializes to the init state
     // Check that that is the case (done should be high)
@@ -159,7 +188,7 @@ int main() {
      */
     xil_printf("\r\nINITIAL READ\r\n");
     extractAxi(HIST_LEN, RESULT_LEN);
-    extractBert();
+    extractBert(mem_input_slot,mem_hist_slot,mem_result_slot);
     compare(HIST_LEN, RESULT_LEN);
     xil_printf("result[1] = %x\r\n", axi_results[1]);
     xil_printf("result[2] = %x\r\n", axi_results[2]);
@@ -171,11 +200,11 @@ int main() {
      */
     xil_printf("\r\nWRITE NEW ENCODING TO HUFFMAN THROUGH BERT USING huffman.c\r\n");
     recompute_huffman(new_code);
-    bert_write(MEM_HUFFMAN,new_code,&XFpgaInstance);
+    bert_write(mem_huffman_slot,new_code,&XFpgaInstance);
     clrHuff();
     waitHuff();
     extractAxi(HIST_LEN, RESULT_LEN);
-    extractBert();
+    extractBert(mem_input_slot,mem_hist_slot,mem_result_slot);
     compare(HIST_LEN, RESULT_LEN);
     xil_printf("result[1] = %x\r\n", axi_results[1]);
     xil_printf("result[2] = %x\r\n", axi_results[2]);
@@ -192,12 +221,12 @@ int main() {
     	bert_raw[i] = (i % 256);
     	bert_raw[i+512] = (i % 256);
     }
-    bert_write(MEM_HUFFMAN,new_code,&XFpgaInstance);
-    bert_write(MEM_INPUT,bert_raw,&XFpgaInstance);
+    bert_write(mem_huffman_slot,new_code,&XFpgaInstance);
+    bert_write(mem_input_slot,bert_raw,&XFpgaInstance);
     clrHuff();
     waitHuff();
     extractAxi(HIST_LEN, RESULT_LEN);
-    extractBert();
+    extractBert(mem_input_slot,mem_hist_slot,mem_result_slot);
     compare(HIST_LEN, RESULT_LEN);
     xil_printf("result[1] = %x\r\n", axi_results[1]);
     xil_printf("result[2] = %x\r\n", axi_results[2]);
