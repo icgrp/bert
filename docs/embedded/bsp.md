@@ -29,19 +29,19 @@ On the left side of the screen under 'standalone' you will see 'xilfpga' and 'xi
 Then click OK and you will have configured your BSP.
 
 ## Over-write xilfpga API Library Source Code in BSP
-Since BERT takes advantage of custom API calls, the xilfpga library source code must be overwritten in the BSP with the modified version found at `bert/embedded/libsrc/xilfpga_v5_1/src`. 
+Since BERT takes advantage of custom API calls, the xilfpga library source code must be overwritten in the BSP with modified versions.  These are found at `bert/embedded/libsrc/xilfpga_v5_1/src` and are to be copied to 
+`WORK/SDKWorkspace/huffman_demo_bsp/psu_cortexa53_0/libsrc/xilfpga_v5_1` (where WORK and SDKWorkspace are the directories you set up at the start of this tutorial - change these if you named things differently). 
 
-The files in that directory need to be copied to
-`WORK/SDKWorkspace/huffman_demo_bsp/psu_cortexa53_0/libsrc/xilfpga_v5_1` (where WORK and SDKWorkspace are the directories you set up at the start of this tutorial - change these if you named things differently). The preferred method is to use your OS's graphical (GUI) File Explorer program to first copy the files, then go into the  SDK GUI and paste them into the correct directory since this will trigger the SDK to recompile the bsp libraries. You should see the cross compiler output in the 'Console' window as the BSP is regenerated.
-
-The picture shows the part of the bsp directory structure being overwritten when you do the copy above.
-
-![Example of BSP directory structure](../images/bspdirectory.png)
-
-Alternatively, you can use a command shell to do the copy.  If you do this the SDK may not automatically recompile it.  But at any time, you can force a recompilation by right-clicking on the application in the SDK (`huffman_demo`) and selecting "Clean Project".  You will then see the cross compiler output in the 'Console' window.  You will see that it recompiles both the BSP and the application.
+To help you, a script has been created which will do this copying for you (as well as copying BERT sources over).    This script can be run as:
+```
+python3 BERT/docs/tutorials/huffman/copyfiles.py WORK
+```
+where BERT is where your BERT repo lives and WORK is the directory you copied the provided files into at the start of this tutorial.
 
 NOTE: If other bsp parameters are later changed in `system.mss` or the `Re-generate BSP Sources` button is clicked, the BSP code will be regenerated *and this modified version of xilfpga will be overwritten with the vanilla xilfpga version from the local SDK installation*, negating what you just did. Thus, it is best to completely configure the rest of the BSP before replacing the custom xilfpga library source code. 
 
-Importantly, you shoud know that once configured, the same BSP can be used for multiple applications on a given board. The BSP is setup in this roundabout way is because: (a) SDK 2018.3 does not have a recent enough version of xilfpga and (b) overwriting xilfpga within the BSP does not tamper with the software included in the SDK installation. 
+Also, realize that the output of the above script tells you just what it is doing so you can go back and just re-copy the needed BSP files if needed.
+
+Importantly, you should know that once configured, the same BSP can be used for multiple applications on a given board. The BSP is setup in this roundabout way is because: (a) SDK 2018.3 does not have a recent enough version of xilfpga and (b) overwriting xilfpga within the BSP does not tamper with the software included in the SDK installation. 
 
 At this point you can return to the main tutorial to continue.

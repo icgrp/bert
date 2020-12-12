@@ -6,17 +6,17 @@ import pathlib
 import argparse
 import glob
 import shutil
+import sys
 
 # The routine createBitMappings() above is intended to be called from other programs which require the mappings.
 # This main routine below is designed to test it
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("bertDir", help='Directory where bert repo is located.  Example: /home/steven/bert')
     parser.add_argument("workDir", help='Directory which tutorial refers to as WORK and where provided files were copied to.  Example: /home/steven/myProject.  Assumes SDKWorkspace is subdirectory of this.')
 
     args = parser.parse_args()
 
-    bertDir = pathlib.Path(args.bertDir).resolve()
+    bertDir = pathlib.Path(sys.path[0]).resolve().parent.parent.parent
     workDir = pathlib.Path(args.workDir).resolve()
     sdkDir  = workDir / "SDKWorkspace"
     
