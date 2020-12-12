@@ -31,24 +31,19 @@ This tutorial assumes the user has some experience with using the Xilinx SDK too
 
 TODO: could we point them at some introductory materials to use?  Can we articulate the level of expertise they might need?  A number of the problems BEN and AMD had with the tutorial as written was due to what looked to us to be omited details on the SDK operation that we were not familiar with.
 
-## Steps At-A-Glance
-Using BERT is a 4-step process.  
-1. Use BERT host tools to generate the mydesign headers for your hardware design. You will do this each time you have a new design ready to run with BERT.  You do this on a "host" computer.   
-     1. You will first build the BERT host tools for your platform.  You do this only once.
-     2. You will then run the `bert_gen` tools on your design to produce the files needed by the SDK for your BERT  application.  This will produce a set of files which are used to build BERT applications to talk to our design.  You will do this every time you have a design to run through BERT.
-2. You will then set up Xilinx SDK environment with the right versions of the xilfpga program from Xilinx as well as the needed files and libraries for BERT.  You should only need to do this once. 
-3. Once this is all in place, you will install the BERT source code itself and then write user code, all of which will compile into a BERT executable that uses BERT to talk to the board after you have programmed it with a bitstream.  
+## The Overall Process
+Using BERT is a 5-step process.  
+1. You use Vivado to generate a design containing BRAMs and a PS.  Once you have generated a bitstream for the design you run a script to generate the needed data files for the remainder of the BERT process.  You do this on a "host" computer, meaning one that runs Vivado.
+2. You then set up the Xilinx SDK environment with the right versions of the xilfpga program from Xilinx as well as the needed libraries for BERT.  You should only need to do this once. 
+3. Once this is all in place, you will install the BERT source code itself and write your user application code, all of which will compile into a BERT executable that uses BERT to talk to the board after you have programmed it with a bitstream.  
 4. You will finally test that application on hardware with a bitstream programmed onto the board.
 
-NOTE: along the way you will be copying files into the SDK project directories.   As you do so you may see compile errors in the Project Explorer window on the left of the SDK.  You will have such compile errors until right at the end of Step 3 below so don't worry about them until you get to that point!  The tutorial will tell you when you should not have compile errors any more.
+NOTE: along the way you will be copying files into the SDK project directories.   As you do so you may see compile errors in the Project Explorer window on the left of the SDK.  Don't worry.  You will have such compile errors until right at the end of Step 3 below so don't worry about them until you get to that point!  The tutorial will tell you at what point you should not have compile errors any more.
 
-# Step 0. Obtaining A Sample Design
-Before you begin the 4-step process above, you need to create your hardware design in Vivado and compile it to a bitstream and then write out a hardware specification (.hdf) file and a design checkpoint (.dcp) file.
+# Step 1. Obtaining A Sample Design
+As mentioned, you need to create your hardware design in Vivado and compile it to a bitstream and then write out the needed files for BERT to use your design.
 
-For this tutorial, however, a .hdf and .dcp file are provided for you within the bert GIT repo for the Ultra96-V2 board to save time.  You can find those in this directory: `.../bert/docs/tutorials/huffman/hw_huffman` in the repo.  Copy the files in that directory into a directory where you intend to work through this tutorial.
-
-# Step 1. Using bert_gen to Generate mydesign.c and mydesign.h
-The first step is to set up `bert_gen` and then use it to process your design  To learn how to do that go to the [bert_gen setup and usage page here](../../host_tools/README.md).  Note that when following the instructions there, the name to use for `headerName` as instructed must be `mydesign` for the rest of the flow to work properly.
+For this tutorial, however, a complete set of such files are provided for you within the bert GIT repo for the Ultra96-V2 board to save time.  You can find those in this directory: `.../bert/docs/tutorials/huffman/hw_huffman` in the repo.  Copy the files in that directory into a directory where you intend to work through this tutorial.  
 
 # Step 2. Setup Xilinx SDK Environment With The Proper Libraries and Add Libraries to Your BSP
 The next step is to set up the Xilinx SDK environment.  This tutorial was written for Vivado 2018.3 but the BERT tools require `xilfpga` libraries for 2019.2 and so there are a number of steps required to get the proper libraries and files set up.
@@ -65,17 +60,11 @@ The next step is to set up the Xilinx SDK environment.  This tutorial was writte
 NOTE: we have seen these get reset by the SDK when switching workspaces, among other things.  So. if at the end of the process you are getting compile errors, re-check these settings!
 
 # 3. Integrating BERT into Your Project and Writing Your Source Code
-1. Now that we have an application project and bsp established, we need to copy the BERT system's source files from `.../bert/embedded/src/bert`  into our application project's `src`.  On the left menu, open the application (huffman_demo), and then open the src directory under that.
-   * AMD: *suggest omitting -- just confuses things at this point:* (Or you could copy the whole `bert` directory if you'd like to maintain some heirarchy within your `src` directory. If you do so, just adjust the `#include` directives to reflect this.)
-2. The easiest way is to do this is to just copy and paste the files using your OS's file manager, dropping them in the src directory you just opened.
+1. Now that we have an application project and bsp established, we need to copy the actual BERT system's source files from `.../bert/embedded/src/bert`  into our application project's `src`.  On the left menu, open the application (huffman_demo), and then open the src directory under that.
+2. The easiest way is to do this is to just copy the files using your OS's file manager, and then paste them into the src directory you just opened in the SDK GUI.
    * Alternatively you could use the import feature since Xilinx SDK is Eclipse-based. 
-3. So, copy those files over now.
-   *  AMD: *can we drop this (item 3)?  it just adds confusion for me. Note that
-      "copy" here means perform the entire transfer, whereas "copy" in the
-      previous bullet means just select the files to be pasted.  (but I
-      guess copy is also used in the full copy way in item 1 and 5...).*
-4. Also, you may notice that you have a `helloworld.c` file in the `src` directory (often automatically created by SDK when you create the application).  If so, remove the `helloworld.c` fle.
-5. Next, copy the `mydesign.c` and `mydesign.h` files generated by `bert_gen` up above into this src directory.
+3. Also, you may notice that you have a `helloworld.c` file in the `src` directory (often automatically created by SDK when you create the application).  If so, remove the `helloworld.c` fle.
+4. Next, copy the `mydesign.c` and `mydesign.h` files generated by `bert_gen` up above into this src directory.
 
 ## Write User code
 The next step is to write an actual application to use BERT to interact with your design.  We provided a sample application `hellobert.c` that you can use for this.  It does the following:
@@ -83,7 +72,7 @@ The next step is to write an actual application to use BERT to interact with you
 * Uses a bzip2 implementation of Huffmann encoding to create a new dictionary on the PS side and transfer it via BERT.
 * Writes ascending input to the `rawTextMem` and an identity encoding as the Huffman dictionary.
 
-Then, copy over all the code in `.../bert/docs/tutorials/huffman/sw_huffman` into the project application's `src` folder (reminder: when we say project application we mean the software application which was named `huffman_demo` back at the start of the tutorial).
+So now, copy over all the code in `.../bert/docs/tutorials/huffman/sw_huffman` into the project application's `src` folder (reminder: when we say project application we mean the software application which was named `huffman_demo` back at the start of the tutorial).
 
 This includes:
 * bzlib.h, bzlib_min.c, bzlib_private.h, huffman.c, spec.c, spec.h - this is code from bzip2 for Huffman encoding on the PS
@@ -103,8 +92,6 @@ these memories.  So, I don't believe a static definition like this will
 work (otherwise, just put it in hellobert.c.*
 
 BEN: there needs to be a better solution - how does bert_gen work in this respect?  Can something be done here? 
-
-Next, if the application project was initially created with any sample code (the Linux SDK will likely have created a `helloworld.c` program), delete it now. 
 
 Finally, you need to tell the application how much memory to use.  In the `src` directory click the file `ldscript.ld`  file and increase the stack and heap sizes (currently done by adding two 0's to their values).
 
@@ -127,15 +114,13 @@ course, it's device specific, so the 9EG will need more memory than the 3EG.*
 
 
 At this point you FINALLY have a complete application and it should show no
-compile  errors in Project Explorer!  If you have followed the instructions above, every time something gets pasted into the the SDK's GUI a recompile should happen.  However, you can always force one to occur by right-clicking the application in the Project Explorer (`huffman_demo`) and selecting 'Clean Project'.
-
-BEN: the above instructions on Clean Project were provided by Matthew but he was not sure exactly what it recompiles.  Specifically, does it recompile the BSP library code as well as the application's source code?  
+compile  errors in Project Explorer!  If you have followed the instructions above, every time something gets pasted into the the SDK's GUI a recompile should happen (and so you should not have had to do anything to get it all to recompile).  However, you can always force one to occur by right-clicking the application in the Project Explorer (`huffman_demo`) and selecting 'Clean Project'.
 
 ## 4. Test on hardware
 
-If the code compiles, you are ready to run it on hardware. Start by opening "Debug Configurations."  You can do this by right-clicking on the project application ('huffman_demo') and selecting 'Debug As->Debug Configurations'.  Then choose the bottom option in the window that pops up ('Xilinx C/C++ application (System Debugger)').  
+If the code compiles, you are ready to run it on hardware. Start by opening "Debug Configurations."  You can do this by right-clicking on the project application ('huffman_demo') and selecting 'Debug As->Debug Configurations'.  Then double-click the bottom option in the window that pops up ('Xilinx C/C++ application (System Debugger)').  
 
-In the Target Setup you need to select a number of reset options like below:
+In the Target Setup pane to the right you will need to select a number of reset options like below:
 
 ![Setting Debug Target Setup Options](../../images/huffmandebugconfigurations.png)
 
@@ -145,11 +130,12 @@ As shown below, to run, click the arrow next to the green circle with white tria
 
 ![Starting a Run](../../images/RunDebug.png)
 
-Alternatively, you can debug using the debug icon just to the left of the
-run button (looks like a bug).  This will run the debugger.  The debugger
+Alternatively, you can run the debugger using the debug icon just to the left of the
+run button (this icon looks like a bug).  This will run the debugger.  The debugger
 will start up with a breakpoint at main.  To resume execution, select Core
-0 and press the `resume` button, which is shaped like a play button.
-(*check/resolve: same green circle with white triangle button mentioend above?*)
+0 and press the `resume` button, which is shaped like a play button
+(rectangle followed by green arrow, two icons over from the run button).
+
 
 Before or during the launch of the program, open the serial port to the board so we can observe the program output. Clicking the green plus sign in the "SDK Terminal" window accomplishes this.  On Windows it wll be a COM port, on Linux it will be /dev/ttyUSB1.
 
