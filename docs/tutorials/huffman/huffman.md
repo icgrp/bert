@@ -52,7 +52,7 @@ The next step is to set up the Xilinx SDK environment.  This tutorial was writte
 
 * Step 2b - you next need to add some required libraries to your BSP.  The document [bsp.md](../../embedded/bsp.md) covers which libraries and versions you will need for BERT as well as other additional steps.  You should only have to do this once.  Complete those steps before proceeding.
 
-* Step 2c - you now should check the project's link settings.  This is because adding a library to a BSP after a project has already been formulated sometimes causes an issue where the 'makefile' is not updated to link against the new libary. If you are getting compiler errors, you can check that the right flags are set by opening the application project's properties (huffman_demo's properties). Once there, go to C/C++ Build -> Settings -> ARM v8 gcc linker -> Inferred Options -> Software Platform. The specific flags you are looking for as they relate to BERT include:
+* Step 2c - you now should check the project's link settings.  This is because adding a library to a BSP after a project has already been formulated sometimes causes an issue where the 'makefile' is not updated to link against the new libary. If you are getting compiler errors, you can check that the right flags are set by opening the application project's properties (right-click `huffman_demo` and choose C/C++ Build Settings).   Then, go to ARM v8 gcc linker -> Inferred Options -> Software Platform. The specific flags you are looking for as they relate to BERT include:
 
 * `-Wl,--start-group,-lxilfpga,-lxil,-lxilsecure,-lgcc,-lc,--end-group`
 *  `-Wl,--start-group,-lxilsecure,-lxil,-lgcc,-lc,--end-group`
@@ -88,24 +88,20 @@ At this point you FINALLY have a complete application and it should show no comp
 
 ## 4. Test on hardware
 
-Once the code compiles, you are ready to run it on hardware. Start by opening "Debug Configurations."  You can do this by right-clicking on the project application ('huffman_demo') and selecting 'Debug As->Debug Configurations'.  Then double-click the bottom option in the window that pops up ('Xilinx C/C++ application (System Debugger)').  
+Once the code compiles, you are ready to run it on hardware. Start by opening "Run Configurations."  You can do this by right-clicking on the project application ('huffman_demo') and selecting 'Run As->Run Configurations'.  Then double-click the bottom option in the window that pops up ('Xilinx C/C++ application (System Debugger)').  
 
 In the Target Setup pane to the right you will need to select a number of reset options like below:
 
 ![Setting Debug Target Setup Options](../../images/huffmandebugconfigurations.png)
 
+In addition you will have to fill in the name of the bitfile to use.  You do this by clicking the Browse 
 Once you have done so, click Apply and then Close.  At this point you have a new configuration you can use when you run with or without the debugger.
 
-As shown below, to run, click the arrow next to the green circle with white triangle at the top center of the screen.  You can then select the top option which is the run configuration you just created.
+As shown below, to run, click the green circle with white triangle at the top center of the screen.  This will run what you just created.
 
 ![Starting a Run](../../images/RunDebug.png)
 
-Alternatively, you can run the debugger using the debug icon just to the left of the
-run button (this icon looks like a bug).  This will run the debugger.  The debugger
-will start up with a breakpoint at main.  To resume execution, select Core
-0 and press the `resume` button, which is shaped like a play button
-(rectangle followed by green arrow, two icons over from the run button).
-
+Alternatively, you can run the debugger using the debug icon just to the left of the run button (this icon looks like a bug).  This will run the debugger.  The debugger will start up with a breakpoint at main.  To resume execution, select Core 0 and press the `resume` button, which is shaped like a play button (rectangle followed by green arrow, two icons over from the run button).
 
 Before or during the launch of the program, open the serial port to the board so we can observe the program output. Clicking the green plus sign in the "SDK Terminal" window accomplishes this.  On Windows it wll be a COM port, on Linux it will be /dev/ttyUSB1.
 
@@ -117,7 +113,7 @@ If all goes well, the program will run and will print results to the SDK Termina
 
 Congratulations!  You have run a successful demo application.
 
-Obvious next steps would be to experiment with making changes to the `hellobert.c` program and re-run it on the board to gain some experience with the board and the BERT API.  Then, run a design of your own creation through the process.
+Obvious next steps would be to experiment with making changes to the `hellobert.c` program and re-run it on the board to gain some experience with the board and the BERT API.  Then, work your way through the second BERT tutorial to learn how to generate the files needed from a Vivado design for the entire process (these are the files that were given to you at the start of this tutorial).
 
 
 ---
