@@ -59,3 +59,5 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
 				  int u64_per_lookup,
 				  int tabsize,
 				  uint64_t translation_tables[][tabsize]);
+
+int logical_memory_slot(char *mname,int total_names);
