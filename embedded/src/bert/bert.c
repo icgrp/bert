@@ -4,6 +4,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "readback.h"
+#include "strings.h"
 
 #include "bert.h"
 
@@ -920,3 +921,13 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
   return BST_SUCCESS;
   
 }
+
+int logical_memory_slot(char *mname, int total_names)
+{
+		for(int i=0;i<total_names;i++) {
+			if (strcmp(mname,logical_names[i])==0)
+				return(i);
+		}
+		return(-1);
+}
+
