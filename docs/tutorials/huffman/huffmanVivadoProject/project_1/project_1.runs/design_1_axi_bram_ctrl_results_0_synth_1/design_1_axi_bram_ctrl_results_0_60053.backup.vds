@@ -1,0 +1,22 @@
+#-----------------------------------------------------------
+# Vivado v2018.3 (64-bit)
+# SW Build 2405991 on Thu Dec  6 23:36:41 MST 2018
+# IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+# Start of session at: Sat Oct  3 19:56:25 2020
+# Process ID: 60053
+# Current directory: /home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.runs/design_1_axi_bram_ctrl_results_0_synth_1
+# Command line: vivado -log design_1_axi_bram_ctrl_results_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source design_1_axi_bram_ctrl_results_0.tcl
+# Log file: /home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.runs/design_1_axi_bram_ctrl_results_0_synth_1/design_1_axi_bram_ctrl_results_0.vds
+# Journal file: /home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.runs/design_1_axi_bram_ctrl_results_0_synth_1/vivado.jou
+#-----------------------------------------------------------
+source design_1_axi_bram_ctrl_results_0.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/home/nelson/bert_dev/examples/hw_huffman/ip_repo'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/home/nelson/Xilinx/Vivado/2018.3/data/ip'.
+update_ip_catalog: Time (s): cpu = 00:00:05 ; elapsed = 00:00:10 . Memory (MB): peak = 1304.355 ; gain = 0.000 ; free physical = 148 ; free virtual = 758
+Command: synth_design -top design_1_axi_bram_ctrl_results_0 -part xczu3eg-sbva484-1-i -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xczu3eg'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xczu3eg'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 60141 
