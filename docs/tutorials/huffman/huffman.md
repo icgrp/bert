@@ -32,7 +32,7 @@ This tutorial assumes the user has some experience with using the Xilinx SDK too
 TODO: could we point them at some introductory materials to use?  Can we articulate the level of expertise they might need?  A number of the problems BEN and AMD had with the tutorial as written was due to what looked to us to be omited details on the SDK operation that we were not familiar with.
 
 ## The Overall Process
-Using BERT is a 5-step process.  
+Using BERT is a 4-step process.  
 1. You use Vivado to generate a design containing BRAMs and a PS.  Once you have generated a bitstream for the design you run a script to generate the needed data files for the remainder of the BERT process.  You do this on a "host" computer, meaning one that runs Vivado.
 2. You then set up the Xilinx SDK environment with the right versions of the xilfpga program from Xilinx as well as the needed libraries for BERT.  You should only need to do this once. 
 3. Once this is all in place, you will install the BERT source code itself and write your user application code, all of which will compile into a BERT executable that uses BERT to talk to the board after you have programmed it with a bitstream.  
@@ -64,7 +64,7 @@ Now that we have an application project and BSP established, we need to copy the
 
 However, this was already done for you by the `copyfiles.py` script you ran when you configured your BSP above.
 
-Next, if you go into your applicaton's `src` directory you will see that a whole collectuon of new files were copied in as a part of that script.
+Next, if you go into your applicaton's `src` directory you will see that a whole collection of new files were copied in as a part of that script.
 
 You may also see that directory has a `helloworld.c` file (often automatically created by SDK when you create the application).  If so, remove that file.
 
