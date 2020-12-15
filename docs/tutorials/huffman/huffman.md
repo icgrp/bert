@@ -31,6 +31,11 @@ This tutorial assumes the user has some experience with using the Xilinx SDK too
 
 TODO: could we point them at some introductory materials to use?  Can we articulate the level of expertise they might need?  A number of the problems BEN and AMD had with the tutorial as written was due to what looked to us to be omited details on the SDK operation that we were not familiar with.
 
+The tutorial also assumes you have the following installed:
+* Xilinx SDK
+* Python3
+
+
 ## The Overall Process
 Using BERT is a 4-step process.  
 1. You use Vivado to generate a design containing BRAMs and a PS.  Once you have generated a bitstream for the design you run a script to generate the needed data files for the remainder of the BERT process.  You do this on a "host" computer, meaning one that runs Vivado.
