@@ -1,7 +1,11 @@
 
-bert_gen will go under here
+Instructions to build host tools are under
+[docs](../docs/host_tools/build.md).
 
-TODO instructions to build bert_gen
+Documentation on host tools is under
+[docs](../docs/host_tools/README.md).
 
-For now, see: https://github.com/byuccl/bert_dev/tree/master/bert_gen
+
+
+
 
