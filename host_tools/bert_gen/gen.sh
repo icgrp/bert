@@ -23,8 +23,9 @@ header_gen() {
     ./${headerName}_ucompress >${headerName}.c
     cp ${headerName}_uncompressed.h ${headerName}.h
     rm ultrascale_plus.o ${headerName}_compress.o ${headerName}_uncompressed.o ${headerName}_ucompress
-    cp ${headerName}.c ../
-    cp ${headerName}.h ../
+    cd ..
+    cp bert_src/${headerName}.c .
+    cp bert_src/${headerName}.h .
 }
 
 map_gen() {
@@ -65,7 +66,7 @@ while test $# -gt 0; do
             map_gen
             echo -e "[60%] Generated .bram .info mapping in $baseDir\n"
             echo -e "[60%] Generating header files in $wkDir\n"
-	        header_gen
+            header_gen
             echo -e "[100%] Generated header files in $baseDir\n"
             echo -e "bert_gen complete, exiting....."
             exit
