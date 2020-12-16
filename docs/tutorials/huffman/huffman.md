@@ -118,7 +118,7 @@ If all goes well, the program will run and will print results to the SDK Termina
 
 Congratulations!  You have run a successful demo application.
 
-Obvious next steps would be to experiment with making changes to the `hellobert.c` program and re-run it on the board to gain some experience with the board and the BERT API.  Then, work your way through the second BERT tutorial, [Preparing Needed Files for the Huffman Encoding Tutorial](huffman/fileprep.md), to learn how to generate the files needed from a Vivado design for the entire process (these are the files that were given to you at the start of this tutorial).
+Obvious next steps would be to experiment with making changes to the `hellobert.c` program and re-run it on the board to gain some experience with the board and the BERT API.  Then, work your way through the second BERT tutorial, [Preparing Needed Files for the Huffman Encoding Tutorial](fileprep.md), to learn how to generate the files needed from a Vivado design for the entire process (these are the files that were given to you at the start of this tutorial).
 
 
 ---
