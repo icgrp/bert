@@ -35,8 +35,6 @@ The `bert_gen` program will process the above-generated files and create a `myde
 Before running `bert_gen`, you need to build the executable.
 Follow the instructions [for building `bert_gen`](../../host_tools/build.md). 
 
-If you haven't already done so, run the `settings64.sh` for your Xilinx installation so Xilinx tools are in your path and Xilinx environment variables are set.
-
 You run `bert_gen` by going to the directory `.../bert/host_tools/bert_gen` and executing:
 ```
 ./gen.sh dirName
