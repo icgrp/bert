@@ -39,7 +39,7 @@ If you haven't already done so, run the `settings64.sh` for your Xilinx installa
 
 You run `bert_gen` by going to the directory `.../bert/host_tools/bert_gen` and executing:
 ```
-./gen.sh -gen dirName/top.dcp mydesign
+./gen.sh dirName
 ```
 where `dirName` is the same directory you specified above in file_gen.
 
