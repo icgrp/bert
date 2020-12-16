@@ -82,7 +82,7 @@ The next step is to write an actual application to use BERT to interact with you
 
 As above, was already been copied over for you by the `copyfiles.py` script earlier when you configured the BSP.  For reference however, it was copied from `.../bert/docs/tutorials/huffman/sw_huffman` into `WORK/SDKWorkspace/huffman_demo/src`.
 
-Finally, you need to tell the application how much memory to use.  Double-click the `WORK/SDKWorkspace/huffman_demo/src/lscript.ld` file and set stack and heap sizes to 200000 (2 followed by 5 zeros).  [For discussion on how to size heap, see the Usage Overview->Dynamic Memory Usage section in [the BERT API documentation](../../embedded/bert.md).]
+Finally, you need to tell the application how much memory to use.  Double-click the `WORK/SDKWorkspace/huffman_demo/src/lscript.ld` file and set stack and heap sizes to 200000 (2 followed by 5 zeros -- this is hex for 2 Megabytes).  [For discussion on how to size heap, see the Usage Overview->Dynamic Memory Usage section in [the BERT API documentation](../../embedded/bert.md).]
 
 At this point you FINALLY have a complete application and it should show no compile  errors in Project Explorer!  As described above you may want to right-click the application in the Project Explorer (`huffman_demo`) and select 'Clean Project' to ensure that you now have a full, clean recompile.
 
@@ -97,7 +97,7 @@ In the Target Setup pane to the right you will need to select a number of reset 
 ![Setting Debug Target Setup Options](../../images/huffmandebugconfigurations.png)
 
 In addition you will have to fill in the name of the bitfile to use.  You do this by clicking the Browse Button.
-You want to select fhile file `WORK/top.bit`.
+You want to select the file `WORK/top.bit`.
 Once you have done so, click Apply and then Close.  At this point you have a new configuration you can use when you run with or without the debugger.
 
 As shown below, to run, click the green circle with white triangle at the top center of the screen.  This will run what you just created.
