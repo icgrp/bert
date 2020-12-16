@@ -32,8 +32,10 @@ Once the last step above finishes it will confirm where it put the files, what t
 ## Next Steps: Run bert_gen
 The `bert_gen` program will process the above-generated files and create a `mydesign.c` file and a `mydesign.h` file which you saw in the previous tutorial are a part of the application source code.  Specifically, they contain all the mapping information for your memories so BERT can access them.
 
-*AMD: do we need to tell them how to build bert_gen?  Point to a cleaned
- up: * [Host Tools README](../../host_tools/README.md) *?*
+Before running `bert_gen`, you need to build the executable.
+Follow the instructions [for building `bert_gen`](../../host_tools/build.md). 
+
+If you haven't already done so, run the `settings64.sh` for your Xilinx installation so Xilinx tools are in your path and Xilinx environment variables are set.
 
 You run `bert_gen` by going to the directory `.../bert/host_tools/bert_gen` and executing:
 ```
