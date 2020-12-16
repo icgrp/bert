@@ -82,10 +82,7 @@ The next step is to write an actual application to use BERT to interact with you
 
 As above, was already been copied over for you by the `copyfiles.py` script earlier when you configured the BSP.  For reference however, it was copied from `.../bert/docs/tutorials/huffman/sw_huffman` into `WORK/SDKWorkspace/huffman_demo/src`.
 
-Finally, you need to tell the application how much memory to use.  Double-click the `WORK/SDKWorkspace/huffman_demo/src/lscript.ld` file and increase the stack and heap sizes (currently done by adding two 0's to their values). 
-
-TODO: We should specify the minimum size needed for this tutorial along with maybe a discussion
-of how to determine it for your own program (or that could into the 2nd tutorial where they learn how to do their own app).
+Finally, you need to tell the application how much memory to use.  Double-click the `WORK/SDKWorkspace/huffman_demo/src/lscript.ld` file and set stack and heap sizes to 200000 (2 followed by 5 zeros).  [For discussion on how to size heap, see the Usage Overview->Dynamic Memory Usage section in [the BERT API documentation](../../embedded/bert.md).]
 
 At this point you FINALLY have a complete application and it should show no compile  errors in Project Explorer!  As described above you may want to right-click the application in the Project Explorer (`huffman_demo`) and select 'Clean Project' to ensure that you now have a full, clean recompile.
 
@@ -99,7 +96,8 @@ In the Target Setup pane to the right you will need to select a number of reset 
 
 ![Setting Debug Target Setup Options](../../images/huffmandebugconfigurations.png)
 
-In addition you will have to fill in the name of the bitfile to use.  You do this by clicking the Browse 
+In addition you will have to fill in the name of the bitfile to use.  You do this by clicking the Browse Button.
+You want to select fhile file `WORK/top.bit`.
 Once you have done so, click Apply and then Close.  At this point you have a new configuration you can use when you run with or without the debugger.
 
 As shown below, to run, click the green circle with white triangle at the top center of the screen.  This will run what you just created.
@@ -120,7 +118,7 @@ If all goes well, the program will run and will print results to the SDK Termina
 
 Congratulations!  You have run a successful demo application.
 
-Obvious next steps would be to experiment with making changes to the `hellobert.c` program and re-run it on the board to gain some experience with the board and the BERT API.  Then, work your way through the second BERT tutorial to learn how to generate the files needed from a Vivado design for the entire process (these are the files that were given to you at the start of this tutorial).
+Obvious next steps would be to experiment with making changes to the `hellobert.c` program and re-run it on the board to gain some experience with the board and the BERT API.  Then, work your way through the second BERT tutorial, [Preparing Needed Files for the Huffman Encoding Tutorial](huffman/fileprep.md), to learn how to generate the files needed from a Vivado design for the entire process (these are the files that were given to you at the start of this tutorial).
 
 
 ---
