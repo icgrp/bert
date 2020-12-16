@@ -23,7 +23,8 @@ header_gen() {
     ./${headerName}_ucompress >${headerName}.c
     cp ${headerName}_uncompressed.h ${headerName}.h
     rm ultrascale_plus.o ${headerName}_compress.o ${headerName}_uncompressed.o ${headerName}_ucompress
-
+    cp ${headerName}.c ../
+    cp ${headerName}.h ../
 }
 
 map_gen() {

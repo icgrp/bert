@@ -12,7 +12,7 @@ be running these tutorials if they didn't already know about this.
 AMD: at some point I didn't have one.  I'm now unclear if this is resolved
 by the .hdf, or if this is something you need to get the hdf to work.
 
-2. From the BERT repository, use Vivado 2018.3 to open the project in `.../bert/dos/tutorials/huffman/huffmanVivadoProject`.
+2. From the BERT repository, use Vivado 2018.3 to open the project in `.../bert/docs/tutorials/huffman/huffmanVivadoProject`.
 3. To ensure that your design is complete (synthesized, placed, routed, and ready for bitstream generation) select "Run Implementation" in Vivado.  If Vivado thinks the project is not out of date it will say "A completed implementation run exists?  Re-run anyway?".  You do not need to if that is the case but if it is not, you will have to wait while it re-runs the implementation steps.
 4. Next, click "Open Implemented Design" to load all the information needed for the following steps.
 
@@ -37,7 +37,7 @@ The `bert_gen` program will process the above-generated files and create a `myde
 
 You run `bert_gen` by going to the directory `.../bert/host_tools/bert_gen` and executing:
 ```
-./gen.sh -gen dirName
+./gen.sh -gen dirName/top.dcp mydesign
 ```
 where `dirName` is the same directory you specified above in file_gen.
 
