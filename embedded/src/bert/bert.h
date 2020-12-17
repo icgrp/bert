@@ -4,6 +4,10 @@
 #define BERT_OPERATION_ACCELERATED_WRITE 3
 #define BERT_OPERATION_ACCELERATED_READ 4
 
+// enable timing capture
+//#define TIME_BERT
+
+
 struct bert_meminfo {
   int logical_mem;
   int operation;
@@ -61,3 +65,10 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
 				  uint64_t translation_tables[][tabsize]);
 
 int logical_memory_slot(char *mname,int total_names);
+
+// for grabbing timing when TIME_BERT_TRANFUSE or TIME_BERT_COMPONENTS are defined
+double bert_get_last_transfuse_time_us();
+double bert_get_last_read_time_us();
+double bert_get_last_write_time_us();
+double bert_get_last_logical_time_us();
+double bert_get_last_physical_time_us();
