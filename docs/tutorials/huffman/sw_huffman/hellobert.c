@@ -12,8 +12,11 @@
 #define U96_IDCODE 0x04A42093
 
 
-
 #define PRINT xil_printf
+
+// debug -- maybe need to get AXI reads to work under -O3
+//#define VERBOSE_AXI 1
+#undef VERBOSE_AXI
 
 unsigned int * raw =     (unsigned int *)0xA0001000;
 unsigned int * huff =    (unsigned int *)0xA0003000;
@@ -36,13 +39,21 @@ XFpga XFpgaInstance = {0U};
 void extractAxi(int hlen, int rlen) {
     PRINT("Read histogram through axi...\n");
     for (int i=0; i<hlen; i++) {
+#ifdef VERBOSE_AXI
+    	PRINT(".");
+#endif
         axi_hist[i]= *(hist+i);
     }
 
-    PRINT("Read results through axi...\n");
+    PRINT(" Read results through axi...\n");
     for (int i=1; i<=rlen; i++) {
+#ifdef VERBOSE_AXI
+    	PRINT(".");
+#endif
         axi_results[i] = *(results+i);
+
     }
+    PRINT("  finish extractAxi\n");
 }
 
 void extractBert(int raw, int hist, int result) {
