@@ -15,8 +15,9 @@
 #define PRINT xil_printf
 
 // debug -- maybe need to get AXI reads to work under -O3
-//#define VERBOSE_AXI 1
-#undef VERBOSE_AXI
+#define VERBOSE_AXI 1
+//#undef VERBOSE_AXI
+
 
 unsigned int * raw =     (unsigned int *)0xA0001000;
 unsigned int * huff =    (unsigned int *)0xA0003000;
@@ -35,6 +36,27 @@ uint64_t bert_raw[1024];
 
 XFpga XFpgaInstance = {0U};
 
+
+void print_time(char *label) {
+#ifdef TIME_BERT
+	  double time_us[4];
+	  double transfuse_time_us=bert_get_last_transfuse_time_us();
+	  int whole = transfuse_time_us;
+	  int decimal =  (transfuse_time_us - whole) * 100;
+	  time_us[0]=bert_get_last_read_time_us();
+	  time_us[1]=bert_get_last_write_time_us();
+	  time_us[2]=bert_get_last_logical_time_us();
+	  time_us[3]=bert_get_last_physical_time_us();
+	  int w[4];
+	  int d[4];
+	  for (int i=0;i<4;i++){
+		  w[i]=time_us[i];
+		  d[i] =  (time_us[i] - w[i]) * 100;
+	  }
+	  PRINT("TIME (us) %s: %d.%02d, %d.%02d, %d.%02d, %d.%02d, %d.%02d \r\n",
+			  label, whole, decimal, w[0],d[0],w[1],d[1],w[2],d[2],w[3],d[3]);
+#endif
+}
 
 void extractAxi(int hlen, int rlen) {
     PRINT("Read histogram through axi...\n");
@@ -68,8 +90,20 @@ void extractBert(int raw, int hist, int result) {
 			  bert_raw[i] = 0;
 	}
 	  bert_read(hist,bert_hist,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("histogram read");
+#endif
+
 	  bert_read(result,bert_results,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("result read");
+#endif
+
+
 	  bert_read(raw,bert_raw,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("input read");
+#endif
 }
 
 
@@ -211,8 +245,13 @@ int main() {
      */
     xil_printf("\r\nWRITE NEW ENCODING TO HUFFMAN THROUGH BERT USING huffman.c\r\n");
     recompute_huffman(new_code);
+
     bert_write(mem_huffman_slot,new_code,&XFpgaInstance);
-    clrHuff();
+#ifdef TIME_BERT
+	  print_time("huffman write");
+#endif
+
+	clrHuff();
     waitHuff();
     extractAxi(HIST_LEN, RESULT_LEN);
     extractBert(mem_input_slot,mem_hist_slot,mem_result_slot);
@@ -232,8 +271,17 @@ int main() {
     	bert_raw[i] = (i % 256);
     	bert_raw[i+512] = (i % 256);
     }
+
     bert_write(mem_huffman_slot,new_code,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("huffman write");
+#endif
+
     bert_write(mem_input_slot,bert_raw,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("input write");
+#endif
+
     clrHuff();
     waitHuff();
     extractAxi(HIST_LEN, RESULT_LEN);
