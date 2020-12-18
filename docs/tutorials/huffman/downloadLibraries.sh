@@ -14,7 +14,7 @@ else
     fi
     wget https://github.com/Xilinx/embeddedsw/archive/xilinx-v2019.2.tar.gz
     mkdir $tempdir
-    tar -xf xilinx-v2019.2.tar.gz -C "temp"
+    tar -xf xilinx-v2019.2.tar.gz -C "$tempdir"
     path=$(realpath -se $XIL_SDK_DIR)
     cp -r $tempdir/embeddedsw-xilinx-v2019.2/lib/sw_services/xilfpga $path/data/embeddedsw/lib/sw_services/xilfpga_v5_1
     cp -r $tempdir/embeddedsw-xilinx-v2019.2/lib/sw_services/xilsecure $path/data/embeddedsw/lib/sw_services/xilsecure_v4_1

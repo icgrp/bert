@@ -5,6 +5,7 @@ prjName=huffman_demo
 bspName=huffman_demo_bsp
 bertRootDir=../../..
 
+echo "Checking paths are valid"
 bertPath=$(realpath -se $bertRootDir)
 if [ $? -ne 0 ]; then
     exit 1
@@ -25,5 +26,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-cp $bertPath/embedded/src/* $prjsrcPath
+cp $bertPath/embedded/src/bert/* $prjsrcPath
 cp $bertPath/embedded/libsrc/xilfpga_v5_1/src/* $xilsrcPath
+
+echo "Copied over expanded xilfpga and bert code into project."
