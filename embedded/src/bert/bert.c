@@ -8,6 +8,31 @@
 
 #include "bert.h"
 
+
+#ifdef TIME_BERT
+#include "xtime_l.h"                                                                                                   |    ultrascale_plus....     534 C/l              ~/icdev/bert_dev/bert_gen/compress/ultrascale_plus.h
+XTime tstart, tend, cstart, cend;
+XTime wstart;
+XTime pend; // DEBUG
+double time_us_read=-1;
+double time_us_write=-1;
+double time_us_logical=-1;
+double time_us_physical=-1;
+double time_us_transfuse=-1;
+double bert_get_last_transfuse_time_us() {return(time_us_transfuse);}
+double bert_get_last_read_time_us() {return(time_us_read);}
+double bert_get_last_write_time_us() {return(time_us_write);}
+double bert_get_last_logical_time_us() {return(time_us_logical);}
+double bert_get_last_physical_time_us() {return(time_us_physical);}
+#else
+double bert_get_last_transfuse_time_us() {return(-1);}
+double bert_get_last_read_time_us() {return(-1);}
+double bert_get_last_write_time_us() {return(-1);}
+double bert_get_last_logical_time_us() {return(-1);}
+double bert_get_last_physical_time_us() {return(-1);}
+#endif
+
+
 // note: instead of linking against mydesign.h
 extern const char * logical_names[];
 extern struct logical_memory logical_memories[];
@@ -774,6 +799,11 @@ int  bert_write(int logicalm, uint64_t *data, XFpga* XFpgaInstance)
 int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 {
 
+#ifdef TIME_BERT
+	time_us_transfuse=-2; // for error exits
+	XTime_GetTime(&tstart);
+#endif
+
   s32 Status;
 
   struct frame_set *the_frame_set=bert_union(num,meminfo);
@@ -788,6 +818,14 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
       offset+=WORDS_PER_FRAME*the_frame_set->ranges[i].len+WORDS_BETWEEN_FRAMES+WORDS_PER_FRAME; 
     }
   offset+=WORDS_AFTER_FRAMES;
+
+#ifdef TIME_BERT
+	time_us_read=-1;
+	time_us_write=-1;
+	time_us_logical=-1;
+	time_us_physical=-1;
+	XTime_GetTime(&cstart);
+#endif
 
   // allocate frame data
   uint32_t *frame_data=(uint32_t *)malloc(sizeof(uint32_t)*offset);
@@ -810,6 +848,11 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 	  }
 	}
     }
+#ifdef TIME_BERT
+	XTime_GetTime(&cend);
+	time_us_read=(double) ((cend - cstart) * 1000000.0) / COUNTS_PER_SECOND;
+	XTime_GetTime(&cstart);
+#endif
 
   //  uint32_t *pointer_from_readback=&frame_data[WORDS_PER_FRAME + PAD_WORDS + DATA_DMA_OFFSET/4];
     int status = BST_GENERAL_FAIL;
@@ -842,6 +885,12 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
           return status;
       }
     }
+
+#ifdef TIME_BERT
+	XTime_GetTime(&cend);
+	time_us_logical=(double) ((cend - cstart) * 1000000.0) / COUNTS_PER_SECOND;
+	XTime_GetTime(&cstart);
+#endif
   
   for (int i=0;i<num;i++)
     {
@@ -872,6 +921,10 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
       }  
     }
 
+#ifdef TIME_BERT
+	XTime_GetTime(&cend);
+	time_us_physical=(double) ((cend - cstart) * 1000000.0) / COUNTS_PER_SECOND;
+#endif
 
     // write control data into slots left in frame data .... and find length of write data
   int len=0;
@@ -907,16 +960,29 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
   }
   u32 Flags=XFPGA_PARTIAL_EN | XFPGA_ONLY_BIN_EN;
   
+#ifdef TIME_BERT
+	XTime_GetTime(&cstart);
+#endif
+
   // 3: write back
   Status=XFpga_PL_Frames_Load(XFpgaInstance,(UINTPTR)frame_data,Flags,len);
   if (Status != XST_SUCCESS) {
     return BST_XILFPGA_FAILURE;
   }
 
+#ifdef TIME_BERT
+	XTime_GetTime(&cend);
+	time_us_write=(double) ((cend - cstart) * 1000000.0) / COUNTS_PER_SECOND;
+#endif
 
   free(frame_data);
   free(the_frame_set->ranges);
   free(the_frame_set);
+
+#ifdef TIME_BERT
+  XTime_GetTime(&tend);
+  time_us_transfuse = (double) ((tend - tstart) * 1000000.0) / COUNTS_PER_SECOND;
+#endif
   
   return BST_SUCCESS;
   

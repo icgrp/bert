@@ -6,9 +6,15 @@ This tutorial will show you how to generate the needed files to run your own des
 ## Fist Steps: Vivado
 1. If you don't have the board support package for the `xczu3eg-sbva484-1-i` board already insrtalled you must do so before proceeding.
 
-TODO: do we need to point them to the installation package?  They wouldn't be running these tutorials if they didn't already know about this.
+TODO: do we need to point them to the installation package?  They wouldn't
+be running these tutorials if they didn't already know about this.
 
-2. From the BERT repository, use Vivado 2018.3 to open the project in `.../bert/dos/tutorials/huffman/huffmanVivadoProject`.
+AMD: at some point I didn't have one.  I'm now unclear if this is resolved
+by the .hdf, or if this is something you need to get the hdf to work.
+
+BEN: it is not resolved by the .hdf.  It is something you need to do even if you never run this tutorial - you need to install the board files into Vivado before you can get Vivado to target the board at all.  Back at the start of the first tutorial, the question I wrote was how much should we expect?  Can we expect they already know how to target this board with Vivado designs?  If not, then are we saying we intend on teaching them how to do that?  I would hope not.  Can we expect they know how to synthesize and implement designs?  Can we expect they know how to use the IP integrator?  Can we expect they know how to run the SDK?  And the list goes on and on and on.  This ought to be a point of discussion at a meeting very soon.
+
+2. From the BERT repository, use Vivado 2018.3 to open the project in `.../bert/docs/tutorials/huffman/huffmanVivadoProject`.
 3. To ensure that your design is complete (synthesized, placed, routed, and ready for bitstream generation) select "Run Implementation" in Vivado.  If Vivado thinks the project is not out of date it will say "A completed implementation run exists?  Re-run anyway?".  You do not need to if that is the case but if it is not, you will have to wait while it re-runs the implementation steps.
 4. Next, click "Open Implemented Design" to load all the information needed for the following steps.
 
@@ -28,9 +34,12 @@ Once the last step above finishes it will confirm where it put the files, what t
 ## Next Steps: Run bert_gen
 The `bert_gen` program will process the above-generated files and create a `mydesign.c` file and a `mydesign.h` file which you saw in the previous tutorial are a part of the application source code.  Specifically, they contain all the mapping information for your memories so BERT can access them.
 
+Before running `bert_gen`, you need to build the executable.
+Follow the instructions [for building `bert_gen`](../../host_tools/build.md). 
+
 You run `bert_gen` by going to the directory `.../bert/host_tools/bert_gen` and executing:
 ```
-./gen.sh -gen dirName
+./gen.sh dirName
 ```
 where `dirName` is the same directory you specified above in file_gen.
 

@@ -23,7 +23,6 @@ header_gen() {
     ./${headerName}_ucompress >${headerName}.c
     cp ${headerName}_uncompressed.h ${headerName}.h
     rm ultrascale_plus.o ${headerName}_compress.o ${headerName}_uncompressed.o ${headerName}_ucompress
-
 }
 
 map_gen() {
@@ -53,8 +52,8 @@ while test $# -gt 0; do
             shift
             headerName="mydesign"
             shift
-            mkdir -p $baseDir/bert_src
-            wkDir=$baseDir/bert_src
+            #mkdir -p $baseDir/bert_src
+            #wkDir=$baseDir/bert_src
             #echo -e "[10%] Generating bert.tcl in $wkDir\n"
             #tcl_gen
             #echo -e "[20%] Generated bert.tcl in $wkDir\n"
@@ -63,8 +62,8 @@ while test $# -gt 0; do
             echo -e "[30%] Generating .bram .info mapping in $baseDir\n"
             map_gen
             echo -e "[60%] Generated .bram .info mapping in $baseDir\n"
-            echo -e "[60%] Generating header files in $wkDir\n"
-	        header_gen
+            echo -e "[60%] Generating header files in $baseDir\n"
+            header_gen
             echo -e "[100%] Generated header files in $baseDir\n"
             echo -e "bert_gen complete, exiting....."
             exit
