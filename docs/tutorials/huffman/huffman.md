@@ -80,13 +80,13 @@ The next step is to write an actual application to use BERT to interact with you
 * Uses a bzip2 implementation of Huffmann encoding to create a new dictionary on the PS side and transfer it via BERT.
 * Writes ascending input to the `rawTextMem` and an identity encoding as the Huffman dictionary.
 
-As above, was already been copied over for you by the `copyfiles.py` script earlier when you configured the BSP.  For reference however, it was copied from `.../bert/docs/tutorials/huffman/sw_huffman` into `WORK/SDKWorkspace/huffman_demo/src`.
+As above, `hellobert.c` was already  copied over for you by the `copyfiles.py` script earlier when you configured the BSP.  For reference however, it was copied from `.../bert/docs/tutorials/huffman/sw_huffman` into `WORK/SDKWorkspace/huffman_demo/src`.
 
 Finally, you need to tell the application how much memory to use.  Double-click the `WORK/SDKWorkspace/huffman_demo/src/lscript.ld` file and set stack and heap sizes to 200000 (2 followed by 5 zeros -- this is hex for 2 Megabytes).  [For discussion on how to size heap, see the Usage Overview->Dynamic Memory Usage section in [the BERT API documentation](../../embedded/bert.md).]
 
-At this point you FINALLY have a complete application and it should show no compile  errors in Project Explorer!  As described above you may want to right-click the application in the Project Explorer (`huffman_demo`) and select 'Clean Project' to ensure that you now have a full, clean recompile.
+At this point you FINALLY have a complete application and it should show no compile  errors in Project Explorer!  As described above you may want to right-click the application (`huffman_demo`) in the Project Explorer and select 'Clean Project' to ensure that you now have a full, clean recompile.
 
-A lot has happened to get the source files in place in the SDK project.  This can be a source of great confusion.  In particular, in the BSP configuration step you ran a script called `copyfiles.py` which copied a variety of files as described above.  By examining the output printed out while running that script you should be able to figure out all the pieces of source code that were copied into your SDK project for both the BSP as well as the `hellobert.c` application program you are about to run.  You can use that as a guide when you get ready to do your new design later.
+A lot has happened to get the source files in place in the SDK project.  This can be a bit confusing.  In particular, in the BSP configuration step you ran a script called `copyfiles.py` which copied a variety of files as described above.  By examining the output printed out while running that script you should be able to figure out all the pieces of source code that were copied into your SDK project for both the BSP (`huffman_demo_bsp`) as well as the `huffman_demo` application (including the `hellobert.c` application program you are about to run).  You can use the output of `copyfileslpy` as a guide when you get ready to do your new design later.
 
 ## 4. Test on hardware
 
