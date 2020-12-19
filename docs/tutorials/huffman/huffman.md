@@ -37,11 +37,16 @@ The tutorial also assumes you have the following installed:
 
 
 ## The Overall Process
-Using BERT is a 4-step process.  
+Using BERT is a 5-step process.  
 1. You use Vivado to generate a design containing BRAMs and a PS.  Once you have generated a bitstream for the design you run a script to generate the needed data files for the remainder of the BERT process.  You do this on a "host" computer, meaning one that runs Vivado.
-2. You then set up the Xilinx SDK environment with the right versions of the xilfpga program from Xilinx as well as the needed libraries for BERT.  You should only need to do this once. 
-3. Once this is all in place, you will install the BERT source code itself and write your user application code, all of which will compile into a BERT executable that uses BERT to talk to the board after you have programmed it with a bitstream.  
-4. You will finally test that application on hardware with a bitstream programmed onto the board.
+2. You then set up the Xilinx SDK environment with the right versions of
+the xilfpga program from Xilinx.  This only needs to be done once per
+installation site.
+3.  You need to setup your board-support package with the needed libraries for
+   BERT. This needs to do be done only once per FPGA design; you can use the
+   same board files with multiple programs that use ths same FPGA design.
+4. Once this is all in place, you will install the BERT source code itself and write your user application code, all of which will compile into a BERT executable that uses BERT to talk to the board after you have programmed it with a bitstream.  
+5. You will finally test that application on hardware with a bitstream programmed onto the board.
 
 NOTE: along the way you will be copying files into the SDK project directories.   As you do so you may see compile errors in the Project Explorer window on the left of the SDK.  Don't worry.  You will have such compile errors until right at the end of Step 3 below so don't worry about them until you get to that point!  The tutorial will tell you at what point you should not have compile errors any more.
 
@@ -53,11 +58,21 @@ For this tutorial, however, a complete set of such files are provided for you wi
 # Step 2. Setup Xilinx SDK Environment With The Proper Libraries and Add Libraries to Your BSP
 The next step is to set up the Xilinx SDK environment.  This tutorial was written for Vivado 2018.3 but the BERT tools require `xilfpga` libraries for 2019.2 and so there are a number of steps required to get the proper libraries and files set up.
 
-* Step 2a - follow the instructions [here on SDK setup](../sdksetup.md).  This will set up your SDK environment.  You should only have to do this once.
+* Step 2a - follow the instructions [here on 2018.3 setup](../../embedded/xilinx2018_3.md)
+  This will set files you need in your SDK environment.  You should only have to do this
+  once per installation site.
 
-* Step 2b - you next need to add some required libraries to your BSP.  The document [bsp.md](../../embedded/bsp.md) covers which libraries and versions you will need for BERT as well as other additional steps.  You should only have to do this once.  Complete those steps before proceeding.
+* Step 2b - follow the instructions
+  [here on Application Project Setup](../appsetup.md).  This will create
+  the application project.
 
-* Step 2c - you now should check the project's link settings.  This is because adding a library to a BSP after a project has already been formulated sometimes causes an issue where the 'makefile' is not updated to link against the new libary. If you are getting compiler errors, you can check that the right flags are set by opening the application project's properties (right-click `huffman_demo` and choose C/C++ Build Settings).   Then, go to ARM v8 gcc linker -> Inferred Options -> Software Platform. The specific flags you are looking for as they relate to BERT include:
+* Step 2c - you next need to add some required libraries to your BSP.  The
+  document [bsp.md](../../embedded/bsp.md) covers which libraries and
+  versions you will need for BERT as well as other additional steps.  You
+  should only have to do this once per unique FPGA design.  You can use the
+  same BSP with multiple applications for the FPGA design.  Complete those steps before proceeding.
+
+* Step 2d - you now should check the project's link settings.  This is because adding a library to a BSP after a project has already been formulated sometimes causes an issue where the 'makefile' is not updated to link against the new libary. If you are getting compiler errors, you can check that the right flags are set by opening the application project's properties (right-click `huffman_demo` and choose C/C++ Build Settings).   Then, go to ARM v8 gcc linker -> Inferred Options -> Software Platform. The specific flags you are looking for as they relate to BERT include:
 
 * `-Wl,--start-group,-lxilfpga,-lxil,-lxilsecure,-lgcc,-lc,--end-group`
 *  `-Wl,--start-group,-lxilsecure,-lxil,-lgcc,-lc,--end-group`
