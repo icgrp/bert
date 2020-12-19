@@ -63,7 +63,7 @@ The next step is to set up the Xilinx SDK environment.  This tutorial was writte
   once per installation site.
 
 * Step 2b - follow the instructions
-  [here on Application Project Setup](../appsetup.md).  This will create
+  [here on Application Project Setup](../sdksetup.md).  This will create
   the application project.
 
 * Step 2c - you next need to add some required libraries to your BSP.  The
