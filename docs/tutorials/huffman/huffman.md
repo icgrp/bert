@@ -8,12 +8,9 @@ The hardware for the project is a Huffman Encoder design where 4 memories are us
 * A 512x16b memory with that stores the encoding of `rawTextMem`, called `resultsMem`
 * A 256x16b memory that stores a histogram of `rawTextMem`'s values, called `histMem`
 
-**TODO: pix show application flow**
-
-rawTextMem->encode(huffmanMem)-->resultMem
-                    |->histMem
-
 In the design, the memories can be read and written by BERT.  However, we have also hooked some of the memories up to the AXI bus so we can also read and write them that way to verify that things are operating correctly.
+
+![Huffman Encoder Design](../../images/huffman_encoder_design.gif)
 
 When the design is running, if the sotware  toggles a register bit on the AXI bus that will cause the encoder to run and the  `resultsMem` to be updated with the encoding of `rawTextMem`, based on the dictionary found in `huffmanMem`. Additionally, `histMem` is updated with a new histogram of `rawTextMem`. In order to verify that BERT is actually working, the design allows us to read `resultsMem` and `histMem` over AXI.
 
