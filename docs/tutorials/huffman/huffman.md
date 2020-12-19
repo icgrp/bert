@@ -150,8 +150,6 @@ TODO: *JAMES* - review:
 
 You can now refer to [the BERT API document](../../embedded/bert.md) for more details about BERT API in general. 
 
-TODO: Explain how to #define the different memories since the memories are indexed differently each time they are produced by bert_gen
-
 
 
 
