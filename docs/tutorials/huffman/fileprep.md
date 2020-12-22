@@ -39,13 +39,20 @@ Follow the instructions [for building `bert_gen`](../../host_tools/build.md).
 
 You run `bert_gen` by going to the directory `.../bert/host_tools/bert_gen` and executing:
 ```
-./gen.sh dirName
+./gen.sh -gen dirName
 ```
 where `dirName` is the same directory you specified above in file_gen.
+
 
 Note: you must be in the above directory to execute the script since it relies on other files in that directory.  
 
 The result of running this command is a `mydesign.c` file and a `mydesign.h` file placed into `dirName`.
+
+The default running the above is to generated an accelerated design.  To generate a non-accelerated design:
+```
+./gen.sh -na -gen dirName
+```
+
 
 ## Running the Original Huffman Tutorial
 If you return to the original Huffman Tutorial you can now redo the tutorial, substituting the following generated files in `dirName` for those originally provided:
