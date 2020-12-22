@@ -148,6 +148,6 @@ proc file_gen { dirName } {
     puts "  $dirName/top.hdf"
     puts "  $dirName/top.mdd"
     puts "  $dirName/top.dcp"
-    puts "You can move on by changing to your .../bert/host_tools/bert_gen directory and then executing './gen.sh $dirName'"
+    puts "You can move on by changing to your .../bert/host_tools/bert_gen directory and then executing './gen.sh -gen $dirName'"
 }
 
