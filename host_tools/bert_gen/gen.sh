@@ -2,18 +2,21 @@
 
 curr="$(realpath "$0")"
 bertDir="$(dirname "$curr")"
+accelNameAddition="accel"
 
 usage() {
-    echo "usage: gen.sh [[-gen dcpFile headerName | [-h] | [-gen_tcl dcpFile] | [-gen_mdd bert.tcl] | [-map_gen wkDir] | [-header_gen wkDir]]"
+    echo "usage: gen.sh baseDir"
 }
 
 header_gen() {
     $bertDir/bert_gen $baseDir ${headerName}_uncompressed
     cp $bertDir/compress/compress_generic.c $baseDir
+    cp $bertDir/accel/accel_all.c $baseDir
     cp $bertDir/compress/ultrascale_plus.? $baseDir
     cp $bertDir/compress/bert_types.h $baseDir
     cd $baseDir
-    echo "#include \"${headerName}_uncompressed.h\"" >${headerName}_compress.c
+    echo "#include \"stdint.h\"" >${headerName}_compress.c
+    echo "#include \"${headerName}_uncompressed.h\"" >>${headerName}_compress.c
     echo "#include \"stdio.h\"" >>${headerName}_compress.c
     echo "#include \"compress_generic.c\"" >>${headerName}_compress.c
     gcc -c ${headerName}_compress.c
@@ -22,7 +25,19 @@ header_gen() {
     gcc -o ${headerName}_ucompress ${headerName}_compress.o ${headerName}_uncompressed.o ultrascale_plus.o
     ./${headerName}_ucompress >${headerName}.c
     cp ${headerName}_uncompressed.h ${headerName}.h
-    rm ultrascale_plus.o ${headerName}_compress.o ${headerName}_uncompressed.o ${headerName}_ucompress
+    echo "#include \"stdint.h\"" >${headerName}_uaccel.c
+    echo "#include \"${headerName}.h\"" >>${headerName}_uaccel.c
+    echo "#include \"stdio.h\"" >>${headerName}_uaccel.c
+    echo "#include \"accel_all.c\"" >>${headerName}_uaccel.c
+    # the bert_types.h are different -- this one for compressed file...
+    cp $bertDir/accel/bert_types.h .
+    gcc -c ${headerName}.c
+    gcc -c ${headerName}_uaccel.c
+    gcc -o ${headerName}_uaccel_${accelNameAddition} ${headerName}.o ultrascale_plus.o ${headerName}_uaccel.o
+    ./${headerName}_uaccel_${accelNameAddition} ${headerName}_tables
+    mv ${headerName}.c ${headerName}_header.c
+    cat ${headerName}_header.c ${headerName}_tables.c  > ${headerName}.c
+    rm ultrascale_plus.o ${headerName}_compress.o ${headerName}_uncompressed.o ${headerName}_ucompress ${headerName}_uaccel.o ${headerName}.o
 }
 
 map_gen() {
@@ -42,6 +57,11 @@ while test $# -gt 0; do
         usage
         shift
         exit
+        ;;
+
+    -na | --no_accel)
+        accelNameAddition="_noaccel"
+        shift
         ;;
 
     -gen)

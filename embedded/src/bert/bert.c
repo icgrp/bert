@@ -10,7 +10,7 @@
 
 
 #ifdef TIME_BERT
-#include "xtime_l.h"                                                                                                   |    ultrascale_plus....     534 C/l              ~/icdev/bert_dev/bert_gen/compress/ultrascale_plus.h
+#include "xtime_l.h" 
 XTime tstart, tend, cstart, cend;
 XTime wstart;
 XTime pend; // DEBUG
@@ -36,8 +36,11 @@ double bert_get_last_physical_time_us() {return(-1);}
 // note: instead of linking against mydesign.h
 extern const char * logical_names[];
 extern struct logical_memory logical_memories[];
+extern struct accel_memory accel_memories_logical[];
+extern struct accel_memory accel_memories_physical[];
 
 #undef DEBUG_ACCELERATED_TO_LOGICAL
+//#define DEBUG_ACCELERATED_TO_LOGICAL
 
 #undef DEBUG_UNION
 #undef DEBUG_TRANSFUSE_WE
@@ -402,17 +405,18 @@ int bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 }
 
 int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
-				 int start_addr, int data_length, struct frame_set *the_frame_set,
-				  int lookup_quanta,
-				  int lookup_tables,
-				  int u64_per_lookup,
-				  int tabsize,
-				  uint64_t translation_tables[][tabsize])
+				int start_addr, int data_length, struct frame_set *the_frame_set)
 {
 
   
   if (logical_memories[logical].nframe_ranges<1)
     return BST_SUCCESS; // nothing to translate
+
+  int lookup_quanta=accel_memories_logical[logical].lookup_quanta;
+  int lookup_tables=accel_memories_logical[logical].lookup_tables;
+  int u64_per_lookup=accel_memories_logical[logical].u64_per_lookup;
+  int tabsize=(u64_per_lookup*(1<<lookup_quanta));
+  uint64_t **translation_tables=accel_memories_logical[logical].trans_tables;
 
   int wordlen=logical_memories[logical].wordlen;
   int b64_per_word=(wordlen+63)/64;
@@ -440,8 +444,10 @@ int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logic
       return BST_EXCESS_FRAMES;
     }
 
-  int slots_per_u64=64/wordlen; // will be 0 for wordlen between 65 and 72
+  //int slots_per_u64=64/wordlen; // will be 0 for wordlen between 65 and 72
+  int slots_per_u64=max(min(64/wordlen,ms.slots_in_repeat),1); // REVIEW
   uint64_t word_mask = (((uint64_t)1)<<wordlen)-1; // only used with wordlen<=32
+
 
   if (((wordlen<=64) && (ms.slots_in_repeat!=u64_per_lookup*slots_per_u64))
       || ((wordlen>64) && (ms.slots_in_repeat!=u64_per_lookup)))
@@ -492,13 +498,18 @@ int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logic
 	  int frame_word=frame_offset+(offset_in_frame+i*lookup_quanta)/32;
 	  int bit_offset=(offset_in_frame+i*lookup_quanta)%32;
 	  int key=(frame_data[frame_word]>>bit_offset)&mask_quanta;
+	  // 12/20/20 -- looks like this is necessary now
+	  //   might could be tightened by moving some of these computations
+	  //   out of loop.
+	  if ((bit_offset+lookup_quanta)>32)
+	    key|=(frame_data[frame_word+1]<<(bit_offset+lookup_quanta))&mask_quanta;
 	  // DEBUG -- all keys coming up zeros!
 #ifdef DEBUG_ACCELERATED_TO_LOGICAL
 	  printf("r=%d table=%d frame_word=%d bit_offset=%d key=%x\n",
 		 r,i,frame_word,bit_offset,key);
 	  for (int j=0;j<u64_per_lookup;j++)
 	    {
-	      printf(" %016llx",translation_tables[i][key*u64_per_lookup+j]);
+	      printf(" %016llx new_data now %016llx",translation_tables[i][key*u64_per_lookup+j],new_logical_data[j]);
 	    }
 	  printf("\n");
 #endif	  
@@ -531,9 +542,9 @@ int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logic
 	  //0 or 1 ... things are in the correct place
 	  if (slots_per_u64>1)
 	    {
+	      uint64_t packed_data=new_logical_data[j];
 	      for (int k=0;k<slots_per_u64;k++)
 		{
-		  uint64_t packed_data=new_logical_data[j];
 		  logical_data[loc+j*slots_per_u64+k]=
 		    ((packed_data>>(k*wordlen)) & word_mask);
 		}
@@ -659,18 +670,20 @@ int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 }
 
 int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
-				  int start_addr, int data_length, struct frame_set *the_frame_set,
-				  int lookup_quanta,
-				  int lookup_tables,
-				  int u64_per_lookup,
-				  int tabsize,
-				  uint64_t translation_tables[][tabsize])
+				 int start_addr, int data_length, struct frame_set *the_frame_set)
 {
 
 
   if (logical_memories[logical].nframe_ranges<1)
     return BST_SUCCESS; // nothing to translate
 
+  int lookup_quanta=accel_memories_physical[logical].lookup_quanta;
+  int lookup_tables=accel_memories_physical[logical].lookup_tables;
+  int u64_per_lookup=accel_memories_physical[logical].u64_per_lookup;
+  int tabsize=(u64_per_lookup*(1<<lookup_quanta));
+  uint64_t **translation_tables=accel_memories_physical[logical].trans_tables;
+  
+  
   int wordlen=logical_memories[logical].wordlen;
   int words=logical_memories[logical].words;
   uint64_t mask_quanta=(((uint64_t) 1)<<lookup_quanta)-1;
@@ -859,11 +872,20 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
     for (int i=0;i<num;i++)
     {
       if (meminfo[i].operation==BERT_OPERATION_READ) {
-        status = bert_to_logical(meminfo[i].logical_mem,
-			frame_data,
-			meminfo[i].data,
-			meminfo[i].start_addr, meminfo[i].data_length,
-			the_frame_set);
+	if ((accel_memories_logical!=(struct accel_memory *)NULL)
+	    && (accel_memories_logical[meminfo[i].logical_mem].lookup_quanta>1))
+	  status = bert_accelerated_to_logical(meminfo[i].logical_mem,
+				   frame_data,
+				   meminfo[i].data,
+				   meminfo[i].start_addr, meminfo[i].data_length,
+				   the_frame_set);
+	else
+	  status = bert_to_logical(meminfo[i].logical_mem,
+				   frame_data,
+				   meminfo[i].data,
+				   meminfo[i].start_addr, meminfo[i].data_length,
+				   the_frame_set);
+	  
         if (status != BST_SUCCESS)
           return status;
       }
@@ -874,12 +896,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 				     meminfo[i].data,
 				     meminfo[i].start_addr,
 				     meminfo[i].data_length,
-				     the_frame_set,
-				     meminfo[i].lookup_quanta,
-				     meminfo[i].lookup_tables,
-				     meminfo[i].u64_per_lookup,
-				     meminfo[i].tabsize,
-				     meminfo[i].pointer_to_trans_tables
+				     the_frame_set
 				     );      
         if (status != BST_SUCCESS)
           return status;
@@ -895,11 +912,19 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
   for (int i=0;i<num;i++)
     {
       if (meminfo[i].operation==BERT_OPERATION_WRITE) {
-        status = bert_to_physical(meminfo[i].logical_mem,
-			 frame_data,
-			 meminfo[i].data,
-			 meminfo[i].start_addr, meminfo[i].data_length,
-			 the_frame_set);
+	if ((accel_memories_physical!=(struct accel_memory *)NULL)
+	    && (accel_memories_physical[meminfo[i].logical_mem].lookup_quanta>1))
+	  status = bert_accelerated_to_physical(meminfo[i].logical_mem,
+						frame_data,
+						meminfo[i].data,
+						meminfo[i].start_addr, meminfo[i].data_length,
+						the_frame_set);
+	else
+	  status = bert_to_physical(meminfo[i].logical_mem,
+				    frame_data,
+				    meminfo[i].data,
+				    meminfo[i].start_addr, meminfo[i].data_length,
+				    the_frame_set);
 	if (status != BST_SUCCESS)
 	      return status;
       }
@@ -909,12 +934,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 				     meminfo[i].data,
 				     meminfo[i].start_addr,
 				     meminfo[i].data_length,
-				     the_frame_set,
-				     meminfo[i].lookup_quanta,
-				     meminfo[i].lookup_tables,
-				     meminfo[i].u64_per_lookup,
-				     meminfo[i].tabsize,
-				     meminfo[i].pointer_to_trans_tables
+				     the_frame_set
 				     );    
         if (status != BST_SUCCESS)
           return status;
