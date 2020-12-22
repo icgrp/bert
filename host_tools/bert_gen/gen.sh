@@ -5,7 +5,7 @@ bertDir="$(dirname "$curr")"
 accelNameAddition="accel"
 
 usage() {
-    echo "usage: gen.sh baseDir"
+    echo "usage: gen.sh [-na] -gen baseDir"
 }
 
 header_gen() {
