@@ -98,13 +98,13 @@ void noaccel_memory(int which, int logical, FILE *cfp)
   fprintf(cfp,"#define ACCEL_LOOKUP_TABLES_%s_%d %d\n",logical_physical,which,0);
   fprintf(cfp,"#define ACCEL_U64_PER_LOOKUP_%s_%d %d\n",logical_physical,which,0);
 
-  fprintf(cfp,"uint64_t **trans_tables_%s_%d=(uint64_t **)NULL;\n",logical_physical_lower[logical],which);  	  
   fprintf(cfp,"#define ACCEL_MEM_%s%d {",logical_physical,which);
   fprintf(cfp,"ACCEL_LOOKUP_TABLES_%s_%d,",logical_physical,which);
   fprintf(cfp,"ACCEL_U64_PER_LOOKUP_%s_%d,",logical_physical,which);
   fprintf(cfp,"ACCEL_LOOKUP_QUANTA_MEM_%s_%d,",logical_physical,which);
   fprintf(cfp,"ACCEL_FRAME_BIT_OFFSET_%s_%d,",logical_physical,which);
-  fprintf(cfp,"trans_tables_%s_%d}\n",logical_physical_lower[logical],which);
+  fprintf(cfp,"(uint64_t **)NULL}\n",logical_physical_lower[logical],which);
+
 
 }
 void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
