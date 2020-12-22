@@ -2,9 +2,11 @@
 #include <stdlib.h>
 
 
+#undef DEBUG_NEW_FRAME_RANGES
 #undef DEBUG_WHICH_RANGE
 #undef DEBUG_OFFSET_RANGE
 #undef VERBOSE
+
 
 #define MAX_BITS_IN_FRAME (WORDS_PER_FRAME*32)
 
@@ -176,6 +178,8 @@ int main ()
 #ifdef VERBOSE  
   printf("//Design has %d logical memories\n", NUM_LOGICAL);
 #endif
+  printf("#include <stdio.h>\n");
+  printf("#include <stdint.h>\n");
   printf("#include \"bert_types.h\"\n");
   printf("#define NUM_LOGICAL %d\n",NUM_LOGICAL);
 
@@ -396,10 +400,11 @@ int main ()
 				{
 				  logical_memories_new_unique_frames[i][logical_memories_new_nframe_ranges[i]]=unique_frames[u];
 				  logical_memories_new_unique_frames_len[i][logical_memories_new_nframe_ranges[i]]=unique_frames_max[u]-unique_frames[u]+1;
-				  // DEBUG 12/10/2020
-				  //fprintf(stderr,"putting new unique memory in slot %d for memory %d\n",
-				  //	  logical_memories_new_nframe_ranges[i],
-			          //		  i);
+#ifdef DEBUG_NEW_FRAME_RANGES
+				  fprintf(stderr,"putting new unique memory in slot %d for memory %d\n",
+				  	  logical_memories_new_nframe_ranges[i],
+			          		  i);
+#endif				  
 				  logical_memories_new_nframe_ranges[i]++;
 				}
 			      else
@@ -407,7 +412,6 @@ int main ()
 				  // DEBUG 12/10/2020
 				  //fprintf(stderr,"updating unique memory slot %d for memory %d\n",
 				  //     base_loc, i);
-				  logical_memories_new_nframe_ranges[i]++;
 				  // expand as necessary
 				  int old_base=logical_memories_new_unique_frames[i][base_loc];
 				  int old_max=old_base+logical_memories_new_unique_frames_len[i][base_loc]-1;
@@ -492,9 +496,11 @@ int main ()
 				  (logical_memories_new_unique_frames[i])[logical_memories_new_nframe_ranges[i]]=unique_frames[u];
 				  (logical_memories_new_unique_frames_len[i])[logical_memories_new_nframe_ranges[i]]=unique_frames_max[u]-unique_frames[u]+1;
 				  // DEBUG 12/10/2020
-				  //fprintf(stderr,"putting new unique memory in slot %d for memory %d\n",
-				  //	  logical_memories_new_nframe_ranges[i],
-			          //		  i);
+#ifdef DEBUG_NEW_FRAME_RANGES
+				  fprintf(stderr,"putting new unique memory in slot %d for memory %d\n",
+				  	  logical_memories_new_nframe_ranges[i],
+			          		  i);
+#endif				  
 				  logical_memories_new_nframe_ranges[i]++;
 				}
 			      else
@@ -503,7 +509,6 @@ int main ()
 				  //fprintf(stderr,"updating unique memory slot %d for memory %d\n",
 			          //		  base_loc,
 				  //	  i);
-				  logical_memories_new_nframe_ranges[i]++;
 				  // expand as necessary
 				  int old_base=logical_memories_new_unique_frames[i][base_loc];
 				  int old_max=old_base+logical_memories_new_unique_frames_len[i][base_loc]-1;
@@ -582,4 +587,6 @@ int main ()
   }
   printf("};\n");
 
+
+  
 }
