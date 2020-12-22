@@ -10,6 +10,6 @@ This has an alternate hellobert.c with timing operations.
   3. time for write
   4. time for translation to logical (from FRAME format)
   5. time for translation to physical (to FRAME format)
-* small values (less than a microsecond) are null operations (just timing code overhed)
+* small values (less than a microsecond) are null operations (just timing code overhead)
 
 
