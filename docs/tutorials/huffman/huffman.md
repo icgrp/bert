@@ -126,7 +126,23 @@ If all goes well, the program will run and will print results to the SDK Termina
 
 Congratulations!  You have run a successful demo application.
 
-Obvious next steps would be to experiment with making changes to the `hellobert.c` program and re-run it on the board to gain some experience with the board and the BERT API.  Then, work your way through the second BERT tutorial, [Preparing Needed Files for the Huffman Encoding Tutorial](fileprep.md), to learn how to generate the files needed from a Vivado design for the entire process (these are the files that were given to you at the start of this tutorial).
+Obvious next steps would be to experiment with making changes to the
+`hellobert.c` program and re-run it on the board to gain some experience
+with the board and the BERT API.  Then, work your way through the second
+BERT tutorial,
+[Preparing Needed Files for the Huffman Encoding Tutorial](fileprep.md), to
+learn how to generate the files needed from a Vivado design for the entire
+process (these are the files that were given to you at the start of this
+tutorial).
+
+Other things you can do:
+* Run a [timing version of `hellobert.c`](timing/README.md) to capture
+times for bert operations and components
+* Run an [accelerated version of translation](accel/README.md) to speed up
+  translation on simpler memories (all the memories in this design are
+  simple enough)
+* Compile with -O3  to run translation fast
+* TODO (link to instructions): Increase the DMA read speed to accelerate read data transfer
 
 ---
 
