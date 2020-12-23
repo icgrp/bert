@@ -291,6 +291,46 @@ int main() {
     xil_printf("result[2] = %x\r\n", axi_results[2]);
     xil_printf("result[3] = %x\r\n", axi_results[3]);
 
+    // final run reading all memories for timing
+	  bert_read(mem_hist_slot,bert_hist,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("histogram read");
+#endif
+
+	  bert_read(mem_result_slot,bert_results,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("result read");
+#endif
+
+	  bert_read(mem_input_slot,bert_raw,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("input read");
+#endif
+	  bert_read(mem_huffman_slot,bert_huff,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("huffman read");
+#endif
+
+  // final run writing all memories for timing
+	  bert_write(mem_hist_slot,bert_hist,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("histogram write");
+#endif
+
+	  bert_write(mem_result_slot,bert_results,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("result write");
+#endif
+
+	  bert_write(mem_input_slot,bert_raw,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("input write");
+#endif
+	  bert_write(mem_huffman_slot,bert_huff,&XFpgaInstance);
+#ifdef TIME_BERT
+	  print_time("huffman write");
+#endif
+    
 
     return 0;
 
