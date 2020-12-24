@@ -39,7 +39,9 @@ struct frame_range_offset {
   int frame_base;
   int len;
   int we_bits;
-  int has_read; // may also need the has live partner bit
+  int has_read;
+  // may also need the has live partner bit
+  // ...not need for convservative -- has_read is enough
   int offset;
 };
 
