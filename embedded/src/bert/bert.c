@@ -134,6 +134,9 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 	      int remaining_length=(info[i].data_length); // note -- in slots not repeats
 	      for (int s=0;s<logical_memories[info[i].logical_mem].num_segments;s++)
 		{
+		  int needs_read=0; // is there something that would force a read before write?
+		  //  (a) RAMB18 with live partner (not being written...but not opt. that, yet)
+		  //  (b) write to a few addresses not on frame boundary
 		  struct segment_repeats current_segment=logical_memories[info[i].logical_mem].repeats[s];
 		  int len;
 		  if ((slot_base+current_segment.slots_in_repeat*current_segment.num_repeats)<info[i].start_addr)
@@ -143,14 +146,22 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 		    }
 		  else
 		    {
+
+		      if ((next_addr%current_segment.slots_in_repeat)!=0)
+			needs_read=1; // write may start in middle of a repeat; 
+  		                      // need to read stuff before it.
 		      
 		      int mem_ranges=current_segment.unique_frames_in_repeat;
 		      
 		      // len applies to all ranges
 		      int slot_len=min(remaining_length,(current_segment.num_repeats*current_segment.slots_in_repeat-(next_addr-slot_base)));
-		      // TODO: needs to be rounded up and flag something for partial if not multiple of slots_in_repeat
-		      len=slot_len/current_segment.slots_in_repeat;
-		      
+		      // TODO: rounding up in case partial
+		      len=(slot_len+current_segment.slots_in_repeat-1)/current_segment.slots_in_repeat;
+
+		      if (len*current_segment.slots_in_repeat!=slot_len)
+			needs_read=1; // read may ned in the middle of repeat; 
+  		                      // need to read stuff after it.
+			  
 		      for (int j=0;j<mem_ranges;j++) 
 			{
 			  int current_frame=current_segment.unique_frames[j];
@@ -159,6 +170,9 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 			  if (which_frame_in_logical_memory == -1)
 			    return NULL;
 			  int webits=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+			  int has_live_ramb18_partner=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].has_live_ramb18_partner;
+			  if (has_live_ramb18_partner)
+			    needs_read=1; // conservative -- if partner is in this transfuse operation, may not need...but that may require much more complicated calculation for general case
 			  
 			  int frame_base=current_segment.unique_frames[j]+(next_addr-slot_base)/current_segment.slots_in_repeat;
 #ifdef DEBUG_UNION
@@ -170,7 +184,7 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 				 rw,i,info[i].logical_mem,s,j,which_frame_in_logical_memory,
 				 frame_base,webits);
 #endif
-			  // TODO: maybe detect partial writes here
+
 			  int found=0;
 			  for (int k=0;k<current_frame_ranges;k++)
 			    {
@@ -194,6 +208,7 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 				      printf("bert_union: frame %x webits now %x\n",
 					     frame_base,ranges[k].we_bits);
 #endif
+				      if (needs_read) ranges[k].has_read=1;
 				    }
 				  else
 				    ranges[k].has_read=1;
@@ -211,7 +226,10 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 				  ranges[k].frame_base=frame_base;
 				  ranges[k].len=len;
 				  if (rw==0) // processing writes
-				    ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+				    {
+				      ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+				      if (needs_read) ranges[k].has_read=1;
+				    }
 				  else
 				    ranges[k].has_read=1;
 				  
@@ -230,7 +248,10 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 				  found=1;
 
 				  if (rw==0) // processing writes
-				    ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+				    {
+				      ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+				      if (needs_read) ranges[k].has_read=1;
+				    }
 				  else
 				    ranges[k].has_read=1;
 
@@ -251,7 +272,7 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 				{
 				  //ranges[current_frame_ranges].has_write=1;
 				  ranges[current_frame_ranges].we_bits=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
-				  ranges[current_frame_ranges].has_read=0;
+				  ranges[current_frame_ranges].has_read=needs_read;
 				}
 			      else
 				{
@@ -985,9 +1006,11 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 #endif
 
   // 3: write back
-  Status=XFpga_PL_Frames_Load(XFpgaInstance,(UINTPTR)frame_data,Flags,len);
-  if (Status != XST_SUCCESS) {
-    return BST_XILFPGA_FAILURE;
+  if (len>0) {
+     Status=XFpga_PL_Frames_Load(XFpgaInstance,(UINTPTR)frame_data,Flags,len);
+     if (Status != XST_SUCCESS) {
+       return BST_XILFPGA_FAILURE;
+     }
   }
 
 #ifdef TIME_BERT
