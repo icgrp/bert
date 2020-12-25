@@ -158,21 +158,22 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 		  else
 		    {
 
-		      if ((next_addr%current_segment.slots_in_repeat)!=0)
-			needs_read=1; // write may start in middle of a repeat; 
+			  int start_offset=next_addr%current_segment.slots_in_repeat;
+		      if ((start_offset)!=0)
+			    needs_read=1; // write may start in middle of a repeat;
   		                      // need to read stuff before it.
 		      
 		      int mem_ranges=current_segment.unique_frames_in_repeat;
 		      
 		      // len applies to all ranges
-		      int slot_len=min(remaining_length,(current_segment.num_repeats*current_segment.slots_in_repeat-(next_addr-slot_base)));
+		      int slot_len=min(remaining_length+start_offset,(current_segment.num_repeats*current_segment.slots_in_repeat-(next_addr-slot_base)));
 		      // rounding up in case partial
 		      len=(slot_len+current_segment.slots_in_repeat-1)/current_segment.slots_in_repeat;
 
 		      if (len*current_segment.slots_in_repeat!=slot_len)
-			needs_read=1; // read may end in the middle of repeat;
+			    needs_read=1; // read may end in the middle of repeat;
   		                      // need to read stuff after it.
-			  
+
 		      for (int j=0;j<mem_ranges;j++) 
 			{
 			  int current_frame=current_segment.unique_frames[j];
