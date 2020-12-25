@@ -1,7 +1,8 @@
 struct frame_range {
    int first_frame;
    int len;
-   int we_bits;
+  int we_bits; // BRAM18 write enables, so needs to be grouped in pairs before actually
+               //  use with frame write enables that are at RAMB36 granularity
   // will need this to read newest compressed files -- looks like tolerates having it on old files?
    int has_live_ramb18_partner; // coming soon
 };
