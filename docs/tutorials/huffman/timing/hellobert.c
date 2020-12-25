@@ -172,7 +172,7 @@ void compare(int hlen, int rlen)
     }
 }
 
-void recompute_huffman(int *result_code) {
+void recompute_huffman(uint64_t *result_code) {
   UChar len[256];
   Int32 code[256];
 
