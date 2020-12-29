@@ -1,8 +1,5 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: BYU
-// Engineer: Jonathan Nelson
-// 
 // Create Date: 07/13/2020 12:46:38 PM
 // Module Name: histogram
 // Description: Simple histogram calculator.

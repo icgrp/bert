@@ -1,8 +1,3 @@
-/*************************************************************
-* 1. Waits for a clr.
-* 2. Does huffman and then just stalls and outputs a done.
-* 3. Repeats.
-**************************************************************/
 
 `default_nettype none
 
