@@ -391,6 +391,8 @@ static u32 XFpga_PreConfigPcap(XFpga *InstancePtr)
 
 	/* Enable the PCAP clk */
 	RegVal = Xil_In32(PCAP_CLK_CTRL);
+	RegVal &= ~(0x00003F00);
+	RegVal |= (PCAP_WRITE_DIV << 8);
 	Xil_Out32(PCAP_CLK_CTRL, RegVal | PCAP_CLK_EN_MASK);
 
 	if ((InstancePtr->WriteInfo.Flags & XFPGA_PARTIAL_EN) == 0U) {
@@ -2134,7 +2136,6 @@ static u32 XFpga_GetPLConfigData(const XFpga *InstancePtr)
 	UINTPTR Address = InstancePtr->ReadInfo.ReadbackAddr;
 	u32 NumFrames = InstancePtr->ReadInfo.ConfigReg_NumFrames;
 	u32 RegVal;
-	u32 RegRestore = 0;
 	u32 cmdindex;
 	u32 *CmdBuf;
 	s32 i;
@@ -2158,14 +2159,8 @@ static u32 XFpga_GetPLConfigData(const XFpga *InstancePtr)
 
 	/* Enable the PCAP clk */
 	RegVal = Xil_In32(PCAP_CLK_CTRL);
-	RegRestore = RegVal;
-
-	/*
-	 * There is no h/w flow control for pcap read
-	 * to prevent the FIFO from over flowing, reduce
-	 * the PCAP operating frequency.
-	 */
-	RegVal |= 0x3F00U;
+    RegVal &= ~(0x00003F00);
+	RegVal |= (PCAP_READ_DIV << 8);
 	Xil_Out32(PCAP_CLK_CTRL, RegVal | PCAP_CLK_EN_MASK);
 
 	/* Take PCAP out of Reset */
@@ -2332,7 +2327,7 @@ static u32 XFpga_GetPLConfigData(const XFpga *InstancePtr)
 END:
 	/* Disable the PCAP clk */
 	RegVal = Xil_In32(PCAP_CLK_CTRL);
-	Xil_Out32(PCAP_CLK_CTRL, RegRestore & ~(PCAP_CLK_EN_MASK));
+	Xil_Out32(PCAP_CLK_CTRL, RegVal & ~(PCAP_CLK_EN_MASK));
 
 	return Status;
 }
