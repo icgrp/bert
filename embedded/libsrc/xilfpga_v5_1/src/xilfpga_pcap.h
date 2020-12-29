@@ -218,7 +218,7 @@ extern "C" {
 #define PCAP_CLK_CTRL		0xFF5E00A4U
 #define PCAP_CLK_EN_MASK	0x01000000U
 
-#define PCAP_READ_DIV 16
+#define PCAP_READ_DIV 10
 #define PCAP_WRITE_DIV 0
 
 /* AES KEY SRC Info */
