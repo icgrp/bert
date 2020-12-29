@@ -143,7 +143,8 @@ times for bert operations and components
   simple enough)
 * Compile with -O3  to run translation fast
 * TODO (link to instructions): Increase the DMA read speed to accelerate read data transfer
-
+* TODO Warn them about (* dont_touch = "true" *) to keep memories from disappearing
+* TODO Warn them about having the wrong cmake due to source-ing Xilinx settings64.sh file
 ---
 
 TODO:
