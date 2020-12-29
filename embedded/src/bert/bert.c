@@ -8,9 +8,14 @@
 
 #include "bert.h"
 
+//DEBUG on Embedded Platform
+#include "xil_printf.h"
+#define PRINT xil_printf
+// maybe for host
+// #define PRINT printf
 
 #ifdef TIME_BERT
-#include "xtime_l.h"                                                                                                   |    ultrascale_plus....     534 C/l              ~/icdev/bert_dev/bert_gen/compress/ultrascale_plus.h
+#include "xtime_l.h" 
 XTime tstart, tend, cstart, cend;
 XTime wstart;
 XTime pend; // DEBUG
@@ -36,13 +41,22 @@ double bert_get_last_physical_time_us() {return(-1);}
 // note: instead of linking against mydesign.h
 extern const char * logical_names[];
 extern struct logical_memory logical_memories[];
+extern struct accel_memory accel_memories_logical[];
+extern struct accel_memory accel_memories_physical[];
+
+// not necessary for operation, but useful to expose failure when debugging
+//  (otherwise, previous data sitting in the allocated frame might happen to be correct)
+#define CLEAR_FRAME_DATA
 
 #undef DEBUG_ACCELERATED_TO_LOGICAL
+//#define DEBUG_ACCELERATED_TO_LOGICAL
 
 #undef DEBUG_UNION
 #undef DEBUG_TRANSFUSE_WE
 #undef REGENERATE_UNCOMPRESSED_TO_LOGICAL
 #undef REGENERATE_UNCOMPRESSED_TO_PHYSICAL
+
+#undef DEBUG_START_ADDR
 
 #define min(x,y) ((x<y)?x:y)
 #define max(x,y) ((x<y)?y:x)
@@ -60,10 +74,10 @@ int find_offset_base(int frame, struct frame_set *the_frame_set)
 	return(the_frame_set->ranges[i].offset);
     }
 
-  fprintf(stderr,"ERROR: Frame %x not found in the_frame_set\n",frame);
+  PRINT("ERROR: Frame %x not found in the_frame_set\n",frame);
   for (int i=0;i<num_ranges;i++)
     {
-      fprintf(stderr,"\tRange base=%x len=%d\n",
+      PRINT("\tRange base=%x len=%d\n",
 	      the_frame_set->ranges[i].frame_base,
 	      the_frame_set->ranges[i].len);
     }
@@ -131,6 +145,9 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 	      int remaining_length=(info[i].data_length); // note -- in slots not repeats
 	      for (int s=0;s<logical_memories[info[i].logical_mem].num_segments;s++)
 		{
+		  int needs_read=0; // is there something that would force a read before write?
+		  //  (a) RAMB18 with live partner (not being written...but not opt. that, yet)
+		  //  (b) write to a few addresses not on frame boundary
 		  struct segment_repeats current_segment=logical_memories[info[i].logical_mem].repeats[s];
 		  int len;
 		  if ((slot_base+current_segment.slots_in_repeat*current_segment.num_repeats)<info[i].start_addr)
@@ -140,14 +157,23 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 		    }
 		  else
 		    {
+
+			  int start_offset=next_addr%current_segment.slots_in_repeat;
+		      if ((start_offset)!=0)
+			    needs_read=1; // write may start in middle of a repeat;
+  		                      // need to read stuff before it.
 		      
 		      int mem_ranges=current_segment.unique_frames_in_repeat;
 		      
 		      // len applies to all ranges
-		      int slot_len=min(remaining_length,(current_segment.num_repeats*current_segment.slots_in_repeat-(next_addr-slot_base)));
-		      // TODO: needs to be rounded up and flag something for partial if not multiple of slots_in_repeat
-		      len=slot_len/current_segment.slots_in_repeat;
-		      
+		      int slot_len=min(remaining_length+start_offset,(current_segment.num_repeats*current_segment.slots_in_repeat-(next_addr-slot_base)));
+		      // rounding up in case partial
+		      len=(slot_len+current_segment.slots_in_repeat-1)/current_segment.slots_in_repeat;
+
+		      if (len*current_segment.slots_in_repeat!=slot_len)
+			    needs_read=1; // read may end in the middle of repeat;
+  		                      // need to read stuff after it.
+
 		      for (int j=0;j<mem_ranges;j++) 
 			{
 			  int current_frame=current_segment.unique_frames[j];
@@ -156,6 +182,9 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 			  if (which_frame_in_logical_memory == -1)
 			    return NULL;
 			  int webits=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+			  int has_live_ramb18_partner=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].has_live_ramb18_partner;
+		  	  if (has_live_ramb18_partner)
+			    needs_read=1; // conservative -- if partner is in this transfuse operation, may not need...but that may require much more complicated calculation for general case
 			  
 			  int frame_base=current_segment.unique_frames[j]+(next_addr-slot_base)/current_segment.slots_in_repeat;
 #ifdef DEBUG_UNION
@@ -167,7 +196,7 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 				 rw,i,info[i].logical_mem,s,j,which_frame_in_logical_memory,
 				 frame_base,webits);
 #endif
-			  // TODO: maybe detect partial writes here
+
 			  int found=0;
 			  for (int k=0;k<current_frame_ranges;k++)
 			    {
@@ -191,6 +220,7 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 				      printf("bert_union: frame %x webits now %x\n",
 					     frame_base,ranges[k].we_bits);
 #endif
+				      if (needs_read) ranges[k].has_read=1;
 				    }
 				  else
 				    ranges[k].has_read=1;
@@ -208,7 +238,10 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 				  ranges[k].frame_base=frame_base;
 				  ranges[k].len=len;
 				  if (rw==0) // processing writes
-				    ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+				    {
+				      ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+				      if (needs_read) ranges[k].has_read=1;
+				    }
 				  else
 				    ranges[k].has_read=1;
 				  
@@ -227,7 +260,10 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 				  found=1;
 
 				  if (rw==0) // processing writes
-				    ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+				    {
+				      ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+				      if (needs_read) ranges[k].has_read=1;
+				    }
 				  else
 				    ranges[k].has_read=1;
 
@@ -248,7 +284,7 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
 				{
 				  //ranges[current_frame_ranges].has_write=1;
 				  ranges[current_frame_ranges].we_bits=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
-				  ranges[current_frame_ranges].has_read=0;
+				  ranges[current_frame_ranges].has_read=needs_read;
 				}
 			      else
 				{
@@ -402,17 +438,18 @@ int bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 }
 
 int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
-				 int start_addr, int data_length, struct frame_set *the_frame_set,
-				  int lookup_quanta,
-				  int lookup_tables,
-				  int u64_per_lookup,
-				  int tabsize,
-				  uint64_t translation_tables[][tabsize])
+				int start_addr, int data_length, struct frame_set *the_frame_set)
 {
 
   
   if (logical_memories[logical].nframe_ranges<1)
     return BST_SUCCESS; // nothing to translate
+
+  int lookup_quanta=accel_memories_logical[logical].lookup_quanta;
+  int lookup_tables=accel_memories_logical[logical].lookup_tables;
+  int u64_per_lookup=accel_memories_logical[logical].u64_per_lookup;
+  int tabsize=(u64_per_lookup*(1<<lookup_quanta));
+  uint64_t **translation_tables=accel_memories_logical[logical].trans_tables;
 
   int wordlen=logical_memories[logical].wordlen;
   int b64_per_word=(wordlen+63)/64;
@@ -440,8 +477,10 @@ int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logic
       return BST_EXCESS_FRAMES;
     }
 
-  int slots_per_u64=64/wordlen; // will be 0 for wordlen between 65 and 72
+  //int slots_per_u64=64/wordlen; // will be 0 for wordlen between 65 and 72
+  int slots_per_u64=max(min(64/wordlen,ms.slots_in_repeat),1); // REVIEW
   uint64_t word_mask = (((uint64_t)1)<<wordlen)-1; // only used with wordlen<=32
+
 
   if (((wordlen<=64) && (ms.slots_in_repeat!=u64_per_lookup*slots_per_u64))
       || ((wordlen>64) && (ms.slots_in_repeat!=u64_per_lookup)))
@@ -492,13 +531,18 @@ int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logic
 	  int frame_word=frame_offset+(offset_in_frame+i*lookup_quanta)/32;
 	  int bit_offset=(offset_in_frame+i*lookup_quanta)%32;
 	  int key=(frame_data[frame_word]>>bit_offset)&mask_quanta;
+	  // 12/20/20 -- looks like this is necessary now
+	  //   might could be tightened by moving some of these computations
+	  //   out of loop.
+	  if ((bit_offset+lookup_quanta)>32)
+	    key|=(frame_data[frame_word+1]<<(bit_offset+lookup_quanta))&mask_quanta;
 	  // DEBUG -- all keys coming up zeros!
 #ifdef DEBUG_ACCELERATED_TO_LOGICAL
 	  printf("r=%d table=%d frame_word=%d bit_offset=%d key=%x\n",
 		 r,i,frame_word,bit_offset,key);
 	  for (int j=0;j<u64_per_lookup;j++)
 	    {
-	      printf(" %016llx",translation_tables[i][key*u64_per_lookup+j]);
+	      printf(" %016llx new_data now %016llx",translation_tables[i][key*u64_per_lookup+j],new_logical_data[j]);
 	    }
 	  printf("\n");
 #endif	  
@@ -531,9 +575,9 @@ int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logic
 	  //0 or 1 ... things are in the correct place
 	  if (slots_per_u64>1)
 	    {
+	      uint64_t packed_data=new_logical_data[j];
 	      for (int k=0;k<slots_per_u64;k++)
 		{
-		  uint64_t packed_data=new_logical_data[j];
 		  logical_data[loc+j*slots_per_u64+k]=
 		    ((packed_data>>(k*wordlen)) & word_mask);
 		}
@@ -595,9 +639,17 @@ int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 	  int num_repeats=ms.num_repeats;
 	  int num_frames=ms.num_frames;
 	  int repeat_start=0;
-	  if (start_addr>loc)
+	  if (start_addr>loc) {
 	    repeat_start=(start_addr-loc)/ms.slots_in_repeat;
+#ifdef DEBUG_START_ADDR
+	    PRINT("start_addr=%x dat_length=%d loc=%x b=%x\n",start_addr,data_length,loc,b);
+#endif
+	  }
 	  loc+=repeat_start*ms.slots_in_repeat; // fast forward to correct repeat
+#ifdef DEBUG_START_ADDR
+	    PRINT("after fast forward: start_addr=%x repeat_start=%d loc=%x b=%x num_repeats=% num_frames=%d\n",start_addr,repeat_start,loc,b,num_repeats,num_frames);
+#endif
+
 	  for (int r=repeat_start;r<num_repeats;r++)
 	    {
 	      for (int f=0;f<num_frames;f++)
@@ -617,12 +669,17 @@ int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 		    {
 		      // don't go through the stuff that isn't in range
 		      if (loc>=(start_addr+data_length))
-			return BST_SUCCESS;
-		      if ((loc>=start_addr) & (loc<(start_addr+data_length)))
+		      {
+#ifdef DEBUG_START_ADDR
+	    PRINT("returning success: start_addr=%x data_length=%d loc=%x b=%x\n",start_addr,data_length,loc,b);
+#endif
+		    	  return BST_SUCCESS;
+		      }
+		      if ((loc>=start_addr) && (loc<(start_addr+data_length)))
 			{		      
 			  // only needs to be in one, but this gets called first...
 #ifdef REGENERATE_UNCOMPRESSED_TO_PHYSICAL
-			  printf("\t{0x%x,%d},\n",(frame+r),bit_location[fb]);
+			  PRINT("\t{0x%x,%d},\n",(frame+r),bit_location[fb]);
 #endif
 			  
 			  int frame_word=bit_location[fb]/32;
@@ -640,18 +697,18 @@ int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 			    frame_data[frame_offset+frame_word]=
 			      frame_data[frame_offset+frame_word] | (1<<bit_in_word);
 			  
-			  if (b<(wordlen-1))
+			  } // if bit in range
+		    if (b<(wordlen-1))
 			    b++;
-			  else
+			else
 			    {
 			      b=0;
 			      loc++;
 			    }
 		  
-			}
-		    }
-		}
-	    }
+		    } // fb, nbits
+		  } // f , num_frames
+	    } // r, num_repeates
 	} // skip ahead 
 
     }
@@ -659,18 +716,20 @@ int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 }
 
 int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
-				  int start_addr, int data_length, struct frame_set *the_frame_set,
-				  int lookup_quanta,
-				  int lookup_tables,
-				  int u64_per_lookup,
-				  int tabsize,
-				  uint64_t translation_tables[][tabsize])
+				 int start_addr, int data_length, struct frame_set *the_frame_set)
 {
 
 
   if (logical_memories[logical].nframe_ranges<1)
     return BST_SUCCESS; // nothing to translate
 
+  int lookup_quanta=accel_memories_physical[logical].lookup_quanta;
+  int lookup_tables=accel_memories_physical[logical].lookup_tables;
+  int u64_per_lookup=accel_memories_physical[logical].u64_per_lookup;
+  int tabsize=(u64_per_lookup*(1<<lookup_quanta));
+  uint64_t **translation_tables=accel_memories_physical[logical].trans_tables;
+  
+  
   int wordlen=logical_memories[logical].wordlen;
   int words=logical_memories[logical].words;
   uint64_t mask_quanta=(((uint64_t) 1)<<lookup_quanta)-1;
@@ -791,10 +850,7 @@ int  bert_write(int logicalm, uint64_t *data, XFpga* XFpgaInstance)
 }  
 
 
-//TODO -- not properly deal with case where a frame range only needs part of the data written
-//   (a) will need to more carefuly extract the write frame ranges from the rest
-//   (b) if only write part of data in a frame, will need to still do readback on that frame
-// Should work in cases where writing entire memories
+
 // was: int  bert_transfuse_we(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 {
@@ -829,8 +885,14 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 
   // allocate frame data
   uint32_t *frame_data=(uint32_t *)malloc(sizeof(uint32_t)*offset);
+
   if (frame_data == NULL)
     return BST_NULL_PTR;
+
+#ifdef CLEAR_FRAME_DATA
+    for(int i=0;i<offset;i++) frame_data[i]=0;
+#endif
+
   // read back to front due to padding data that comes with readback
   for (int i=the_frame_set->num_ranges-1;i>-1;i--)
     {
@@ -859,11 +921,20 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
     for (int i=0;i<num;i++)
     {
       if (meminfo[i].operation==BERT_OPERATION_READ) {
-        status = bert_to_logical(meminfo[i].logical_mem,
-			frame_data,
-			meminfo[i].data,
-			meminfo[i].start_addr, meminfo[i].data_length,
-			the_frame_set);
+	if ((accel_memories_logical!=(struct accel_memory *)NULL)
+	    && (accel_memories_logical[meminfo[i].logical_mem].lookup_quanta>1))
+	  status = bert_accelerated_to_logical(meminfo[i].logical_mem,
+				   frame_data,
+				   meminfo[i].data,
+				   meminfo[i].start_addr, meminfo[i].data_length,
+				   the_frame_set);
+	else
+	  status = bert_to_logical(meminfo[i].logical_mem,
+				   frame_data,
+				   meminfo[i].data,
+				   meminfo[i].start_addr, meminfo[i].data_length,
+				   the_frame_set);
+	  
         if (status != BST_SUCCESS)
           return status;
       }
@@ -874,12 +945,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 				     meminfo[i].data,
 				     meminfo[i].start_addr,
 				     meminfo[i].data_length,
-				     the_frame_set,
-				     meminfo[i].lookup_quanta,
-				     meminfo[i].lookup_tables,
-				     meminfo[i].u64_per_lookup,
-				     meminfo[i].tabsize,
-				     meminfo[i].pointer_to_trans_tables
+				     the_frame_set
 				     );      
         if (status != BST_SUCCESS)
           return status;
@@ -895,11 +961,19 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
   for (int i=0;i<num;i++)
     {
       if (meminfo[i].operation==BERT_OPERATION_WRITE) {
-        status = bert_to_physical(meminfo[i].logical_mem,
-			 frame_data,
-			 meminfo[i].data,
-			 meminfo[i].start_addr, meminfo[i].data_length,
-			 the_frame_set);
+	if ((accel_memories_physical!=(struct accel_memory *)NULL)
+	    && (accel_memories_physical[meminfo[i].logical_mem].lookup_quanta>1))
+	  status = bert_accelerated_to_physical(meminfo[i].logical_mem,
+						frame_data,
+						meminfo[i].data,
+						meminfo[i].start_addr, meminfo[i].data_length,
+						the_frame_set);
+	else
+	  status = bert_to_physical(meminfo[i].logical_mem,
+				    frame_data,
+				    meminfo[i].data,
+				    meminfo[i].start_addr, meminfo[i].data_length,
+				    the_frame_set);
 	if (status != BST_SUCCESS)
 	      return status;
       }
@@ -909,12 +983,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 				     meminfo[i].data,
 				     meminfo[i].start_addr,
 				     meminfo[i].data_length,
-				     the_frame_set,
-				     meminfo[i].lookup_quanta,
-				     meminfo[i].lookup_tables,
-				     meminfo[i].u64_per_lookup,
-				     meminfo[i].tabsize,
-				     meminfo[i].pointer_to_trans_tables
+				     the_frame_set
 				     );    
         if (status != BST_SUCCESS)
           return status;
@@ -930,7 +999,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
   int len=0;
   for (int i = 0; i < the_frame_set->num_ranges; i++) {
       if (the_frame_set->ranges[i].we_bits==0)
-	break; // drop out when hit first read
+	      break; // drop out when hit first read
       uint32_t* arr = &frame_data[the_frame_set->ranges[i].offset - WORDS_BETWEEN_FRAMES];
       // Add ctrl commands
       arr[0] = 0x30002001; // COR 0
@@ -945,13 +1014,13 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
       // Clear write mask bits
       int we_bits=the_frame_set->ranges[i].we_bits;
 #ifdef DEBUG_TRANSFUSE_WE
-      printf("test_transfuse_we webits=%x\n",we_bits);
+      PRINT("test_transfuse_we webits=%x at frame_base=%x\n",we_bits,the_frame_set->ranges[i].frame_base);
 #endif
       for (int j = 0; j < the_frame_set->ranges[i].len; j++) {
-	arr = &frame_data[the_frame_set->ranges[i].offset + j*WORDS_PER_FRAME];
+	     arr = &frame_data[the_frame_set->ranges[i].offset + j*WORDS_PER_FRAME];
 	for (int k = 0; k < WE_BITS_PER_FRAME; k++) {
 	  int b = bitlocation[k];
-	  if (((we_bits>>k) & 0x01)==1)
+	  if (((we_bits>>(2*k)) & 0x03)!=0)  //we_bits is at BRAM18 granularity -- change to BRAM36 here
 	    arr[b / 32] &= ~(1 << (31 - (b % 32)));
           else
 	    arr[b / 32] |= (1 << (31 - (b % 32))); // This could overwrite bits that were reset on purpose?
@@ -965,9 +1034,11 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 #endif
 
   // 3: write back
-  Status=XFpga_PL_Frames_Load(XFpgaInstance,(UINTPTR)frame_data,Flags,len);
-  if (Status != XST_SUCCESS) {
-    return BST_XILFPGA_FAILURE;
+  if (len>0) {
+     Status=XFpga_PL_Frames_Load(XFpgaInstance,(UINTPTR)frame_data,Flags,len);
+     if (Status != XST_SUCCESS) {
+       return BST_XILFPGA_FAILURE;
+     }
   }
 
 #ifdef TIME_BERT

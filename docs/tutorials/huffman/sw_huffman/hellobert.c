@@ -154,7 +154,7 @@ void compare(int hlen, int rlen)
 * Compute a Huffman encoding table on the PS using the histogram memory read over BERT
 * Assumes bert_read was already called on the histogram memory.
 */
-void recompute_huffman(int *result_code) {
+void recompute_huffman(uint64_t *result_code) {
   UChar len[256];
   Int32 code[256];
 

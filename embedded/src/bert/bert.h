@@ -14,12 +14,6 @@ struct bert_meminfo {
   uint64_t *data;
   int start_addr;
   int data_length;
-  int lookup_quanta;
-  int lookup_tables;
-  int u64_per_lookup;
-  int tabsize;
-  void * pointer_to_trans_tables;
-    
 };
 
 enum {
@@ -49,20 +43,11 @@ int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				int start_addr, int data_length, struct frame_set *the_frame_set);
 
 int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
-				 int start_addr, int data_length, struct frame_set *the_frame_set,
-				  int lookup_quanta,
-				  int lookup_tables,
-				  int u64_per_lookup,
-				  int tabsize,
-				 uint64_t translation_tables[][tabsize]);
+				int start_addr, int data_length, struct frame_set *the_frame_set);
 
 int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
-				  int start_addr, int data_length, struct frame_set *the_frame_set,
-				  int lookup_quanta,
-				  int lookup_tables,
-				  int u64_per_lookup,
-				  int tabsize,
-				  uint64_t translation_tables[][tabsize]);
+				 int start_addr, int data_length, struct frame_set *the_frame_set);
+
 
 int logical_memory_slot(char *mname,int total_names);
 
