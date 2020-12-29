@@ -1,12 +1,12 @@
-#!/bin/bash
+    #!/bin/bash
 tempdir=temp
 
 if [ -z "$XIL_SDK_DIR" ] && [ -z "$1" ]; then
     echo "Usage: ./downloadLibraries.sh <dir>"
     echo "Xilinx installation directory is not set. Set it by passing an argument or setting the environment variable 'XIL_SDK_DIR'."
     echo "It is the path to to the SDK installation. Ends with 2018.3"
-    echo "Example: ./downloadLibraries.sh Xilinx/SDX/SDK/2018.3"
-    echo "Example: export XIL_SDK_DIR=Xilinx/SDX/SDK/2018.3; ./downloadLibraries.sh"
+    echo "Example: ./downloadLibraries.sh Xilinx/SDK/2018.3"
+    echo "Example: export XIL_SDK_DIR=Xilinx/SDK/2018.3; ./downloadLibraries.sh"
 else
     if [ -n "$1" ]; then
         XIL_SDK_DIR=$1
