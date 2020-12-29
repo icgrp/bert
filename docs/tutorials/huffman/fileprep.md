@@ -3,7 +3,7 @@
 ## Overview
 This tutorial will show you how to generate the needed files to run your own design with BERT.  In the first part you will open the Huffman project in Vivado and run a TCL script to pull the needed information from the design and place it into a directory.  In the second part, you will run a program called `bert_gen` to process those files into what is needed for BERT.
 
-## Fist Steps: Vivado
+## First Steps: Vivado
 1. If you don't have the board support package for the `xczu3eg-sbva484-1-i` board already insrtalled you must do so before proceeding.
 
 TODO: do we need to point them to the installation package?  They wouldn't
