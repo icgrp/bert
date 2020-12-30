@@ -219,7 +219,7 @@ extern "C" {
 #define PCAP_CLK_EN_MASK	0x01000000U
 
 #define PCAP_READ_DIV 10
-#define PCAP_WRITE_DIV 0
+#define PCAP_WRITE_DIV 2
 
 /* AES KEY SRC Info */
 #define XFPGA_KEY_SRC_EFUSE_RED		0xA5C3C5A3U
