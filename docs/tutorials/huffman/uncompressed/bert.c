@@ -299,7 +299,7 @@ int  bert_read(int logicalm, uint64_t *data, XFpga* XFpgaInstance)
 	time_us_read=-1;
 	time_us_write=-1;
 	time_us_logical=-1;
-	time_us_physical=-1;
+	time_us_physical=0;
 	XTime_GetTime(&cstart);
 #endif
 
@@ -376,7 +376,7 @@ int  bert_write(int logicalm, uint64_t *data, XFpga* XFpgaInstance)
 #ifdef TIME_BERT
 	time_us_read=-1;
 	time_us_write=-1;
-	time_us_logical=-1;
+	time_us_logical=0;
 	time_us_physical=-1;
 	XTime_GetTime(&cstart);
 #endif
@@ -452,13 +452,14 @@ int  bert_write(int logicalm, uint64_t *data, XFpga* XFpgaInstance)
   free(frame_data);
   free(frame_range_offset_data);
   
-  return XST_SUCCESS;
+
 
 #ifdef TIME_BERT
   XTime_GetTime(&tend);
   time_us_transfuse = (double) ((tend - tstart) * 1000000.0) / COUNTS_PER_SECOND;
 #endif
 
+  return XST_SUCCESS;
 }
 
 
