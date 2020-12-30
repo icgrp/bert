@@ -90,7 +90,11 @@ The provided `hellobert.c` application source code (mentioned above) does the fo
 * After that, it uses a bzip2 implementation of Huffmann encoding to create a new encoding table and writes that new encoding table into `huffmanMem` memory in the running design via BERT.
 * It then writes ascending input to the `rawTextMem` and an identity encoding as the Huffman table in the running design, and then checks the encoded results in the `resultMem` to verify they are correct.
 
-The application allocates memory to use for its activities.  Before executing it, you need to tell the SDK how much memory it will use.  To do this, double-click the `WORK/SDKWorkspace/huffman_demo/src/lscript.ld` file and set the stack and heap sizes to 200000 (2 followed by 5 zeros -- this is hex for 2 Megabytes).  [For a discussion on how to size heap, see the Usage Overview->Dynamic Memory Usage section in [the BERT API documentation](../../embedded/bert.md).]
+The application allocates memory to use for its activities.  Before executing it, you need to tell the SDK how much memory it will use.  To do this, edit the `ldscript.ld` in SDK:
+* on the left, if necessary, click on arrow to the left of huffman_demo to list its contents
+* click on arrow to the left of src to list its contents
+*  double-click the on `lscript.ld` file to open
+Then  set the stack and heap sizes to 200000 (2 followed by 5 zeros -- this is hex for 2 Megabytes).  [For a discussion on how to size heap, see the Usage Overview->Dynamic Memory Usage section in [the BERT API documentation](../../embedded/bert.md).] Once changed select File>Save from top menu.
 
 At this point you FINALLY have a complete application and it should show no compile  errors in Project Explorer!  As described above you should right-click the application (`huffman_demo`) in the Project Explorer and select 'Clean Project' to ensure that you now have a full, clean recompilation.
 
@@ -138,13 +142,20 @@ tutorial).
 Other things you can do:
 * Run a [timing version of `hellobert.c`](timing/README.md) to capture
 times for bert operations and components
+* Compile with -O3  to run translation fast
+  * Right click huffman_demo on left plane and select properties
+  * Look under C/C++ Build > Settings
+  * Then (ARMV v8 gcc compiler > Optimizations)
+  * Set Optimization Level
+  * Click Apply
+  * Click OK
 * Run an [accelerated version of translation](accel/README.md) to speed up
   translation on simpler memories (all the memories in this design are
   simple enough)
-* Compile with -O3  to run translation fast
 * TODO (link to instructions): Increase the DMA read speed to accelerate read data transfer
 * TODO Warn them about (* dont_touch = "true" *) to keep memories from disappearing
 * TODO Warn them about having the wrong cmake due to source-ing Xilinx settings64.sh file
+* TODO maybe get build error at end of setup (GetPLConfigData too many arguments, maybe from stale (original) xilfpga vs. extended version) -- Project > Clean to rebuild?
 ---
 
 TODO:
