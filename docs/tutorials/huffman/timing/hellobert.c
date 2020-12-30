@@ -7,6 +7,12 @@
 #include "mydesign.h"
 
 
+#define TIME_HUFFMAN_RECOMPUTE
+
+#ifdef TIME_HUFFMAN_RECOMPUTE
+#include "xtime_l.h"
+#endif
+
 #define HIST_LEN 256
 #define RESULT_LEN 512
 #define U96_IDCODE 0x04A42093
@@ -193,6 +199,12 @@ void recompute_huffman(uint64_t *result_code) {
 
 int main() {
 
+#ifdef TIME_HUFFMAN_RECOMPUTE
+	XTime hrstart, hrend;
+	double time_us_recompute_huffman;
+#endif
+
+
 	PRINT("Testing huffman with bert compressed\n");
 
 	int mem_input_slot=logical_memory_slot("design_1_i/top_0/inst/HUFFMAN/PRODUCER/inst/HUFFMAN/PRODUCER/rawTextMem",NUM_LOGICAL);
@@ -244,7 +256,19 @@ int main() {
      * WRITE NEW ENCODING TO HUFFMAN THROUGH BERT
      */
     xil_printf("\r\nWRITE NEW ENCODING TO HUFFMAN THROUGH BERT USING huffman.c\r\n");
+
+#ifdef TIME_HUFFMAN_RECOMPUTE
+	XTime_GetTime(&hrstart);
+#endif
     recompute_huffman(new_code);
+#ifdef TIME_HUFFMAN_RECOMPUTE
+    XTime_GetTime(&hrend);
+	time_us_recompute_huffman=(double) ((hrend - hrstart) * 1000000.0) / COUNTS_PER_SECOND;
+	int hr_whole = time_us_recompute_huffman;
+	int hr_decimal =  (time_us_recompute_huffman - hr_whole) * 100;
+	PRINT("TIME (us) recompute huffman: %d.%02d\n",hr_whole,hr_decimal);
+#endif
+
 
     bert_write(mem_huffman_slot,new_code,&XFpgaInstance);
 #ifdef TIME_BERT
@@ -331,7 +355,10 @@ int main() {
 	  print_time("huffman write");
 #endif
     
-
+	  // printing again so easy to find...
+#ifdef TIME_HUFFMAN_RECOMPUTE
+	PRINT("TIME (us) recompute huffman: %d.%02d\n",hr_whole,hr_decimal);
+#endif
     return 0;
 
 }
