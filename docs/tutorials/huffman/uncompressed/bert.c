@@ -297,7 +297,7 @@ int  bert_read(int logicalm, uint64_t *data, XFpga* XFpgaInstance)
 
 #ifdef TIME_BERT
 	time_us_read=-1;
-	time_us_write=-1;
+	time_us_write=0;
 	time_us_logical=-1;
 	time_us_physical=0;
 	XTime_GetTime(&cstart);
