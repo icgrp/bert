@@ -1,7 +1,7 @@
 # Timing
 
-This has an alternate hellobert.c with timing operations.
-* Copy the hellobert.c here instead the hellobert.c form sw_huffman.  The best way to copy is to use the GUIs.
+This has an alternate `hellobert.c` with timing operations.
+* Copy the `hellobert.c` here instead the `hellobert.c` form sw_huffman.  The best way to copy is to use the GUIs.
   * Open your file browser next to the SDK window.
   * browse to `BERT/docs/tutorials/huffman/timing`
   * drag `hellobert.c` under the huffman_demo/src directory on the left pane of SDK
