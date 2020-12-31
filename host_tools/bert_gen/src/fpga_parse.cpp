@@ -73,36 +73,31 @@ void read_ultra96(FILE *curr, map<uint32_t, unique_ptr<frame_pos>> &bit_map,
     fclose(curr);
 }
 
-uint32_t get_IDCODE(FILE *file)
-{
-    uint32_t curr{0};
-    uint8_t now{0};
-
-    while (true)
-    {
-        for (auto i = 0; i < 4; i++)
-        {
-            now = fgetc(file);
-            curr |= now << (3 - i) * 8;
+uint32_t get_IDCODE(FILE* file) {
+    uint8_t buff[512];
+    fread(buff, 1, 512, file);
+    int consecutive = 0;
+    int i;
+    uint32_t idcode = -1;
+    // Get alignment
+    for (i = 0; i < 512; i++) {
+        if (buff[i] != 0xFF) {
+            consecutive = 0;
+        } else {
+            consecutive++;
         }
-
-        if (curr == 0x30018001)
-        {
+        if (consecutive == 32)
+            break;
+    }
+    // Look at each word
+    for (i = i + 1; i + 3 < 512; i += 4) {
+        uint32_t word = buff[i + 3] | (buff[i + 2] << 8) | (buff[i + 1] << 16) | (buff[i + 0] << 24);
+        if (word == 0x30018001) {
+            idcode = buff[i + 7] | (buff[i + 6] << 8) | (buff[i + 5] << 16) | (buff[i + 4] << 24);
             break;
         }
-        curr = 0;
     }
-
-    curr = 0;
-    for (auto i = 0; i < 4; i++)
-    {
-        now = fgetc(file);
-        curr |= now << (3 - i) * 8;
-    }
-
-    cout << "FOUND IDCODE: 0x" << hex << uppercase << setfill('0') << setw(8) << curr << endl;
-
+    cout << "FOUND IDCODE: 0x" << idcode << endl;
     fclose(file);
-
-    return curr;
+    return idcode;
 }

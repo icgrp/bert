@@ -96,7 +96,7 @@ void gen_header(const char *path, const char *header_name)
 
         fprintf(header_c, "                {%d, %d, %d, %d, mem%d_frame_ranges, mem%d_bitlocs}",
                 loc_mem->nframe_ranges, loc_mem->wordlen, loc_mem->words, // AMD: +1 seem to be 2^n-1 not 2^n
-                                                                          // AMD: maybe due to missing first bit?  so fix that instead of adding +1 here
+                // AMD: maybe due to missing first bit?  so fix that instead of adding +1 here
                 loc_mem->replica, loc_mem->num, loc_mem->num);
         logical_memories.pop_front();
         if (!logical_memories.empty())
@@ -163,12 +163,10 @@ void print_frame(const char *path, pair<uint32_t, string> &logical, FILE *header
     char line[1000] = {'\0'};
 
     uint32_t loc_line{0}, loc_bit{0}, bram_type{0}, bram_x{0},
-        bram_y{0}, width{0}, fasm_y{0}, fasm_p{0}, fasm_line{0},
-        fasm_bit{0}, bit{0}, offset{0};
+            bram_y{0}, width{0}, fasm_y{0}, fasm_p{0}, fasm_line{0},
+            fasm_bit{0}, bit{0}, offset{0};
 
     uint32_t bit_tracking{0}, xyz;
-
-    bool handling_skip = false;
 
     auto temp_list_of_addr = make_unique<list<pair<uint32_t, uint32_t>>>();
     auto final_list_of_addr = make_unique<list<pair<uint32_t, uint32_t>>>();
@@ -182,32 +180,18 @@ void print_frame(const char *path, pair<uint32_t, string> &logical, FILE *header
                    &loc_line, &loc_bit, &bram_type, &bram_x,
                    &bram_y, &width, &fasm_y, &fasm_p, &fasm_line, &fasm_bit, &bit, &offset) == 12)
         {
-
-            if (curr_rep != replica)
-            {
-                bit_tracking = loc_bit;
-            }
-
-            if (bit_tracking != loc_bit)
-            {
-                curr_rep = replica;
-                for (int i = 0; i < (loc_bit - bit_tracking) * replica; ++i)
-                {
-                    final_list_of_addr->emplace_back(-1, -1);
-                }
-                bit_tracking = loc_bit;
-            }
+            if (curr_rep == replica && (loc_bit != 0 || loc_line != 0)) curr_rep = 1;
 
             assert(bram_type == 36 || bram_type == 18);
 
             //bram_type == 36 ? xyz = fasm_line * 512 + 2 *fasm_bit + fasm_y
             //                : xyz = fasm_line * 256 + fasm_bit;
-	    // AMD: 12/10/2020 -- guess on what should be doing with offset.
-	    //   (little unclear if offset is defined properly for this.
-	    //       maybe should be 36K*(frac) rather than 32K?
-	    //       may need to adjust.
-            bram_type == 36 ? xyz = fasm_line * 512 + 2 *fasm_bit + fasm_y  +offset
-                            : xyz = fasm_line * 256 + fasm_bit +offset/2;
+            // AMD: 12/10/2020 -- guess on what should be doing with offset.
+            //   (little unclear if offset is defined properly for this.
+            //       maybe should be 36K*(frac) rather than 32K?
+            //       may need to adjust.
+            bram_type == 36 ? xyz = fasm_line * 512 + 2 * fasm_bit + fasm_y + offset
+                            : xyz = fasm_line * 256 + fasm_bit + offset / 2;
 
             if (bit_tracking == loc_bit + 1 && loc_line == 0 && loc_bit == 0)
             {
@@ -217,30 +201,39 @@ void print_frame(const char *path, pair<uint32_t, string> &logical, FILE *header
             if (bit_tracking == loc_bit + 1)
             {
                 curr_rep++;
+                bit_tracking = loc_bit;
             }
             else
             {
-                assert(replica == curr_rep);
+                assert(replica >= curr_rep);
             }
 
-	    // AMD: 12/10/2020 -- believe this is why nothing showing up with a large (non-zero) offset
-	    //   if it had another function, not sure what that was.
-            //if (xyz >= offset)
-            if (1)
+            if (bit_tracking != loc_bit)
             {
-                if (!fasm_p)
+                curr_rep = replica;
+                for (int i = 0; i < (loc_bit - bit_tracking) * replica; ++i)
                 {
-                    auto curr_bit = bit_map[calc_bit_pos_ultra96(bram_x, bram_y, xyz, bram_type)].get();
-                    temp_list_of_addr->emplace_back(curr_bit->frame, curr_bit->offset);
+                    temp_list_of_addr->emplace_back(-1, -1);
                 }
-                else
-                {
-                    auto curr_bit = par_bit_map[calc_bit_pos_ultra96(bram_x, bram_y, xyz, bram_type)].get();
-                    temp_list_of_addr->emplace_back(curr_bit->frame, curr_bit->offset);
-                }
+                bit_tracking = loc_bit;
+            }
+            // AMD: 12/10/2020 -- believe this is why nothing showing up with a large (non-zero) offset
+            //   if it had another function, not sure what that was.
+            //if (xyz >= offset)
+            if (!fasm_p)
+            {
+                auto curr_bit = bit_map[calc_bit_pos_ultra96(bram_x, bram_y, xyz, bram_type)].get();
+                ASSERT(curr_bit != nullptr, "NULL pointer detected in bit_map");
+                temp_list_of_addr->emplace_back(curr_bit->frame, curr_bit->offset);
+            }
+            else
+            {
+                auto curr_bit = par_bit_map[calc_bit_pos_ultra96(bram_x, bram_y, xyz, bram_type)].get();
+                ASSERT(curr_bit != nullptr, "NULL pointer detected in par_bit_map");
+                temp_list_of_addr->emplace_back(curr_bit->frame, curr_bit->offset);
             }
 
-            if (bit_tracking == width - 1)
+            if (bit_tracking == width - 1 && curr_rep == replica)
             {
                 for (; !temp_list_of_addr->empty();)
                 {
@@ -307,7 +300,8 @@ void print_frame(const char *path, pair<uint32_t, string> &logical, FILE *header
             if (bram_marker[i][j] == 1)
             {
                 nframe_range--;
-                fprintf(header_c, "                {0x%08x, %d}", minFrame[i][j], 256); // AMD 12/10/2020 -- not always 256
+                fprintf(header_c, "                {0x%08x, %d}", minFrame[i][j],
+                        256); // AMD 12/10/2020 -- not always 256
                 if (nframe_range != 0)
                 {
                     fprintf(header_c, ",");
