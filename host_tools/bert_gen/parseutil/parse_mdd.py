@@ -23,10 +23,10 @@ class Cell:
         self._rwb = int(cell['WRITE_WIDTH_A'])
         self._wwb = int(cell['WRITE_WIDTH_B'])
         # self._offset = int(cell['RAM_OFFSET'])
-        self.addr_beg = int(cell['RAM_ADDR_BEGIN'])
-        self.addr_end = int(cell['RAM_ADDR_END'])
-        self.slice_beg = int(cell['RAM_SLICE_BEGIN'])
-        self.slice_end = int(cell['RAM_SLICE_END'])
+        self.addr_beg = int(cell['BRAM_ADDR_BEGIN'])
+        self.addr_end = int(cell['BRAM_ADDR_END'])
+        self.slice_beg = int(cell['BRAM_SLICE_BEGIN'])
+        self.slice_end = int(cell['BRAM_SLICE_END'])
         self.offset = cell["STARTINGOFFSET"]
         # self. = cell['RAM_ADDR_BEGIN']
         # self. = cell['RAM_ADDR_END']
