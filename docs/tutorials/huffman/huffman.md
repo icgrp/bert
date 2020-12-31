@@ -131,6 +131,8 @@ If all goes well, the program will run and will print results to the SDK Termina
 
 Congratulations!  You have run a successful demo application.
 
+## 6. Next Steps
+
 Obvious next steps would be to experiment with making changes to the
 `hellobert.c` program and re-run it on the board to gain some experience
 with the board and the BERT API.  Then, work your way through the second
@@ -157,7 +159,7 @@ times for bert operations and components
   * By default, we have it set to a high speed that works for us
     * set it lower (higher values) if that times out for you
     * set it higher (lower values) if you want to try running faster
-    * default value of 10 corresponds to about 150MHz; highest value of 63 (default from Xilinx) is about 25MHz
+    * default value of 10 corresponds to about 150MHz; highest value of 63 (default from Xilinx) is about 24MHz
   * On the project navigator plane on left
     * open huffman_demo_bsp
     * open psu_cortexa53_0
@@ -173,7 +175,8 @@ times for bert operations and components
 * TODO maybe get build error at end of setup (GetPLConfigData too many arguments, maybe from stale (original) xilfpga vs. extended version) -- Project > Clean to rebuild?
 ---
 
-TODO:
+## TODO:
+
 * Mention the on button and reset button on board
 * Mention compiling application with -O3 (Perhaps find a way for SDK to only compile BERT -O3)
 * Section on how to Debug
