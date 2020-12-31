@@ -131,7 +131,7 @@ void print_preproc(map<uint32_t, string> &all_logical, FILE *outFile, uint32_t I
 {
     fprintf(outFile, "#include \"bert_types.h\"\n\n");
     fprintf(outFile, "#define NUM_LOGICAL %u\n\n", all_logical.size());
-    fprintf(outFile, "#define IDCODE 0x%08d\n\n", IDCODE);
+    fprintf(outFile, "#define IDCODE 0x%08X\n\n", IDCODE);
 
     int i = 0;
     for (const pair<const unsigned int, basic_string<char>> &logical : all_logical)
