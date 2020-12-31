@@ -143,11 +143,11 @@ tutorial).
 Other things you can do:
 * Run a [timing version of `hellobert.c`](timing/README.md) to capture
 times for bert operations and components
-* Compile with -O3  to run translation fast
-  * Right click huffman_demo on left pane and right click to select properties
+* Compile with -O3 to run translation fast
+  * Right click bert.c to optimize just translation or right click huffman_demo on left pane to optimize the entire project. In either case, select properties in the drop down.
   * Look under C/C++ Build > Settings
   * Then look under ARMv8 gcc compiler > Optimizations
-  * Set Optimization Level
+  * Set Optimization Level to -O3
   * Click Apply
   * Click OK
 * Run an [accelerated version of translation](accel/README.md) to speed up
