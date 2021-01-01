@@ -95,7 +95,7 @@ The application allocates memory to use for its activities.  Before executing it
 * click on triangle to the left of src to list its contents
 *  double-click the on `lscript.ld` file to open.
 
-Then  set the stack and heap sizes to 200000 (2 followed by 5 zeros -- this is hex for 2 Megabytes).  [For a discussion on how to size heap, see the Usage Overview->Dynamic Memory Usage section in [the BERT API documentation](../../embedded/bert.md).] Once changed select File>Save from top menu.
+The default heap size of the program is too small to store the configuration frames needed to write to memories. In the worst case, all 4 memories exist in different frame ranges. The bits of a BRAM36/18 span 256 frames (+1 dummy frame for flushing the data). Thus, we need enough memory to hold 4 x 257 frames, and each frame is 93 x 4 bytes. Thus, we approximate the memory usage as 382,416 bytes. Thus, round up and enlarge the heap size to 0x60000 (6 followed by 4 zeros -- this is hex for roughly 400 kilobytes).  For more details on how to size the heap, see the 'Dynamic Memory Usage' section in [the BERT API documentation](../../embedded/bert.md). Once changed, select File->Save from top menu to apply the changes and rebuild the program.
 
 At this point you FINALLY have a complete application and it should show no compile  errors in Project Explorer!  As described above you should right-click the application (`huffman_demo`) in the Project Explorer and select 'Clean Project' to ensure that you now have a full, clean recompilation.
 
