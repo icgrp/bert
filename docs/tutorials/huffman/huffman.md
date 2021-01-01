@@ -131,6 +131,8 @@ If all goes well, the program will run and will print results to the SDK Termina
 
 Congratulations!  You have run a successful demo application.
 
+## 6. Next Steps
+
 Obvious next steps would be to experiment with making changes to the
 `hellobert.c` program and re-run it on the board to gain some experience
 with the board and the BERT API.  Then, work your way through the second
@@ -143,23 +145,38 @@ tutorial).
 Other things you can do:
 * Run a [timing version of `hellobert.c`](timing/README.md) to capture
 times for bert operations and components
-* Compile with -O3  to run translation fast
-  * Right click huffman_demo on left pane and right click to select properties
+* Compile with -O3 to run translation fast
+  * Right click bert.c to optimize just translation or right click huffman_demo on left pane to optimize the entire project. In either case, select properties in the drop down.
   * Look under C/C++ Build > Settings
   * Then look under ARMv8 gcc compiler > Optimizations
-  * Set Optimization Level
+  * Set Optimization Level to -O3
   * Click Apply
   * Click OK
 * Run an [accelerated version of translation](accel/README.md) to speed up
   translation on simpler memories (all the memories in this design are
   simple enough)
-* TODO (link to instructions): Increase the DMA read speed to accelerate read data transfer
+* To change the DMA transfer speed, modify PCAP_READ_DIV or PCAP_WRITE_DIV in xilfpga_pcap.h in the BSP file
+  * By default, we have it set to a high speed that works for us
+    * set it lower (higher values) if that times out for you
+    * set it higher (lower values) if you want to try running faster
+    * default value of 10 corresponds to about 150MHz; highest value of 63 (default from Xilinx) is about 24MHz
+  * On the project navigator plane on left
+    * open huffman_demo_bsp
+    * open psu_cortexa53_0
+    * open libsrc
+    * open xilfpga_v5_1
+    * open source
+    * double click on `xilfpga_pcap.h`
+  * look for `#define` for `PCAP_READ_DIV` (`PCA_WRITE_DIV` is right after it)
+  * change values there
+  * save file (File>Save)
 * TODO Warn them about (* dont_touch = "true" *) to keep memories from disappearing
 * TODO Warn them about having the wrong cmake due to source-ing Xilinx settings64.sh file
 * TODO maybe get build error at end of setup (GetPLConfigData too many arguments, maybe from stale (original) xilfpga vs. extended version) -- Project > Clean to rebuild?
 ---
 
-TODO:
+## TODO:
+
 * Mention the on button and reset button on board
 * Mention compiling application with -O3 (Perhaps find a way for SDK to only compile BERT -O3)
 * Section on how to Debug
