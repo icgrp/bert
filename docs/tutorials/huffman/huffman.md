@@ -26,8 +26,6 @@ Finally, this tutorial is written with the Eclipse-based Xilinx SDK in mind. The
 ## Prerequisites
 This tutorial assumes the user has some experience with using the Xilinx SDK tool to create, configure, edit, compile, and run designs consisting of hardware and software on an FPGA board.
 
-TODO: could we point them at some introductory materials to use?  Can we articulate the level of expertise they might need?  A number of the problems BEN and AMD had with the tutorial as written was due to what looked to us to be omited details on the SDK operation that we were not familiar with.
-
 The tutorial also assumes you have the following installed:
 * Xilinx SDK
 * Python3
@@ -43,21 +41,19 @@ installation site.
 4. Once this is all in place, you will install the BERT source code itself inside your application and write your user application code, all of which will compile into a BERT executable that uses BERT to talk to the board after you have programmed it with a bitstream.  
 5. You will finally test that application on hardware with a bitstream programmed onto the board.
 
-NOTE: along the way you will be copying files into the SDK project directories.   As you do so you may see compile errors in the Project Explorer window on the left of the SDK.  Don't worry.  You will have such compile errors until right at the end of Step 3 below so don't worry about them until you get to that point!  The tutorial will tell you at what point you should not have compile errors any more.
-
 # Step 1. Obtaining A Sample Design
-As mentioned, you need to create your hardware design in Vivado and compile it to a bitstream and then write out the needed files for BERT to use your design.
+As mentioned, the first step is to create your hardware design in Vivado, compile it to a bitstream, and then write out the needed files for BERT to use your design.
 
 For this tutorial, however, a complete set of such files are provided for you within the bert GIT repo for the Ultra96-V2 board to save time.  You can find those in this directory: `.../bert/docs/tutorials/huffman/hw_huffman` in the repo.  Copy the files from there into a directory where you intend to work through this tutorial (which we will refer to as `WORK` for the rest of the tutorial).  Also, when we refer to paths like `.../bert/` we are referring to the location where you have checked out the github BERT repo into (an example would be `/home/steve/bert`).
 
 # Step 2. Setup Xilinx SDK With The Proper Libraries.
-The next step is to set up the Xilinx SDK environment.  This tutorial was written for Vivado 2018.3 but the BERT tools require `xilfpga` libraries for 2019.2 and so there are a number of steps required to get the proper libraries and files set up. Follow the instructions [here on 2018.3 setup](../../embedded/xilinx2018_3.md).  This will set files you need in your SDK environment.  You should only have to do this
+The next step is to set up the Xilinx SDK environment.  This tutorial was written for Vivado 2018.3 but the BERT tools require `xilfpga` libraries for 2019.2 and so there are a number of steps required to get the proper libraries and files set up. Follow the instructions [here on 2018.3 setup](../../embedded/xilinx2018_3.md) if you are running a version of Vivado prior to 2019.2.  This will set up the files you need in your SDK environment.  You should only have to do this
   once per installation site.
 
 # Step 3. Create an SDK Project and Modify the BSP With the Proper Library Code
 * Step 3a - follow the instructions
   [here on Application Project Setup](../sdksetup.md).  This will create
-  the application project.
+  the SDK application project.
 
 * Step 3b - you next need to add some required libraries to your BSP.  The
   document [bsp.md](../../embedded/bsp.md) covers which libraries and
@@ -71,18 +67,18 @@ The next step is to set up the Xilinx SDK environment.  This tutorial was writte
 NOTE: we have seen these get reset by the SDK when switching workspaces, among other things.  So. if at the end of the process you are getting compile errors, re-check these settings!
 
 # 4. Integrating BERT into Your Project and Writing Your Source Code
-Now that we have an application project and BSP established, we need to assemble the needed source code files to create our BERT application.  To simplify this a script has been created which will copy the needed files into your `WORK/SDKWorkspace/huffman_demo/src` directory for you.  Before you run that script, here are the files that will be copied:
+Now that you have an application project and BSP established, you need to assemble the needed source code files to create your BERT application.  To simplify this a script has been created which will copy the needed files into your `WORK/SDKWorkspace/huffman_demo/src` directory for you.  Here are the files that will be copied:
 
-1. The BERT source files (which make it run) are found in `.../bert/embedded/src/bert`.
-2. The `mydesign.c` and `mydesign.h` files you copied into `WORK` at the start of this tutorial into your `WORK` directory.  These define a set of data structures that describe, for the BERT system, the names, locations, and contents of the BRAMs in the specific hardware design that will be executed.
-3. The actual application you run that uses the above files to interact with your hardware design is called `hellobert.c`. It is found in `.../bert/docs/tutorials/huffman/sw_huffman` (along with a set of support source files it need).
+1. It first copies the BERT source files (which make it run).  These files are found in `.../bert/embedded/src/bert`.
+2. It next copies the `mydesign.c` and `mydesign.h` files you copied into `WORK` at the start of this tutorial.  These define a set of data structures that describe, for the BERT system, the names, locations, and contents of the BRAMs in the specific hardware design that will be executed.
+3. Finally, it copies the actual application program (contains a `main()` routine).  It is called `hellobert.c` and is found at `.../bert/docs/tutorials/huffman/sw_huffman` (along with a set of support source files it needs).
 
-So, now run the provided script which will copy all of the above files into your `WORK/SDKWorkspace'huffman_demo/src` directory:
+To copy these all into your `WORK/SDKWorkspace'huffman_demo/src` directory now do this:
 ```
 python3 BERT/docs/tutorials/huffman/copyappfiles.py WORK
 ```
 
-Finally, you may also see that your  `WORK/SDKWorkspace/huffman_demo/src` directory has a `helloworld.c` file (often automatically created by SDK when you create the application).  If so, remove that file before proceeding.
+Next, you may also see that your  `WORK/SDKWorkspace/huffman_demo/src` directory has a `helloworld.c` file in it (often automatically created by SDK when you create the application).  If so, remove that file before proceeding.
 ## The Application
 The provided `hellobert.c` application source code (mentioned above) does the following:
 
@@ -95,70 +91,83 @@ The application allocates memory to use for its activities.  Before executing it
 * click on triangle to the left of src to list its contents
 *  double-click the on `lscript.ld` file to open.
 
-Then  set the stack and heap sizes to 200000 (2 followed by 5 zeros -- this is hex for 2 Megabytes).  [For a discussion on how to size heap, see the Usage Overview->Dynamic Memory Usage section in [the BERT API documentation](../../embedded/bert.md).] Once changed select File>Save from top menu.
+Then  set the stack and heap sizes to 200000 (2 followed by 5 zeros -- this is hex for 2 Megabytes).  [For a discussion on how to size heap, see the Usage Overview->Dynamic Memory Usage section in [the BERT API documentation](../../embedded/bert.md).] Once you have changed this, select File>Save from top menu.
 
-At this point you FINALLY have a complete application and it should show no compile  errors in Project Explorer!  As described above you should right-click the application (`huffman_demo`) in the Project Explorer and select 'Clean Project' to ensure that you now have a full, clean recompilation.
+At this point you have a complete application and it should show no compile  errors in Project Explorer!  As described above you should right-click the application (`huffman_demo`) in the Project Explorer and select 'Clean Project' to ensure that you now have a full, clean recompilation.
 
-Note: the `copyappfiles.py` script copied a number of source files to assemble what you need for a BERT application to run.  By examining the output printed out while running that script you should be able to review which pieces of source code were copied into your SDK `huffman_demo` project.  You can use the output of `copyappfiles.py` as a guide when you get ready to do your new design later and have to assemble the source code files ourself.
+Note: the `copyappfiles.py` script you ran above copied a number of source files to assemble what you need for a BERT application to run.  By examining the output printed out while running that script you should be able to determine what pieces of source code were copied into your SDK application project (`huffman_demo`).  You can use the output of `copyappfiles.py` as a guide when you get ready to do your new design later and have to assemble the source code files yourself.
 
-## 5. Test on hardware
+# 5. Test on hardware
 
-Once the code compiles, you are ready to run it on hardware. Start by opening "Run Configurations."  You can do this by right-clicking on the project application ('huffman_demo') and selecting 'Run As->Run Configurations'.  Then double-click the bottom option in the window that pops up ('Xilinx C/C++ application (System Debugger)').  
+Once the code compiles, you are ready to run it on hardware. Start by opening "Run Configurations."  You can do this by right-clicking on the project application (`huffman_demo`) and selecting 'Run As->Run Configurations'.  Then double-click the bottom option in the window that pops up ('Xilinx C/C++ application (System Debugger)').  
 
 In the Target Setup pane to the right you will need to select a number of reset options like below:
 
 ![Setting Debug Target Setup Options](../../images/huffmandebugconfigurations.png)
 
-In addition you will have to fill in the name of the bitfile to use.  You do this by clicking the Browse Button.
-You want to select the file `WORK/top.bit`.
+In addition you will have to fill in the name of the bitfile to use.  You do this by clicking the Browse Button and selecting the file `WORK/top.bit`.
 Once you have done so, click Apply and then Close.  At this point you have a new configuration you can use when you run with or without the debugger.
 
 As shown below, to run, click the green circle with white triangle at the top center of the screen.  This will run what you just created.
 
 ![Starting a Run](../../images/RunDebug.png)
 
-Watch the lower right screen - you will see it going thhrough a whole series of startup steps - loading code, programming the FPGA, resetting the system, etc.  This can take as long as 30 seconds.  When it all finishes and runs the actual application the focus will switch to the console window in the lower center of the screen.  That will be your cue that the application has run.  You can click on the 'SDK Terminal' tab to see the results of the run.
+Watch the lower right screen - you will see it going through a whole series of startup steps - loading code, programming the FPGA, resetting the system, etc.  This can take as long as 30 seconds.  When it all finishes and runs the actual application the focus will switch to the console window in the lower center of the screen.  That will be your cue that the application has run.  You can click on the 'SDK Terminal' tab to see the results of the run.
 
 Before or during the launch of the program, open the serial port to the board so you can observe the program output. Clicking the green plus ('+') sign in the "SDK Terminal" tab's window accomplishes this.  On Windows it will be a COM port, on Linux it will be /dev/ttyUSB1.
 
 ![Opening the serial port](../../images/openserialportlinux.png)
 
-Alternatively, you can run the debugger using the debug icon just to the left of the run button (this icon looks like a bug).  This will run the debugger.  The debugger will start up with a breakpoint at main.  To resume execution, select Core 0 and press the `resume` button, which is shaped like a play button (rectangle followed by green arrow, two icons over from the run button).
+Alternatively, you can run the debugger using the debug icon just to the left of the run button (this icon looks like a bug).  This will run the debugger.  The debugger will start up with a breakpoint at main.  To resume execution, select Core 0 and press the `Resume` button, which is shaped like a play button (rectangle followed by green arrow, two icons over from the run button).
 
 If all goes well, the program will run and will print results to the SDK Terminal as shown below:
 
 ![Printout of successful run](../../images/finalresults.png)
 
-Congratulations!  You have run a successful demo application.
+Congratulations!  You have run a successful demo application using BERT.
 
-Obvious next steps would be to experiment with making changes to the
-`hellobert.c` program and re-run it on the board to gain some experience
-with the board and the BERT API.  Then, work your way through the second
-BERT tutorial,
-[Preparing Needed Files for the Huffman Encoding Tutorial](fileprep.md), to
-learn how to generate the files needed from a Vivado design for the entire
-process (these are the files that were given to you at the start of this
-tutorial).
+# Next Steps
 
-Other things you can do:
-* Run a [timing version of `hellobert.c`](timing/README.md) to capture
-times for bert operations and components
-* Compile with -O3 to run translation fast
+## Experiment With The `hellobert` Program
+The obvious next step would be to experiment with making changes to the
+`hellobert.c` program and re-run it on the board.  This will allow you to gain some experience
+with the board and the BERT API.  
+
+## Tutorial #2
+Next, work your way through the second BERT tutorial,
+[Preparing Needed Files for the Huffman Encoding Tutorial](fileprep.md).  This will teach you 
+how to generate the files from a Vivado design and which are needed to run BERT with that design. These are the files that were given to you at the start of this tutorial.
+## Run a Timing version of `hellobert.c`
+Follow the tutorial at [Timing Version of `hellobert.c`](timing/README.md) to capture
+times for bert operations and components.
+
+## Compile with -O3 to Run Translation Fast
   * Right click bert.c to optimize just translation or right click huffman_demo on left pane to optimize the entire project. In either case, select properties in the drop down.
   * Look under C/C++ Build > Settings
   * Then look under ARMv8 gcc compiler > Optimizations
   * Set Optimization Level to -O3
   * Click Apply
   * Click OK
-* Run an [accelerated version of translation](accel/README.md) to speed up
+
+## Accelerate BERT 
+You can run an [accelerated version of translation](accel/README.md) to speed up
   translation on simpler memories (all the memories in this design are
-  simple enough)
+  simple enough).
+
+# Additional Instructions for Moving On
+
+## Using `(* dont_touch = "true" *)`
+When you use BERT to read and write memories, there may be cases where BERT is the only mechanism whereby a particular memory gets read (imaging a debug memory which is only written to).  In these cases, Vivado may optimize the memory away after determinining that its contents are never read by the design.  To prevent this from happening you may need to add a `dont_touch` attribute to the HDL code when declaring an array which will be synthesized into a memory as in this:
+```
+ (* ram_style = "block" *) reg [15:0] ram [1024];
+```
+This will prevent Vivado from optimizing the memory away if it is not read from.
+
+## ToDo Items
+
 * TODO (link to instructions): Increase the DMA read speed to accelerate read data transfer
-* TODO Warn them about (* dont_touch = "true" *) to keep memories from disappearing
 * TODO Warn them about having the wrong cmake due to source-ing Xilinx settings64.sh file
 * TODO maybe get build error at end of setup (GetPLConfigData too many arguments, maybe from stale (original) xilfpga vs. extended version) -- Project > Clean to rebuild?
----
-
 TODO:
 * Mention the on button and reset button on board
 * Mention compiling application with -O3 (Perhaps find a way for SDK to only compile BERT -O3)

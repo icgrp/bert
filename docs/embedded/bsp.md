@@ -28,8 +28,4 @@ NOTE: If other bsp parameters are later changed in `system.mss` or the `Re-gener
 
 Also, realize that the output of the above script tells you just what it is doing so you can go back and just re-copy the needed BSP files if needed.
 
-<!--
-Importantly, you should know that once configured, the same BSP can be used for multiple applications on a given board. The BSP is setup in this roundabout way is because: (a) SDK 2018.3 does not have a recent enough version of xilfpga and (b) overwriting xilfpga within the BSP does not tamper with the software included in the SDK installation. 
--->
-
 At this point you can return to the main tutorial to continue.
