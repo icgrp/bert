@@ -1,6 +1,6 @@
 # Xilinx SDK 2018.3 Installation
 
-This tutorial was written for SDK 2018.3.  Since that predates the distribution of xilfpga needed, the [2019.2 distribution of embeddedsw](https://github.com/Xilinx/embeddedsw/releases/tag/xilinx-v2019.2) must be manually added to the SDK installation. If Vitis (2019.2 or newer) is being used, this portion of the document can be skipped. 
+This tutorial was written for SDK 2018.3.  Since that predates the distribution of the xilfpga version needed for BERT, the [2019.2 distribution of embeddedsw](https://github.com/Xilinx/embeddedsw/releases/tag/xilinx-v2019.2) must be manually added to the SDK installation. If Vitis (2019.2 or newer) is being used, this portion of the document can be skipped. 
 
 ## Automated Method
 A script to add the needed files to 2018.3 has been provided for you.  It can be found at `.../bert/tutorials/huffman/downloadLibraries.sh` and you can get full usage instructions by doing:
@@ -9,7 +9,7 @@ A script to add the needed files to 2018.3 has been provided for you.  It can be
 ```
 where `.../bert` is the location of your bert repository.
 
-The script uses `wget` to download the 2019.2 distribution from the link above, unzips it, and copies the files to their proper locations.  The parameter it requires is the location of the SDK install (the specific location required given by typing the command above and reading the usage message).
+The script uses `wget` to download the 2019.2 distribution from the link above, unzips it, and copies the files to their proper locations.  The parameter it requires is the location of the SDK install.  If you execute it as given above, it will print out a usage message that will clarify the form required of its single parameter.
 
 ## Manual Method
 Alternatively, you can download, unzip, and copy it yourself.
