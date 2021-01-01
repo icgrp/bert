@@ -45,16 +45,16 @@ installation site.
 
 NOTE: along the way you will be copying files into the SDK project directories.   As you do so you may see compile errors in the Project Explorer window on the left of the SDK.  Don't worry.  You will have such compile errors until right at the end of Step 3 below so don't worry about them until you get to that point!  The tutorial will tell you at what point you should not have compile errors any more.
 
-# Step 1. Obtaining A Sample Design
+## Step 1. Obtaining A Sample Design
 As mentioned, you need to create your hardware design in Vivado and compile it to a bitstream and then write out the needed files for BERT to use your design.
 
 For this tutorial, however, a complete set of such files are provided for you within the bert GIT repo for the Ultra96-V2 board to save time.  You can find those in this directory: `.../bert/docs/tutorials/huffman/hw_huffman` in the repo.  Copy the files from there into a directory where you intend to work through this tutorial (which we will refer to as `WORK` for the rest of the tutorial).  Also, when we refer to paths like `.../bert/` we are referring to the location where you have checked out the github BERT repo into (an example would be `/home/steve/bert`).
 
-# Step 2. Setup Xilinx SDK With The Proper Libraries.
+## Step 2. Setup Xilinx SDK With The Proper Libraries.
 The next step is to set up the Xilinx SDK environment.  This tutorial was written for Vivado 2018.3 but the BERT tools require `xilfpga` libraries for 2019.2 and so there are a number of steps required to get the proper libraries and files set up. Follow the instructions [here on 2018.3 setup](../../embedded/xilinx2018_3.md).  This will set files you need in your SDK environment.  You should only have to do this
   once per installation site.
 
-# Step 3. Create an SDK Project and Modify the BSP With the Proper Library Code
+## Step 3. Create an SDK Project and Modify the BSP With the Proper Library Code
 * Step 3a - follow the instructions
   [here on Application Project Setup](../sdksetup.md).  This will create
   the application project.
@@ -70,7 +70,7 @@ The next step is to set up the Xilinx SDK environment.  This tutorial was writte
 
 NOTE: we have seen these get reset by the SDK when switching workspaces, among other things.  So. if at the end of the process you are getting compile errors, re-check these settings!
 
-# 4. Integrating BERT into Your Project and Writing Your Source Code
+## 4. Integrating BERT into Your Project and Writing Your Source Code
 Now that we have an application project and BSP established, we need to assemble the needed source code files to create our BERT application.  To simplify this a script has been created which will copy the needed files into your `WORK/SDKWorkspace/huffman_demo/src` directory for you.  Before you run that script, here are the files that will be copied:
 
 1. The BERT source files (which make it run) are found in `.../bert/embedded/src/bert`.
