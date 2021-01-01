@@ -84,7 +84,7 @@ void gen_header(const char *path, const char *header_name)
     print_logicalNames(header_c, all_logical);
     for (pair<uint32_t, string> logical : all_logical)
     {
-
+//        cout << "At mem_" << logical.first << endl;
         print_frame(path, logical, header_c, logical_memories, bit_map, par_bit_map);
     }
 
@@ -95,8 +95,7 @@ void gen_header(const char *path, const char *header_name)
         auto loc_mem = logical_memories.front().get();
 
         fprintf(header_c, "                {%d, %d, %d, %d, mem%d_frame_ranges, mem%d_bitlocs}",
-                loc_mem->nframe_ranges, loc_mem->wordlen, loc_mem->words, // AMD: +1 seem to be 2^n-1 not 2^n
-                // AMD: maybe due to missing first bit?  so fix that instead of adding +1 here
+                loc_mem->nframe_ranges, loc_mem->wordlen, loc_mem->words,
                 loc_mem->replica, loc_mem->num, loc_mem->num);
         logical_memories.pop_front();
         if (!logical_memories.empty())
@@ -130,8 +129,8 @@ void print_logicalNames(FILE *header_c, map<uint32_t, string> &all_logical)
 void print_preproc(map<uint32_t, string> &all_logical, FILE *outFile, uint32_t IDCODE)
 {
     fprintf(outFile, "#include \"bert_types.h\"\n\n");
-    fprintf(outFile, "#define NUM_LOGICAL %u\n\n", all_logical.size());
-    fprintf(outFile, "#define IDCODE 0x%08d\n\n", IDCODE);
+    fprintf(outFile, "#define NUM_LOGICAL %lu\n\n", all_logical.size());
+    fprintf(outFile, "#define IDCODE 0x%08X\n\n", IDCODE);
 
     int i = 0;
     for (const pair<const unsigned int, basic_string<char>> &logical : all_logical)
@@ -152,6 +151,7 @@ void print_frame(const char *path, pair<uint32_t, string> &logical, FILE *header
                  list<unique_ptr<logical_memory>> &logical_memories,
                  map<uint32_t, unique_ptr<frame_pos>> &bit_map, map<uint32_t, unique_ptr<frame_pos>> &par_bit_map)
 {
+
     list<unique_ptr<bram>> list_of_bram;
 
     find_map(path, bit_map, par_bit_map, list_of_bram, logical.first);
@@ -193,6 +193,12 @@ void print_frame(const char *path, pair<uint32_t, string> &logical, FILE *header
             bram_type == 36 ? xyz = fasm_line * 512 + 2 * fasm_bit + fasm_y + offset
                             : xyz = fasm_line * 256 + fasm_bit + offset / 2;
 
+//            if (fasm_p)
+//            {
+//                bram_type == 36 ? xyz = fasm_line * 512 + 2 * fasm_bit + fasm_y + offset / 8
+//                                : xyz = fasm_line * 256 + fasm_bit + offset / 16;
+//            }
+
             if (bit_tracking == loc_bit + 1 && loc_line == 0 && loc_bit == 0)
             {
                 replica++;
@@ -223,12 +229,22 @@ void print_frame(const char *path, pair<uint32_t, string> &logical, FILE *header
             if (!fasm_p)
             {
                 auto curr_bit = bit_map[calc_bit_pos_ultra96(bram_x, bram_y, xyz, bram_type)].get();
+                if (curr_bit == nullptr)
+                {
+                    cout << "bram_x:" << bram_x << ", bram_y:" << bram_y << ", xyz:" << xyz  << endl;
+                }
                 ASSERT(curr_bit != nullptr, "NULL pointer detected in bit_map");
                 temp_list_of_addr->emplace_back(curr_bit->frame, curr_bit->offset);
             }
             else
             {
+                bram_type == 36 ? xyz = fasm_line * 512 + 2 * fasm_bit + fasm_y + offset / 8
+                                : xyz = fasm_line * 256 + fasm_bit + offset / 16;
                 auto curr_bit = par_bit_map[calc_bit_pos_ultra96(bram_x, bram_y, xyz, bram_type)].get();
+                if (curr_bit == nullptr)
+                {
+                    cout << "bram_x:" << bram_x << " bram_y:" << bram_y << " xyz:" << xyz << endl;
+                }
                 ASSERT(curr_bit != nullptr, "NULL pointer detected in par_bit_map");
                 temp_list_of_addr->emplace_back(curr_bit->frame, curr_bit->offset);
             }
