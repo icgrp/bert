@@ -41,16 +41,16 @@ installation site.
 4. Once this is all in place, you will install the BERT source code itself inside your application and write your user application code, all of which will compile into a BERT executable that uses BERT to talk to the board after you have programmed it with a bitstream.  
 5. You will finally test that application on hardware with a bitstream programmed onto the board.
 
-# Step 1. Obtaining A Sample Design
+## Step 1. Obtaining A Sample Design
 As mentioned, the first step is to create your hardware design in Vivado, compile it to a bitstream, and then write out the needed files for BERT to use your design.
 
 For this tutorial, however, a complete set of such files are provided for you within the bert GIT repo for the Ultra96-V2 board to save time.  You can find those in this directory: `.../bert/docs/tutorials/huffman/hw_huffman` in the repo.  Copy the files from there into a directory where you intend to work through this tutorial (which we will refer to as `WORK` for the rest of the tutorial).  Also, when we refer to paths like `.../bert/` we are referring to the location where you have checked out the github BERT repo into (an example would be `/home/steve/bert`).
 
-# Step 2. Setup Xilinx SDK With The Proper Libraries.
+## Step 2. Setup Xilinx SDK With The Proper Libraries.
 The next step is to set up the Xilinx SDK environment.  This tutorial was written for Vivado 2018.3 but the BERT tools require `xilfpga` libraries for 2019.2 and so there are a number of steps required to get the proper libraries and files set up. Follow the instructions [here on 2018.3 setup](../../embedded/xilinx2018_3.md) if you are running a version of Vivado prior to 2019.2.  This will set up the files you need in your SDK environment.  You should only have to do this
   once per installation site.
 
-# Step 3. Create an SDK Project and Modify the BSP With the Proper Library Code
+## Step 3. Create an SDK Project and Modify the BSP With the Proper Library Code
 * Step 3a - follow the instructions
   [here on Application Project Setup](../sdksetup.md).  This will create
   the SDK application project.
@@ -66,7 +66,7 @@ The next step is to set up the Xilinx SDK environment.  This tutorial was writte
 
 NOTE: we have seen these get reset by the SDK when switching workspaces, among other things.  So. if at the end of the process you are getting compile errors, re-check these settings!
 
-# 4. Integrating BERT into Your Project and Writing Your Source Code
+## Step 4. Integrating BERT into Your Project and Writing Your Source Code
 Now that you have an application project and BSP established, you need to assemble the needed source code files to create your BERT application.  To simplify this a script has been created which will copy the needed files into your `WORK/SDKWorkspace/huffman_demo/src` directory for you.  Here are the files that will be copied:
 
 1. It first copies the BERT source files (which make it run).  These files are found in `.../bert/embedded/src/bert`.
@@ -79,7 +79,7 @@ python3 BERT/docs/tutorials/huffman/copyappfiles.py WORK
 ```
 
 Next, you may also see that your  `WORK/SDKWorkspace/huffman_demo/src` directory has a `helloworld.c` file in it (often automatically created by SDK when you create the application).  If so, remove that file before proceeding.
-## The Application
+### The Application
 The provided `hellobert.c` application source code (mentioned above) does the following:
 
 * Reads the memories' contents from the design using both the AXI interface as well as the BERT interface.  It then compares the results of those reads to verify BERT is working.
@@ -91,13 +91,13 @@ The application allocates memory to use for its activities.  Before executing it
 * click on triangle to the left of src to list its contents
 *  double-click the on `lscript.ld` file to open.
 
-Then  set the stack and heap sizes to 200000 (2 followed by 5 zeros -- this is hex for 2 Megabytes).  [For a discussion on how to size heap, see the Usage Overview->Dynamic Memory Usage section in [the BERT API documentation](../../embedded/bert.md).] Once you have changed this, select File>Save from top menu.
+The default heap size of the program is too small to store the configuration frames needed to write to memories. In the worst case, all 4 memories exist in different frame ranges. The bits of a BRAM36/18 span 256 frames (+1 dummy frame for flushing the data). Thus, we need enough memory to hold 4 x 257 frames, and each frame is 93 x 4 bytes. So the approximate memory usage is 382,416 bytes. Round up and set the heap size to 0x60000 (6 followed by 4 zeros -- this is hex for roughly 400 kilobytes).  For more discussion on how to size the heap, see the 'Dynamic Memory Usage' section in [the BERT API documentation](../../embedded/bert.md). Once changed, select File->Save from top menu to apply the changes and rebuild the program.
 
 At this point you have a complete application and it should show no compile  errors in Project Explorer!  As described above you should right-click the application (`huffman_demo`) in the Project Explorer and select 'Clean Project' to ensure that you now have a full, clean recompilation.
 
 Note: the `copyappfiles.py` script you ran above copied a number of source files to assemble what you need for a BERT application to run.  By examining the output printed out while running that script you should be able to determine what pieces of source code were copied into your SDK application project (`huffman_demo`).  You can use the output of `copyappfiles.py` as a guide when you get ready to do your new design later and have to assemble the source code files yourself.
 
-# 5. Test on hardware
+## Step 5. Test on hardware
 
 Once the code compiles, you are ready to run it on hardware. Start by opening "Run Configurations."  You can do this by right-clicking on the project application (`huffman_demo`) and selecting 'Run As->Run Configurations'.  Then double-click the bottom option in the window that pops up ('Xilinx C/C++ application (System Debugger)').  
 
@@ -126,37 +126,36 @@ If all goes well, the program will run and will print results to the SDK Termina
 
 Congratulations!  You have run a successful demo application using BERT.
 
-# Next Steps
+## 6. Next Steps and Further Instructions
 
-## Experiment With The `hellobert` Program
+### Experiment With The `hellobert` Program
 The obvious next step would be to experiment with making changes to the
 `hellobert.c` program and re-run it on the board.  This will allow you to gain some experience
 with the board and the BERT API.  
 
-## Tutorial #2
+### Run Tutorial #2
 Next, work your way through the second BERT tutorial,
 [Preparing Needed Files for the Huffman Encoding Tutorial](fileprep.md).  This will teach you 
 how to generate the files from a Vivado design and which are needed to run BERT with that design. These are the files that were given to you at the start of this tutorial.
-## Run a Timing version of `hellobert.c`
+### Run a Timing version of `hellobert.c`
 Follow the tutorial at [Timing Version of `hellobert.c`](timing/README.md) to capture
 times for bert operations and components.
 
-## Compile with -O3 to Run Translation Fast
+### Compile with -O3 to Run Translation Fast
   * Right click bert.c to optimize just translation or right click huffman_demo on left pane to optimize the entire project. In either case, select properties in the drop down.
   * Look under C/C++ Build > Settings
   * Then look under ARMv8 gcc compiler > Optimizations
   * Set Optimization Level to -O3
   * Click Apply
   * Click OK
-# Additional Instructions for Moving On
 
-## Using `(* dont_touch = "true" *)`
+### Using `(* dont_touch = "true" *)`
 When you use BERT to read and write memories, there may be cases where BERT is the only mechanism whereby a particular memory gets read (imaging a debug memory which is only written to).  In these cases, Vivado may optimize the memory away after determinining that its contents are never read by the design.  To prevent this from happening you may need to add a `dont_touch` attribute to the HDL code when declaring an array which will be synthesized into a memory as in this:
 ```
  (* ram_style = "block" *) reg [15:0] ram [1024];
 ```
 This will prevent Vivado from optimizing the memory away if it is not read from.
-## Accelerate BERT 
+### Accelerate BERT 
 You can run an [accelerated version of translation](accel/README.md) to speed up
   translation on simpler memories (all the memories in this design are
   simple enough)
