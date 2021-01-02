@@ -148,12 +148,6 @@ times for bert operations and components.
   * Set Optimization Level to -O3
   * Click Apply
   * Click OK
-
-## Accelerate BERT 
-You can run an [accelerated version of translation](accel/README.md) to speed up
-  translation on simpler memories (all the memories in this design are
-  simple enough).
-
 # Additional Instructions for Moving On
 
 ## Using `(* dont_touch = "true" *)`
@@ -162,13 +156,32 @@ When you use BERT to read and write memories, there may be cases where BERT is t
  (* ram_style = "block" *) reg [15:0] ram [1024];
 ```
 This will prevent Vivado from optimizing the memory away if it is not read from.
+## Accelerate BERT 
+You can run an [accelerated version of translation](accel/README.md) to speed up
+  translation on simpler memories (all the memories in this design are
+  simple enough)
+* To change the DMA transfer speed, modify PCAP_READ_DIV or PCAP_WRITE_DIV in xilfpga_pcap.h in the BSP file
+  * By default, we have it set to a high speed that works for us
+    * set it lower (higher values) if that times out for you
+    * set it higher (lower values) if you want to try running faster
+    * default value of 10 corresponds to about 150MHz; highest value of 63 (default from Xilinx) is about 24MHz
+  * On the project navigator plane on left
+    * open huffman_demo_bsp
+    * open psu_cortexa53_0
+    * open libsrc
+    * open xilfpga_v5_1
+    * open source
+    * double click on `xilfpga_pcap.h`
+  * look for `#define` for `PCAP_READ_DIV` (`PCA_WRITE_DIV` is right after it)
+  * change values there
+  * save file (File>Save)
 
-## ToDo Items
+---
 
-* TODO (link to instructions): Increase the DMA read speed to accelerate read data transfer
+## TODO:
+* TODO Warn them about (* dont_touch = "true" *) to keep memories from disappearing
 * TODO Warn them about having the wrong cmake due to source-ing Xilinx settings64.sh file
-* TODO maybe get build error at end of setup (GetPLConfigData too many arguments, maybe from stale (original) xilfpga vs. extended version) -- Project > Clean to rebuild?
-TODO:
+* TODO maybe get build error at end of setup (GetPLConfigData too many arguments, maybe from stale (original) xilfpga vs. extended version) -- Project > Clean to rebuild?*
 * Mention the on button and reset button on board
 * Mention compiling application with -O3 (Perhaps find a way for SDK to only compile BERT -O3)
 * Section on how to Debug

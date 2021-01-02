@@ -4,18 +4,19 @@ proc getConsts { m } {
     set gnds []
     foreach j $p {
         if { [lsearch [get_nets -of $j] *const1*] != -1 } {
-            set vs [regsub "\\\["  [regsub "\\\]" $j " "] " " ]
-            lappend vss "[lindex [split $vs] 1]"
+            set vs [regsub -all "\\\["  [regsub -all "\\\]" $j " "] " " ]
+            lappend vss "[lindex [split $vs] end]"
+             
         }
         if { [lsearch [get_nets -of $j] *const0*] != -1 } {
-            set gnd [regsub "\\\["  [regsub "\\\]" $j " "] " " ]
-            lappend gnds "[lindex [split $gnd] 1]"
+            set gnd [regsub -all "\\\["  [regsub -all "\\\]" $j " "] " " ]
+            lappend gnds "[lindex [split $gnd] end]"
         }
     }
 
     lsort -integer -decreasing $vss
     lsort -integer -decreasing $gnds
-
+    
     set highOrder []
     set lowOrder []
 
@@ -94,9 +95,9 @@ proc mddMake {fname} {
         set fp [open "$fname.mdd" w]
     }
 
-    puts "DESIGN myDesign"
+    # puts "DESIGN myDesign"
     puts $fp "DESIGN myDesign"
-    puts "PART [get_parts -of  [current_design]]"
+    # puts "PART [get_parts -of  [current_design]]"
     puts $fp "PART [get_parts -of  [current_design]]"
 
 
@@ -113,7 +114,6 @@ proc mddMake {fname} {
             puts "  [lindex $p 0] $val"
             puts $fp "  [lindex $p 0] $val"
         }
-        set cp [getConsts $c]
         set cp [getConsts $c]
         set hinum [lindex [lindex $cp 0] 0]
         set hiden [lindex [lindex $cp 0] 1]
@@ -135,3 +135,4 @@ proc mddMake {fname} {
 
     puts "Done creating file $fname.mdd"
 }
+
