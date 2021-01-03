@@ -31,6 +31,7 @@ TODO: doe this need an associated design for them to use this with?
 #include "ultrascale_plus.h"
 #include "mydesign.h" // Include the primary design file, as well as any acceleration tables if used
 #include <stdint.h>
+#include <stdlib.h>
 
 #define CEIL(x,y) (((x) + (y) - 1) / (y))
 
@@ -45,7 +46,7 @@ XFpga XFpgaInstance = {0U};
 
 int main(int argc, char **argv) {
      
-    if (readback_Init(&XFpgaInstance, PART_IDCODE) != 0) {
+    if (readback_Init(&XFpgaInstance, IDCODE) != 0) {
         printf("readback_Init failed\r\n");
         exit(1);
     }
