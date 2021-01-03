@@ -4,8 +4,8 @@
 
 ### Compile Environment
 
-- REQUIRE `cmake 3.3` or higher version, `python3`
-- Current working environment: `Ubuntu 64-bit`, `OpenSUSE 64-bit Leap 15.1`, `Windows Subsystem for Linux 2 on Windows 10 Pro for Workstation`
+- REQUIRE `cmake 3.3` or higher version, `python3`, `gcc` support for at least C++ 14.
+- Current working environment: `Ubuntu 20.04/18.04 LTS 64-bit`, `OpenSUSE Leap 15.1 64-bit`, `Windows Subsystem for Linux 2`.
 
 
 ### Makefile Instruction
