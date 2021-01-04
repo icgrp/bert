@@ -152,7 +152,7 @@ times for bert operations and components.
 ### Using `(* dont_touch = "true" *)`
 When you use BERT to read and write memories, there may be cases where BERT is the only mechanism whereby a particular memory gets read (imaging a debug memory which is only written to).  In these cases, Vivado may optimize the memory away after determinining that its contents are never read by the design.  To prevent this from happening you may need to add a `dont_touch` attribute to the HDL code when declaring an array which will be synthesized into a memory as in this:
 ```
- (* ram_style = "block" *) reg [15:0] ram [1024];
+ (* dont_touch = "true" *) (* ram_style = "block" *) reg [15:0] ram [1024];
 ```
 This will prevent Vivado from optimizing the memory away if it is not read from.
 ### Accelerate BERT 
@@ -178,10 +178,7 @@ You can run an [accelerated version of translation](accel/README.md) to speed up
 ---
 
 ## TODO:
-* TODO Warn them about (* dont_touch = "true" *) to keep memories from disappearing
-* TODO Warn them about having the wrong cmake due to source-ing Xilinx settings64.sh file
-* TODO maybe get build error at end of setup (GetPLConfigData too many arguments, maybe from stale (original) xilfpga vs. extended version) -- Project > Clean to rebuild?*
-* Mention the on button and reset button on board
-* Mention compiling application with -O3 (Perhaps find a way for SDK to only compile BERT -O3)
-* Section on how to Debug
+* MATTHEW: TODO maybe get build error at end of setup (GetPLConfigData too many arguments, maybe from stale (original) xilfpga vs. extended version) -- Project > Clean to rebuild?*
+* MATTHEW: Mention the on button and reset button on board
+* MATTHEW: Section on how to Debug
 

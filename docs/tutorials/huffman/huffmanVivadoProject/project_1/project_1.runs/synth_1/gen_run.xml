@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xczu3eg-sbva484-1-i" LaunchTime="1607741718">
+<GenRun Id="synth_1" LaunchPart="xczu3eg-sbva484-1-i" LaunchTime="1609609235">
   <File Type="VDS-TIMING-PB" Name="design_1_wrapper_timing_summary_synth.pb"/>
   <File Type="VDS-TIMINGSUMMARY" Name="design_1_wrapper_timing_summary_synth.rpt"/>
   <File Type="RDS-DCP" Name="design_1_wrapper.dcp"/>
@@ -119,18 +119,13 @@
     <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2018"/>
     <Step Id="synth_design"/>
   </Strategy>
-  <BlockFileSet Type="BlockSrcs" Name="design_1_auto_ds_4"/>
-  <BlockFileSet Type="BlockSrcs" Name="design_1_auto_ds_2"/>
-  <BlockFileSet Type="BlockSrcs" Name="design_1_auto_ds_3"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_top_0_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_xbar_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_zynq_ultra_ps_e_0_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_axi_bram_ctrl_raw_0"/>
-  <BlockFileSet Type="BlockSrcs" Name="design_1_auto_ds_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_axi_bram_ctrl_results_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_rst_ps8_0_100M_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_axi_bram_ctrl_huff_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_reg4_0_0"/>
-  <BlockFileSet Type="BlockSrcs" Name="design_1_auto_ds_1"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_axi_bram_ctrl_hist_0"/>
 </GenRun>

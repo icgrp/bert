@@ -20,7 +20,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='/home/nelson/bert_dev/examples/hw_huffman/huffman/project_1/project_1.runs/design_1_top_0_0_synth_1'
+HD_PWD='/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/design_1_top_0_0_synth_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log

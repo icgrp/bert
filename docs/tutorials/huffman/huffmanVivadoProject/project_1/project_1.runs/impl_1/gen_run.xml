@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="impl_1" LaunchPart="xczu3eg-sbva484-1-i" LaunchTime="1607741718">
+<GenRun Id="impl_1" LaunchPart="xczu3eg-sbva484-1-i" LaunchTime="1609611517">
   <File Type="WBT-USG" Name="usage_statistics_webtalk.html"/>
   <File Type="BG-DRC" Name="design_1_wrapper.drc"/>
   <File Type="BG-BGN" Name="design_1_wrapper.bgn"/>
@@ -15,7 +15,6 @@
   <File Type="BG-BIT" Name="design_1_wrapper.bit"/>
   <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-RPX" Name="design_1_wrapper_bus_skew_postroute_physopted.rpx"/>
   <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-PB" Name="design_1_wrapper_bus_skew_postroute_physopted.pb"/>
-  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW" Name="design_1_wrapper_bus_skew_postroute_physopted.rpt"/>
   <File Type="RDI-RDI" Name="design_1_wrapper.vdi"/>
   <File Type="POSTROUTE-PHYSOPT-TIMING-RPX" Name="design_1_wrapper_timing_summary_postroute_physopted.rpx"/>
   <File Type="POSTROUTE-PHYSOPT-TIMING-PB" Name="design_1_wrapper_timing_summary_postroute_physopted.pb"/>
@@ -69,6 +68,8 @@
   <File Type="REPORTS-TCL" Name="design_1_wrapper_reports.tcl"/>
   <File Type="ROUTE-BUS-SKEW-PB" Name="design_1_wrapper_bus_skew_routed.pb"/>
   <File Type="PA-TCL" Name="design_1_wrapper.tcl"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW" Name="design_1_wrapper_bus_skew_postroute_physopted.rpt"/>
+  <File Type="PA-DCP" Name="design_1_wrapper.dcp"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/imports/sources_1/imports/huffmanControlSources/consume.sv">
@@ -187,18 +188,13 @@
     <Step Id="post_route_phys_opt_design"/>
     <Step Id="write_bitstream"/>
   </Strategy>
-  <BlockFileSet Type="BlockSrcs" Name="design_1_auto_ds_4"/>
-  <BlockFileSet Type="BlockSrcs" Name="design_1_auto_ds_2"/>
-  <BlockFileSet Type="BlockSrcs" Name="design_1_auto_ds_3"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_top_0_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_xbar_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_zynq_ultra_ps_e_0_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_axi_bram_ctrl_raw_0"/>
-  <BlockFileSet Type="BlockSrcs" Name="design_1_auto_ds_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_axi_bram_ctrl_results_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_rst_ps8_0_100M_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_axi_bram_ctrl_huff_0"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_reg4_0_0"/>
-  <BlockFileSet Type="BlockSrcs" Name="design_1_auto_ds_1"/>
   <BlockFileSet Type="BlockSrcs" Name="design_1_axi_bram_ctrl_hist_0"/>
 </GenRun>

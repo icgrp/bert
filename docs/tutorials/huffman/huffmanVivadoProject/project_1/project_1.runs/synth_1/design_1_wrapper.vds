@@ -2,8 +2,8 @@
 # Vivado v2018.3 (64-bit)
 # SW Build 2405991 on Thu Dec  6 23:36:41 MST 2018
 # IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
-# Start of session at: Fri Dec 11 18:55:19 2020
-# Process ID: 25029
+# Start of session at: Sat Jan  2 09:40:36 2021
+# Process ID: 3364
 # Current directory: /home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1
 # Command line: vivado -log design_1_wrapper.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source design_1_wrapper.tcl
 # Log file: /home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/design_1_wrapper.vds
@@ -18,68 +18,68 @@ Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xczu3eg'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xczu3eg'
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 25078 
+INFO: Helper process launched with PID 3425 
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 1557.234 ; gain = 0.000 ; free physical = 2958 ; free virtual = 5431
+Starting RTL Elaboration : Time (s): cpu = 00:00:01 ; elapsed = 00:00:02 . Memory (MB): peak = 1565.246 ; gain = 0.000 ; free physical = 4672 ; free virtual = 6026
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-6157] synthesizing module 'design_1_wrapper' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/imports/sources_1/bd/design_1/hdl/design_1_wrapper.v:12]
 INFO: [Synth 8-6157] synthesizing module 'design_1' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:13]
-INFO: [Synth 8-6157] synthesizing module 'design_1_axi_bram_ctrl_hist_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_axi_bram_ctrl_hist_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_axi_bram_ctrl_hist_0' (1#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_axi_bram_ctrl_hist_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_axi_bram_ctrl_hist_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_axi_bram_ctrl_hist_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_axi_bram_ctrl_hist_0' (1#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_axi_bram_ctrl_hist_0_stub.v:6]
 WARNING: [Synth 8-350] instance 'axi_bram_ctrl_hist' of module 'design_1_axi_bram_ctrl_hist_0' requires 40 connections, but only 35 given [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:257]
-INFO: [Synth 8-6157] synthesizing module 'design_1_axi_bram_ctrl_huff_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_axi_bram_ctrl_huff_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_axi_bram_ctrl_huff_0' (2#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_axi_bram_ctrl_huff_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_axi_bram_ctrl_huff_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_axi_bram_ctrl_huff_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_axi_bram_ctrl_huff_0' (2#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_axi_bram_ctrl_huff_0_stub.v:6]
 WARNING: [Synth 8-350] instance 'axi_bram_ctrl_huff' of module 'design_1_axi_bram_ctrl_huff_0' requires 40 connections, but only 38 given [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:293]
-INFO: [Synth 8-6157] synthesizing module 'design_1_axi_bram_ctrl_raw_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_axi_bram_ctrl_raw_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_axi_bram_ctrl_raw_0' (3#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_axi_bram_ctrl_raw_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_axi_bram_ctrl_raw_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_axi_bram_ctrl_raw_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_axi_bram_ctrl_raw_0' (3#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_axi_bram_ctrl_raw_0_stub.v:6]
 WARNING: [Synth 8-350] instance 'axi_bram_ctrl_raw' of module 'design_1_axi_bram_ctrl_raw_0' requires 40 connections, but only 39 given [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:332]
-INFO: [Synth 8-6157] synthesizing module 'design_1_axi_bram_ctrl_results_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_axi_bram_ctrl_results_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_axi_bram_ctrl_results_0' (4#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_axi_bram_ctrl_results_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_axi_bram_ctrl_results_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_axi_bram_ctrl_results_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_axi_bram_ctrl_results_0' (4#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_axi_bram_ctrl_results_0_stub.v:6]
 WARNING: [Synth 8-350] instance 'axi_bram_ctrl_results' of module 'design_1_axi_bram_ctrl_results_0' requires 40 connections, but only 35 given [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:372]
 INFO: [Synth 8-6157] synthesizing module 'design_1_ps8_0_axi_periph_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:779]
 INFO: [Synth 8-6157] synthesizing module 'm00_couplers_imp_QJIMLI' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:2587]
-INFO: [Synth 8-6157] synthesizing module 'design_1_auto_ds_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_auto_ds_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_ds_0' (5#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_auto_ds_0_stub.v:6]
-INFO: [Synth 8-6157] synthesizing module 'design_1_auto_pc_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_auto_pc_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_pc_0' (6#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_auto_pc_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_auto_ds_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_auto_ds_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_ds_0' (5#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_auto_ds_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_auto_pc_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_auto_pc_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_pc_0' (6#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_auto_pc_0_stub.v:6]
 INFO: [Synth 8-6155] done synthesizing module 'm00_couplers_imp_QJIMLI' (7#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:2587]
 INFO: [Synth 8-6157] synthesizing module 'm01_couplers_imp_1D3SAH3' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:3005]
-INFO: [Synth 8-6157] synthesizing module 'design_1_auto_ds_1' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_auto_ds_1_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_ds_1' (8#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_auto_ds_1_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_auto_ds_1' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_auto_ds_1_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_ds_1' (8#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_auto_ds_1_stub.v:6]
 WARNING: [Synth 8-350] instance 'auto_ds' of module 'design_1_auto_ds_1' requires 76 connections, but only 72 given [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:3300]
 INFO: [Synth 8-6155] done synthesizing module 'm01_couplers_imp_1D3SAH3' (9#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:3005]
 INFO: [Synth 8-6157] synthesizing module 'm02_couplers_imp_P3UMW5' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:3375]
-INFO: [Synth 8-6157] synthesizing module 'design_1_auto_ds_2' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_auto_ds_2_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_ds_2' (10#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_auto_ds_2_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_auto_ds_2' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_auto_ds_2_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_ds_2' (10#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_auto_ds_2_stub.v:6]
 WARNING: [Synth 8-350] instance 'auto_ds' of module 'design_1_auto_ds_2' requires 76 connections, but only 72 given [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:3670]
 INFO: [Synth 8-6155] done synthesizing module 'm02_couplers_imp_P3UMW5' (11#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:3375]
 INFO: [Synth 8-6157] synthesizing module 'm03_couplers_imp_1E9R4HW' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:3745]
-INFO: [Synth 8-6157] synthesizing module 'design_1_auto_ds_3' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_auto_ds_3_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_ds_3' (12#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_auto_ds_3_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_auto_ds_3' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_auto_ds_3_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_ds_3' (12#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_auto_ds_3_stub.v:6]
 WARNING: [Synth 8-350] instance 'auto_ds' of module 'design_1_auto_ds_3' requires 76 connections, but only 72 given [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:4040]
 INFO: [Synth 8-6155] done synthesizing module 'm03_couplers_imp_1E9R4HW' (13#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:3745]
 INFO: [Synth 8-6157] synthesizing module 'm04_couplers_imp_NB1YAO' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:4115]
-INFO: [Synth 8-6157] synthesizing module 'design_1_auto_ds_4' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_auto_ds_4_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_ds_4' (14#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_auto_ds_4_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_auto_ds_4' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_auto_ds_4_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_ds_4' (14#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_auto_ds_4_stub.v:6]
 WARNING: [Synth 8-350] instance 'auto_ds' of module 'design_1_auto_ds_4' requires 76 connections, but only 72 given [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:4410]
 INFO: [Synth 8-6155] done synthesizing module 'm04_couplers_imp_NB1YAO' (15#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:4115]
 INFO: [Synth 8-6157] synthesizing module 's00_couplers_imp_1A7ZMW4' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:4485]
 INFO: [Synth 8-6155] done synthesizing module 's00_couplers_imp_1A7ZMW4' (16#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:4485]
 INFO: [Synth 8-6157] synthesizing module 's01_couplers_imp_KGUFR9' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:4771]
 INFO: [Synth 8-6155] done synthesizing module 's01_couplers_imp_KGUFR9' (17#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:4771]
-INFO: [Synth 8-6157] synthesizing module 'design_1_xbar_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_xbar_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_xbar_0' (18#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_xbar_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_xbar_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_xbar_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_xbar_0' (18#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_xbar_0_stub.v:6]
 WARNING: [Synth 8-350] instance 'xbar' of module 'design_1_xbar_0' requires 82 connections, but only 80 given [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:2504]
 INFO: [Synth 8-6155] done synthesizing module 'design_1_ps8_0_axi_periph_0' (19#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:779]
-INFO: [Synth 8-6157] synthesizing module 'design_1_reg4_0_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_reg4_0_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_reg4_0_0' (20#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_reg4_0_0_stub.v:6]
-INFO: [Synth 8-6157] synthesizing module 'design_1_rst_ps8_0_100M_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_rst_ps8_0_100M_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_rst_ps8_0_100M_0' (21#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_rst_ps8_0_100M_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_reg4_0_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_reg4_0_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_reg4_0_0' (20#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_reg4_0_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_rst_ps8_0_100M_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_rst_ps8_0_100M_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_rst_ps8_0_100M_0' (21#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_rst_ps8_0_100M_0_stub.v:6]
 WARNING: [Synth 8-350] instance 'rst_ps8_0_100M' of module 'design_1_rst_ps8_0_100M_0' requires 10 connections, but only 6 given [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:670]
-INFO: [Synth 8-6157] synthesizing module 'design_1_top_0_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_top_0_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_top_0_0' (22#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_top_0_0_stub.v:6]
-INFO: [Synth 8-6157] synthesizing module 'design_1_zynq_ultra_ps_e_0_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_zynq_ultra_ps_e_0_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_zynq_ultra_ps_e_0_0' (23#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-25029-ubuntu/realtime/design_1_zynq_ultra_ps_e_0_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_top_0_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_top_0_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_top_0_0' (22#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_top_0_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_zynq_ultra_ps_e_0_0' [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_zynq_ultra_ps_e_0_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_zynq_ultra_ps_e_0_0' (23#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/.Xil/Vivado-3364-ubuntu/realtime/design_1_zynq_ultra_ps_e_0_0_stub.v:6]
 WARNING: [Synth 8-3848] Net huffClr_0 in module/entity design_1 does not have driver. [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:15]
 INFO: [Synth 8-6155] done synthesizing module 'design_1' (24#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/bd/design_1/synth/design_1.v:13]
 INFO: [Synth 8-6155] done synthesizing module 'design_1_wrapper' (25#1) [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.srcs/sources_1/imports/sources_1/bd/design_1/hdl/design_1_wrapper.v:12]
@@ -185,7 +185,7 @@ WARNING: [Synth 8-3331] design m03_couplers_imp_1E9R4HW has unconnected port S_A
 WARNING: [Synth 8-3331] design m03_couplers_imp_1E9R4HW has unconnected port S_AXI_awaddr[36]
 INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:03 . Memory (MB): peak = 1557.234 ; gain = 0.000 ; free physical = 2963 ; free virtual = 5438
+Finished RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:04 . Memory (MB): peak = 1565.246 ; gain = 0.000 ; free physical = 4678 ; free virtual = 6034
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -198,10 +198,10 @@ Report Check Netlist:
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 1557.234 ; gain = 0.000 ; free physical = 2964 ; free virtual = 5440
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 1565.246 ; gain = 0.000 ; free physical = 4679 ; free virtual = 6035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 1557.234 ; gain = 0.000 ; free physical = 2964 ; free virtual = 5440
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 1565.246 ; gain = 0.000 ; free physical = 4679 ; free virtual = 6035
 ---------------------------------------------------------------------------------
 INFO: [Device 21-403] Loading part xczu3eg-sbva484-1-i
 INFO: [Project 1-570] Preparing netlist for logic optimization
@@ -244,17 +244,17 @@ INFO: [Project 1-236] Implementation specific constraints were found while readi
 Resolution: To avoid this warning, move constraints listed in [.Xil/design_1_wrapper_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
 Parsing XDC File [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/dont_touch.xdc]
 Finished Parsing XDC File [/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/dont_touch.xdc]
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2336.297 ; gain = 0.000 ; free physical = 2202 ; free virtual = 4802
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2336.297 ; gain = 0.000 ; free physical = 3895 ; free virtual = 5394
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2336.297 ; gain = 0.000 ; free physical = 2202 ; free virtual = 4802
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2336.297 ; gain = 0.000 ; free physical = 3895 ; free virtual = 5394
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2336.297 ; gain = 0.000 ; free physical = 2202 ; free virtual = 4802
-Constraint Validation Runtime : Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00 . Memory (MB): peak = 2336.297 ; gain = 0.000 ; free physical = 2202 ; free virtual = 4802
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2336.297 ; gain = 0.000 ; free physical = 3895 ; free virtual = 5394
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00 . Memory (MB): peak = 2336.297 ; gain = 0.000 ; free physical = 3895 ; free virtual = 5394
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:15 ; elapsed = 00:00:27 . Memory (MB): peak = 2336.297 ; gain = 779.062 ; free physical = 2282 ; free virtual = 4882
+Finished Constraint Validation : Time (s): cpu = 00:00:15 ; elapsed = 00:00:27 . Memory (MB): peak = 2336.297 ; gain = 771.051 ; free physical = 3963 ; free virtual = 5463
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
@@ -262,7 +262,7 @@ Start Loading Part and Timing Information
 Loading part: xczu3eg-sbva484-1-i
 INFO: [Synth 8-6742] Reading net delay rules and data
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:15 ; elapsed = 00:00:27 . Memory (MB): peak = 2336.297 ; gain = 779.062 ; free physical = 2282 ; free virtual = 4882
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:15 ; elapsed = 00:00:27 . Memory (MB): peak = 2336.297 ; gain = 771.051 ; free physical = 3963 ; free virtual = 5463
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
@@ -285,10 +285,10 @@ Applied set_property DONT_TOUCH = true for design_1_i/ps8_0_axi_periph/m02_coupl
 Applied set_property DONT_TOUCH = true for design_1_i/ps8_0_axi_periph/m03_couplers/auto_ds. (constraint file  auto generated constraint, line ).
 Applied set_property DONT_TOUCH = true for design_1_i/ps8_0_axi_periph/m04_couplers/auto_ds. (constraint file  auto generated constraint, line ).
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:15 ; elapsed = 00:00:27 . Memory (MB): peak = 2336.297 ; gain = 779.062 ; free physical = 2281 ; free virtual = 4881
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:15 ; elapsed = 00:00:27 . Memory (MB): peak = 2336.297 ; gain = 771.051 ; free physical = 3963 ; free virtual = 5462
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:15 ; elapsed = 00:00:27 . Memory (MB): peak = 2336.297 ; gain = 779.062 ; free physical = 2279 ; free virtual = 4880
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:15 ; elapsed = 00:00:27 . Memory (MB): peak = 2336.297 ; gain = 771.051 ; free physical = 3964 ; free virtual = 5464
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -324,7 +324,7 @@ Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
 Warning: Parallel synthesis criteria is not met 
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:16 ; elapsed = 00:00:28 . Memory (MB): peak = 2336.297 ; gain = 779.062 ; free physical = 2265 ; free virtual = 4869
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:15 ; elapsed = 00:00:27 . Memory (MB): peak = 2336.297 ; gain = 771.051 ; free physical = 3949 ; free virtual = 5453
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -342,13 +342,13 @@ INFO: [Synth 8-5578] Moved timing constraint from pin 'design_1_i/axi_bram_ctrl_
 INFO: [Synth 8-5578] Moved timing constraint from pin 'design_1_i/zynq_ultra_ps_e_0/pl_clk0' to pin 'design_1_i/zynq_ultra_ps_e_0/bbstub_pl_clk0/O'
 INFO: [Synth 8-5819] Moved 5 constraints on hierarchical pins to their respective driving/loading pins
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:35 ; elapsed = 00:01:05 . Memory (MB): peak = 2575.141 ; gain = 1017.906 ; free physical = 1675 ; free virtual = 4296
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:34 ; elapsed = 00:01:03 . Memory (MB): peak = 2575.141 ; gain = 1009.895 ; free physical = 3355 ; free virtual = 4888
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:35 ; elapsed = 00:01:05 . Memory (MB): peak = 2576.141 ; gain = 1018.906 ; free physical = 1675 ; free virtual = 4296
+Finished Timing Optimization : Time (s): cpu = 00:00:34 ; elapsed = 00:01:03 . Memory (MB): peak = 2576.141 ; gain = 1010.895 ; free physical = 3354 ; free virtual = 4888
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -360,7 +360,7 @@ Report RTL Partitions:
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:35 ; elapsed = 00:01:05 . Memory (MB): peak = 2588.414 ; gain = 1031.180 ; free physical = 1673 ; free virtual = 4294
+Finished Technology Mapping : Time (s): cpu = 00:00:34 ; elapsed = 00:01:03 . Memory (MB): peak = 2588.414 ; gain = 1023.168 ; free physical = 3353 ; free virtual = 4886
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -384,7 +384,7 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:36 ; elapsed = 00:01:05 . Memory (MB): peak = 2588.414 ; gain = 1031.180 ; free physical = 1675 ; free virtual = 4296
+Finished IO Insertion : Time (s): cpu = 00:00:34 ; elapsed = 00:01:04 . Memory (MB): peak = 2588.414 ; gain = 1023.168 ; free physical = 3353 ; free virtual = 4886
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -397,7 +397,7 @@ Report Check Netlist:
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:36 ; elapsed = 00:01:05 . Memory (MB): peak = 2588.414 ; gain = 1031.180 ; free physical = 1675 ; free virtual = 4296
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:34 ; elapsed = 00:01:04 . Memory (MB): peak = 2588.414 ; gain = 1023.168 ; free physical = 3353 ; free virtual = 4886
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -409,25 +409,25 @@ Report RTL Partitions:
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:36 ; elapsed = 00:01:05 . Memory (MB): peak = 2588.414 ; gain = 1031.180 ; free physical = 1675 ; free virtual = 4296
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:34 ; elapsed = 00:01:04 . Memory (MB): peak = 2588.414 ; gain = 1023.168 ; free physical = 3353 ; free virtual = 4886
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:00:36 ; elapsed = 00:01:05 . Memory (MB): peak = 2588.414 ; gain = 1031.180 ; free physical = 1675 ; free virtual = 4296
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:35 ; elapsed = 00:01:04 . Memory (MB): peak = 2588.414 ; gain = 1023.168 ; free physical = 3353 ; free virtual = 4886
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:36 ; elapsed = 00:01:05 . Memory (MB): peak = 2588.414 ; gain = 1031.180 ; free physical = 1674 ; free virtual = 4295
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:35 ; elapsed = 00:01:04 . Memory (MB): peak = 2588.414 ; gain = 1023.168 ; free physical = 3353 ; free virtual = 4886
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:00:36 ; elapsed = 00:01:06 . Memory (MB): peak = 2588.414 ; gain = 1031.180 ; free physical = 1673 ; free virtual = 4294
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:35 ; elapsed = 00:01:04 . Memory (MB): peak = 2588.414 ; gain = 1023.168 ; free physical = 3353 ; free virtual = 4886
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -490,25 +490,25 @@ Report Instance Areas:
 |8     |      m04_couplers   |m04_couplers_imp_NB1YAO     |   296|
 +------+---------------------+----------------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:36 ; elapsed = 00:01:06 . Memory (MB): peak = 2588.414 ; gain = 1031.180 ; free physical = 1673 ; free virtual = 4294
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:35 ; elapsed = 00:01:04 . Memory (MB): peak = 2588.414 ; gain = 1023.168 ; free physical = 3353 ; free virtual = 4886
 ---------------------------------------------------------------------------------
 Synthesis finished with 0 errors, 0 critical warnings and 15 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:25 ; elapsed = 00:00:44 . Memory (MB): peak = 2588.414 ; gain = 252.117 ; free physical = 1712 ; free virtual = 4333
-Synthesis Optimization Complete : Time (s): cpu = 00:00:36 ; elapsed = 00:01:06 . Memory (MB): peak = 2588.422 ; gain = 1031.180 ; free physical = 1712 ; free virtual = 4333
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:24 ; elapsed = 00:00:43 . Memory (MB): peak = 2588.414 ; gain = 252.117 ; free physical = 3390 ; free virtual = 4923
+Synthesis Optimization Complete : Time (s): cpu = 00:00:35 ; elapsed = 00:01:04 . Memory (MB): peak = 2588.422 ; gain = 1023.168 ; free physical = 3390 ; free virtual = 4923
 INFO: [Project 1-571] Translating synthesized netlist
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2611.414 ; gain = 0.000 ; free physical = 1653 ; free virtual = 4274
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2611.414 ; gain = 0.000 ; free physical = 3330 ; free virtual = 4863
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
 INFO: [Common 17-83] Releasing license: Synthesis
 71 Infos, 111 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:00:38 ; elapsed = 00:01:07 . Memory (MB): peak = 2611.414 ; gain = 1054.180 ; free physical = 1700 ; free virtual = 4322
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2611.414 ; gain = 0.000 ; free physical = 1700 ; free virtual = 4322
+synth_design: Time (s): cpu = 00:00:36 ; elapsed = 00:01:05 . Memory (MB): peak = 2611.414 ; gain = 1046.168 ; free physical = 3378 ; free virtual = 4912
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2611.414 ; gain = 0.000 ; free physical = 3378 ; free virtual = 4912
 WARNING: [Constraints 18-5210] No constraints selected for write.
 Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
 INFO: [Common 17-1381] The checkpoint '/home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/design_1_wrapper.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file design_1_wrapper_utilization_synth.rpt -pb design_1_wrapper_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Fri Dec 11 18:56:41 2020...
+INFO: [Common 17-206] Exiting Vivado at Sat Jan  2 09:41:56 2021...

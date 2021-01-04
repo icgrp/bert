@@ -1,8 +1,8 @@
 Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version      : Vivado v.2018.3 (lin64) Build 2405991 Thu Dec  6 23:36:41 MST 2018
-| Date              : Fri Dec 11 19:00:23 2020
-| Host              : ubuntu running 64-bit Ubuntu 16.04.6 LTS
+| Date              : Sat Jan  2 10:22:06 2021
+| Host              : ubuntu running 64-bit unknown
 | Command           : report_timing_summary -max_paths 10 -file design_1_wrapper_timing_summary_routed.rpt -pb design_1_wrapper_timing_summary_routed.pb -rpx design_1_wrapper_timing_summary_routed.rpx -warn_on_violation
 | Design            : design_1_wrapper
 | Device            : xczu3eg-sbva484
