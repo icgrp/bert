@@ -165,7 +165,7 @@ void recompute_huffman(uint64_t *result_code) {
     {
       // Bits [19:16] are the encoding length
       // Bits [15:0] are allocated to the encoding
-      result_code[i]=(len[i]<<15) | code[i];
+      result_code[i]=(len[i]<<16) | code[i];
     }
 }
 
