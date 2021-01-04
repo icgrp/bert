@@ -46,26 +46,26 @@ XFpga XFpgaInstance = {0U};
 int main(int argc, char **argv) {
      
     if (readback_Init(&XFpgaInstance, IDCODE) != 0) { // IDCODE should be defined in mydesign.h
-        printf("readback_Init failed\r\n");
+        xil_printf("readback_Init failed\r\n");
         exit(1);
     }
     
     if (bert_write(MEM_0,mem_write,&XFpgaInstance) != 0) {
-        printf("bert_write failed\r\n");
+        xil_printf("bert_write failed\r\n");
         exit(1);
     }
     if (bert_read(MEM_0,mem_read,&XFpgaInstance) != 0) {
-        printf("bert_read failed\r\n");
+        xil_printf("bert_read failed\r\n");
         exit(1);
     }
     int errors = 0;
     for (int i = 0; i < WORD_COUNT; i++)
         if (mem_write[i] != mem_read[i]) {
             errors++;
-            printf("ERROR %d wrote: %llx, read: %llx, word %d", errors, mem_write[i], mem_read[i], i/2);
+            xil_printf("ERROR %d wrote: %llx, read: %llx, word %d", errors, mem_write[i], mem_read[i], i/2);
         }
     if (errors == 0)
-        printf("BERT read and write on MEM_0 working.\r\n");
+        xil_printf("BERT read and write on MEM_0 working.\r\n");
     return 0;
 }
 ```
