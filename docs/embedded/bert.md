@@ -37,7 +37,6 @@ TODO: doe this need an associated design for them to use this with?
 
 #define WORD_COUNT 512 // Example memory's word count
 #define WIDTH 72 // Bits per word in memory 
-#define PART_IDCODE 0xFFFFFFFF // Part number's IDCODE, change this or bert calls will silently fail
 
 uint64_t mem_read[CEIL(WIDTH, 64) * WORD_COUNT]; // Twos 64b words are needed for 72b
 uint64_t mem_write[CEIL(WIDTH, 64) * WORD_COUNT] = {0xDEADBEEF};
@@ -46,7 +45,7 @@ XFpga XFpgaInstance = {0U};
 
 int main(int argc, char **argv) {
      
-    if (readback_Init(&XFpgaInstance, IDCODE) != 0) {
+    if (readback_Init(&XFpgaInstance, IDCODE) != 0) { // IDCODE should be defined in mydesign.h
         printf("readback_Init failed\r\n");
         exit(1);
     }
@@ -59,14 +58,14 @@ int main(int argc, char **argv) {
         printf("bert_read failed\r\n");
         exit(1);
     }
-    
+    int errors = 0;
     for (int i = 0; i < WORD_COUNT; i++)
         if (mem_write[i] != mem_read[i]) {
-            printf("wrote: %llx, read: %llx, word %d", mem_write[i], mem_read[i], i/2);
-            exit(1);
+            errors++;
+            printf("ERROR %d wrote: %llx, read: %llx, word %d", errors, mem_write[i], mem_read[i], i/2);
         }
-    
-    printf("BERT read and write on MEM_0 working.\r\n");
+    if (errors == 0)
+        printf("BERT read and write on MEM_0 working.\r\n");
     return 0;
 }
 ```
