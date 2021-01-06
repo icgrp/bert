@@ -59,7 +59,7 @@ The next step is to set up the Xilinx SDK environment.  This tutorial was writte
   document [bsp.md](../../embedded/bsp.md) covers which libraries and
   versions you will need for BERT as well as other additional steps.  Complete those steps before proceeding.
 
-* Step 3c - you now should check the project's link settings.  This is because adding a library to a BSP after a project has already been formulated sometimes causes an issue where the 'makefile' is not updated to link against the new libary. If you are getting compiler errors, you can check that the right flags are set by opening the application project's properties (right-click `huffman_demo` and choose C/C++ Build Settings).   Then, go to ARM v8 gcc linker -> Inferred Options -> Software Platform. The specific flags you are looking for as they relate to BERT include:
+* Step 3c - you now should check the project's link settings.  This is because adding a library to a BSP after a project has already been formulated sometimes causes an issue where the 'makefile' is not updated to link against the new libary. If you are getting compiler errors, you can check that the right flags are set by opening the application project's properties (right-click `huffman_demo` and choose C/C++ Build Settings). Then, go to ARM v8 gcc linker -> Inferred Options -> Software Platform. The specific flags you are looking for as they relate to BERT include:
 
 * `-Wl,--start-group,-lxilfpga,-lxil,-lxilsecure,-lgcc,-lc,--end-group`
 *  `-Wl,--start-group,-lxilsecure,-lxil,-lgcc,-lc,--end-group`
@@ -175,10 +175,34 @@ You can run an [accelerated version of translation](accel/README.md) to speed up
   * change values there
   * save file (File>Save)
 
----
+## First Troubleshooting Steps (Specific to the tutorial and BERT in general)
 
-## TODO:
-* MATTHEW: TODO maybe get build error at end of setup (GetPLConfigData too many arguments, maybe from stale (original) xilfpga vs. extended version) -- Project > Clean to rebuild?*
-* MATTHEW: Mention the on button and reset button on board
-* MATTHEW: Section on how to Debug
+* Program will not compile
+  * Right click the project then click 'Clean Project' to make sure there are no stale builds. Doing this rebuilds the BSP as well.
+  * Check that all bert files are present in /src: bert.c/h , bert_types.h, readback.c/h, ultrascale_plus.c/h
+  * Check that the Huffman code is present in /src: bzlib_min.c, bzlib_private.h, bzlib.h, hellobert.c, huffman.c, spec.c, spec.h
+  * Check that xilfpga patch hasn't been overwritten back to the default state (For instance, this happens when changing a uart setting). If so, copy xilfpga again.
+  * Check project's linker flags are set. They sometimes get wiped out. See step 3c.
+* Cannot launch program
+  * Make sure the device (U96) is powered on and connected to the host.
+    * The boot mode switch is set to JTAG mode
+    * The barrel jack power cable is plugged in
+    * The JTAG pod is attached to the board
+    * The micro-USB to USB cable is attached to the JTAG pod
+    * The power button has been pressed once (the button behind the inner USB port).
+  * Press the reset button on the board (the button behind the USB port closed to the edge of the board). This is sometimes needed between program launches.
+* Program hangs (never finishes)
+  * Check that the heap size is large enough. The default size is not! See step 4, section 'The Application.'
+  * If bert_read/write returns `BST_XILFPGA_FAILURE`, the DMA operation is likely failing. Try slowing down the PCAP clock speed. Do this by increasing PCAP_WRITE_DIV and PCAP_READ_DIV in psu_cortexa53_0/libsrc/xilfpga_v5_1/sourcexilfpga_pcap.h
+* Reads work but writes do not
+  * Verify the IDCODE for your board is correct in mydesign.h (U96 IDCODE is 0x04A42093). Manually adjust it if need be.
+  * Slow down the PCAP clock speed. Do this by increasing PCAP_WRITE_DIV and PCAP_READ_DIV in psu_cortexa53_0/libsrc/xilfpga_v5_1/sourcexilfpga_pcap.h
+* BERT always reads 0 values no matter the state of the memory
+  * Check that the bitstream, .hdf, .dcp, and mydesign.c/h are all consistent
+  * If you intend to use a different bitstream other than the one embedded in the .hdf, point to the intended bitstream in the debug/run configuration menu. See the 'Bitstream File' field in the screenshot below step 5.
+* Not seeing any the program output in console/terminal
+  * Check you have the right tab open (called 'SDK Terminal').
+  * Check that program stdout is on the right UART output (psu_uart_1). This is adjusted in file system.mss in the bsp project. The setting is found at Overview->standalone. You can find a screenshot and more instructions [here](../../embedded/bsp.md). Note: doing this wipes out the expanded xilfpga patch. Make sure to repatch xilfpga afterwards.
+  * Press the green plus sign in SDK Terminal to open a connection to the board, to make sure you are connected to the board's UART.
+  * Check the port (varies) and baud rate (115200 for U96).
 
