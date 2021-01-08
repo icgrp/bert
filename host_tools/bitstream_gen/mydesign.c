@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
-#include "../../embedded/src/bert/bert_types.h"
+#include "mydesign.h"
 #define NUM_LOGICAL 12
 int bert_compress_version=2; // ramb18 wes
 const char *logical_names[] = {"genblk1[3].mem/ram","genblk1[2].mem/ram","genblk1[11].mem/ram","genblk1[4].mem/ram","genblk1[9].mem/ram","genblk1[10].mem/ram","genblk1[5].mem/ram","genblk1[0].mem/ram","genblk1[1].mem/ram","genblk1[7].mem/ram","genblk1[8].mem/ram","genblk1[6].mem/ram"};

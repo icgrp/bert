@@ -1,3 +1,5 @@
+#ifndef BERT_TYPES_H
+#define BERT_TYPES_H
 struct frame_range {
    int first_frame;
    int len;
@@ -58,3 +60,4 @@ struct accel_memory {
   int frame_bit_offset;
   uint64_t **trans_tables;
 };
+#endif

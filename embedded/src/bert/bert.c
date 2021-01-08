@@ -3,16 +3,18 @@
 #include "ultrascale_plus.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "readback.h"
-#include "strings.h"
 
 #include "bert.h"
-
+#ifdef TO_FILE
+#include <string.h>
+#define PRINT printf
+#else
+#include "readback.h"
+#include "strings.h"
 //DEBUG on Embedded Platform
 #include "xil_printf.h"
 #define PRINT xil_printf
-// maybe for host
-// #define PRINT printf
+#endif
 
 #ifdef TIME_BERT
 #include "xtime_l.h" 
@@ -436,7 +438,7 @@ int bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
     } // for each segment
   return BST_SUCCESS;
 }
-
+#ifndef DISABLE_ACCEL
 int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				int start_addr, int data_length, struct frame_set *the_frame_set)
 {
@@ -604,6 +606,7 @@ int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logic
   return BST_SUCCESS;
 
 }
+#endif
 
 
 int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
@@ -715,6 +718,7 @@ int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
   return BST_SUCCESS;
 }
 
+#ifndef DISABLE_ACCEL
 int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				 int start_addr, int data_length, struct frame_set *the_frame_set)
 {
@@ -813,7 +817,7 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
 #endif  
   return BST_SUCCESS;
 } 
-
+#endif
 
 int  bert_read(int logicalm, uint64_t *data, XFpga* XFpgaInstance)
 {
@@ -921,6 +925,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
     for (int i=0;i<num;i++)
     {
       if (meminfo[i].operation==BERT_OPERATION_READ) {
+	#ifndef DISABLE_ACCEL
 	if ((accel_memories_logical!=(struct accel_memory *)NULL)
 	    && (accel_memories_logical[meminfo[i].logical_mem].lookup_quanta>1))
 	  status = bert_accelerated_to_logical(meminfo[i].logical_mem,
@@ -928,6 +933,9 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 				   meminfo[i].data,
 				   meminfo[i].start_addr, meminfo[i].data_length,
 				   the_frame_set);
+	#else
+	if (0) return 0;
+	#endif
 	else
 	  status = bert_to_logical(meminfo[i].logical_mem,
 				   frame_data,
@@ -938,7 +946,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
         if (status != BST_SUCCESS)
           return status;
       }
-
+      #ifndef DISABLE_ACCEL
       if (meminfo[i].operation==BERT_OPERATION_ACCELERATED_READ) {
         status = bert_accelerated_to_logical(meminfo[i].logical_mem,
 				     frame_data,
@@ -950,6 +958,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
         if (status != BST_SUCCESS)
           return status;
       }
+	  #endif
     }
 
 #ifdef TIME_BERT
@@ -961,6 +970,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
   for (int i=0;i<num;i++)
     {
       if (meminfo[i].operation==BERT_OPERATION_WRITE) {
+	#ifndef DISABLE_ACCEL
 	if ((accel_memories_physical!=(struct accel_memory *)NULL)
 	    && (accel_memories_physical[meminfo[i].logical_mem].lookup_quanta>1))
 	  status = bert_accelerated_to_physical(meminfo[i].logical_mem,
@@ -968,6 +978,9 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 						meminfo[i].data,
 						meminfo[i].start_addr, meminfo[i].data_length,
 						the_frame_set);
+    #else
+	if (0) return 0;
+	#endif
 	else
 	  status = bert_to_physical(meminfo[i].logical_mem,
 				    frame_data,
@@ -977,6 +990,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 	if (status != BST_SUCCESS)
 	      return status;
       }
+	  #ifndef DISABLE_ACCEL
       if (meminfo[i].operation==BERT_OPERATION_ACCELERATED_WRITE) {
         status = bert_accelerated_to_physical(meminfo[i].logical_mem,
 				     frame_data,
@@ -987,7 +1001,8 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 				     );    
         if (status != BST_SUCCESS)
           return status;
-      }  
+	  }
+	  #endif  
     }
 
 #ifdef TIME_BERT

@@ -1,4 +1,4 @@
-
+#include "../../embedded/src/bert/bert_types.h"
 #define NUM_LOGICAL 12
 
 #define IDCODE 0x04A42093

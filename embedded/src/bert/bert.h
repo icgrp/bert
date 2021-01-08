@@ -1,8 +1,8 @@
 #define TO_FILE
 
-
 #ifdef TO_FILE
 #include "../../../host_tools/bitstream_gen/dummy_xilinx.h"
+#include "bert_types.h"
 #else
 #include "xilfpga.h"
 #endif
