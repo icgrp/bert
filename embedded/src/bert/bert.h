@@ -1,4 +1,11 @@
+#define TO_FILE
+
+
+#ifdef TO_FILE
+#include "../../../host_tools/bitstream_gen/dummy_xilinx.h"
+#else
 #include "xilfpga.h"
+#endif
 #define BERT_OPERATION_WRITE 1
 #define BERT_OPERATION_READ 2
 #define BERT_OPERATION_ACCELERATED_WRITE 3
