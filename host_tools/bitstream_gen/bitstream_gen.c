@@ -8,7 +8,7 @@
 #include <unistd.h>
 
 #include "mydesign.h" // Include the primary design file, as well as any acceleration tables if used
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define DEBUG_PRINT(fmt, args...)    fprintf(stderr, fmt, ## args)
 #else
@@ -28,7 +28,13 @@ XFpga XFpgaInstance = {0U};
 FILE* output = NULL;
 FILE* input = NULL;
 struct bert_meminfo ops[NUM_LOGICAL] = {0U};
-// add TARGETs DATAFILE
+
+/*
+* TODO:
+* - Bigendian file support
+* - Show file mismatch
+* - Target memories besides using number indices
+*/
 
 void prepData(int mem, FILE* input) {
     if (mem < 0 || mem >= NUM_LOGICAL) {
@@ -58,7 +64,6 @@ void prepData(int mem, FILE* input) {
             DEBUG_PRINT("prepData: Staged 0x%lX in word %d of mem %d\n", mem_write[mem][i*cellsPerWord + k], i*cellsPerWord + k, mem);
             k++;
         }
-        DEBUG_PRINT("Leftover bytes: %ld\n", wordSize % 8);
         if (wordSize % 8 != 0) {
             res = fread(&(mem_write[mem][i*cellsPerWord + k]), wordSize % 8, 1, input);
             if (res < 1) {
@@ -69,6 +74,8 @@ void prepData(int mem, FILE* input) {
             DEBUG_PRINT("prepData: Staged 0x%lX in word %d of mem %d\n", mem_write[mem][i*cellsPerWord + k], i*cellsPerWord + k, mem);
         }
     }
+    if (!feof(input))
+        fprintf(stderr, "WARNING: Input file for mem %d is larger than the memory\n", mem);
 
     prepDataEpilogue :
     if (op->operation != 0)
@@ -84,7 +91,7 @@ void prepData(int mem, FILE* input) {
 }
 
 void parseArgs(int argc, char** argv) {
-    if (argc < 3) {
+    if (argc < 2) {
         fprintf(stderr, "Usage: bitstream_gen <input script> <output bitstream>\nbitstream_gen --help for more\n");
         exit(1);
     }
@@ -93,6 +100,9 @@ void parseArgs(int argc, char** argv) {
                         "Script Commands:\n\n"
                         "add <target/s> <logical mem binary> <optional formatting>        Example: add 0 1 5 data.hex\n");
         exit(0);
+    } else if (argc < 3) {
+        fprintf(stderr, "Usage: bitstream_gen <input script> <output bitstream>\nbitstream_gen --help for more\n");
+        exit(1);
     }
     input = fopen(argv[1], "r");
     if (input == NULL) {

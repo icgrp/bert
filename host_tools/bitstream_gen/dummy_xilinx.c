@@ -30,7 +30,7 @@ int XFpga_PL_Frames_Load(XFpga *InstancePtr, UINTPTR ReadbackAddr, u32 Flags, u3
     for (int i = 0; i < Size/4; i++)
         arr[i] = swap(arr[i]);
 
-    fwrite(BitstreamAddr, 1, Size, InstancePtr->file);
+    fwrite((void *) BitstreamAddr, 1, Size, InstancePtr->file);
     return XST_SUCCESS;
 }
 
