@@ -74,8 +74,12 @@ void prepData(int mem, FILE* input) {
             DEBUG_PRINT("prepData: Staged 0x%lX in word %d of mem %d\n", mem_write[mem][i*cellsPerWord + k], i*cellsPerWord + k, mem);
         }
     }
-    if (!feof(input))
-        fprintf(stderr, "WARNING: Input file for mem %d is larger than the memory\n", mem);
+    if (!feof(input)) {
+        long int fin = ftell(input);
+        fseek(input, 0, SEEK_END);
+        long int end = ftell(input);
+        fprintf(stderr, "WARNING: File size mismatch. Input file for mem %d is larger than the memory by %ld bytes\n", mem, end - fin);
+    }
 
     prepDataEpilogue :
     if (op->operation != 0)
