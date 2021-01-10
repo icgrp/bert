@@ -1,6 +1,6 @@
 IDIR =../../embedded/src/bert
 CC=gcc
-CFLAGS=-I$(IDIR) -g
+CFLAGS=-I$(IDIR) -D HOST_SIDE -D DISABLE_ACCEL -g
 
 ODIR=.
 LDIR =../../embedded/src/bert

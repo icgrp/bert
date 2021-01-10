@@ -34,13 +34,12 @@ int XFpga_PL_Frames_Load(XFpga *InstancePtr, UINTPTR ReadbackAddr, u32 Flags, u3
     return XST_SUCCESS;
 }
 
-int readback_Init(XFpga *XFpgaInstance, uint32_t IDCODE) {
+int hostwrite_Init(XFpga *XFpgaInstance, uint32_t IDCODE, FILE* out) {
     XFpgaInstance->idcode = IDCODE;
+    if (out == NULL)
+        return XST_FAILURE;
+    XFpgaInstance->file = out;
     return XST_SUCCESS;
-}
-
-void set_file(XFpga *XFpgaInstance, FILE* f) {
-    XFpgaInstance->file = f;
 }
 
 const uint32_t header[196] = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,

@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#define DISABLE_ACCEL
-
 #define XST_SUCCESS 0
 #define XST_FAILURE 1
 #define s32 int
@@ -30,8 +28,7 @@ typedef struct XFpga {
 
 int XFpga_GetPlConfigData(XFpga *XFpgaInstance, UINTPTR frame_data, int words, int frame_base);
 int XFpga_PL_Frames_Load(XFpga *InstancePtr, UINTPTR ReadbackAddr, u32 Flags, u32 WrdCnt);
-int readback_Init(XFpga *XFpgaInstance, uint32_t IDCODE);
-void set_file(XFpga *XFpgaInstance, FILE* f);
+int hostwrite_Init(XFpga *XFpgaInstance, uint32_t IDCODE, FILE* out);
 
 extern const uint32_t header[196];
 

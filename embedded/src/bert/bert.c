@@ -5,7 +5,7 @@
 #include "stdlib.h"
 
 #include "bert.h"
-#ifdef TO_FILE
+#ifdef HOST_SIDE
 #include <string.h>
 #define PRINT printf
 #else
