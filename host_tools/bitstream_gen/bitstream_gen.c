@@ -8,6 +8,15 @@
 #include <unistd.h>
 #include <stdbool.h>
 
+// Macros to deal with uint64_t discrepancy
+#ifdef __linux__
+#define FMT_UINT64 "%lX"
+#endif
+#ifdef __APPLE__
+#define FMT_UINT64 "%llX"
+#endif
+
+
 #include "mydesign.h" // Include the primary design file, as well as any acceleration tables if used
 //#define DEBUG
 #ifdef DEBUG
@@ -50,7 +59,7 @@ int readWord(uint64_t* arr, int bytes, FILE* f) {
             return fread(arr, bytes, 1, f);
 
         case DAT :
-            return fscanf(f, "%llx\n", arr);
+            return fscanf(f, FMT_UINT64 "\n", arr);
         default :
             fprintf(stderr, "Invalid format.\n");
             exit(1);
@@ -135,7 +144,7 @@ void prepData(int mem, FILE* input) {
                 fprintf(stderr, "Mem %d staged for writing\n", mem);
                 goto prepDataEpilogue;
             }
-            DEBUG_PRINT("prepData: Staged 0x%llX in word %d of mem %d\n", mem_write[mem][i*cellsPerWord + k], i*cellsPerWord + k, mem);
+            DEBUG_PRINT("prepData: Staged 0x" FMT_UINT64 " in word %d of mem %d\n", mem_write[mem][i*cellsPerWord + k], i*cellsPerWord + k, mem);
             k++;
         }
         if (wordSize % 8 != 0) {
@@ -145,7 +154,7 @@ void prepData(int mem, FILE* input) {
                 fprintf(stderr, "Mem %d staged for writing\n", mem);
                 goto prepDataEpilogue;
             }
-            DEBUG_PRINT("prepData: Staged 0x%llX in word %d of mem %d\n", mem_write[mem][i*cellsPerWord + k], i*cellsPerWord + k, mem);
+            DEBUG_PRINT("prepData: Staged 0x" FMT_UINT64 "in word %d of mem %d\n", mem_write[mem][i*cellsPerWord + k], i*cellsPerWord + k, mem);
         }
     }
     if (!feof(input)) {
