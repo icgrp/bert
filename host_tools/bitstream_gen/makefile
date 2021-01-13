@@ -1,6 +1,6 @@
 IDIR =../../embedded/src/bert
 CC=gcc
-CFLAGS=-I$(IDIR) -D HOST_SIDE -D DISABLE_ACCEL -g
+CFLAGS=-I$(IDIR) -m64 -D HOST_SIDE -D DISABLE_ACCEL -g
 
 ODIR=.
 LDIR =../../embedded/src/bert
@@ -22,7 +22,7 @@ bitstream_gen: $(OBJ)
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
-	rm -f ../../embedded/src/bert/bert.o
+	rm -f $(ODIR)/*.o *~
+	rm -f $(LDIR)/*.o
 	rm -f test.bit
 	rm -f bitstream_gen
