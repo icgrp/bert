@@ -1,1 +1,17 @@
-add 0 1 2 3 4 5 6 7 8 9 10 11 deadbeef.hex
+# Set format to .bin. Command takes values bin or dat
+read_format bin
+
+# Fill all memories with deadbeef.bin
+stage 0 1 2 3 4 5 6 7 8 9 10 11 deadbeef.bin
+
+# Specify where to write bitstream for staged memories.
+# write_bitream clears the memories that are staged
+write_bitstream examplebinbitstream.bit
+
+# Set format to .dat now.
+read_format dat
+
+# Stage memories 0-3
+stage 0 1 2 3 deadbeef.dat
+
+write_bitstream exampledatbitstream.bit
