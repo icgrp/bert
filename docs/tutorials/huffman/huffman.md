@@ -103,7 +103,7 @@ Once the code compiles, you are ready to run it on hardware. Start by opening "R
 
 In the Target Setup pane to the right you will need to select a number of reset options like below:
 
-![Setting Debug Target Setup Options](../../images/huffmandebugconfigurations.png)
+![Setting Debug Target Setup Options](../../images/huffmandbgconf.png)
 
 In addition you will have to fill in the name of the bitfile to use.  You do this by clicking the Browse Button and selecting the file `WORK/top.bit`.
 Once you have done so, click Apply and then Close.  At this point you have a new configuration you can use when you run with or without the debugger.
