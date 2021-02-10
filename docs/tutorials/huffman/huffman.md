@@ -2,7 +2,7 @@
 ## Overview
 This tutorial will lead you through using BERT to read and write memories in a hardware design.  
 
-The tutorial covers the use of BERT with both the SDK (Xilinx tools 2019.1 and earlier) as well as with Vitit (Xilinx tools 2019.2 and later).  At times below, there will be instructions to copy files from a particular directory or to run a particular script.  A typical example would be the location of the sample files, either `.../bert/docs/tutorials/huffman/hw_huffman_sdk` or `.../bert/docs/tutorials/huffman/hw_huffman_vitis`.  To simplify the discussion, that location would be listed as `.../bert/docs/tutorials/huffman/hw_huffman_TOOL` - you would need to replace the word `TOOL` with either `sdk` or `vitis`.
+The tutorial covers the use of BERT with both the SDK (Xilinx tools 2019.1 and earlier) as well as with Vitit (Xilinx tools 2019.2 and later).  At times below, there will be instructions to copy files from a particular directory or to run a particular script.  A typical example would be the location of the sample files, either `.../bert/docs/tutorials/huffman/hw_huffman_sdk` or `.../bert/docs/tutorials/huffman/hw_huffman_vitis`.  To simplify the discussion, that location would be listed as `.../bert/docs/tutorials/huffman/hw_huffman_TOOL` - you would need to replace the word `TOOL` with either `sdk` or `vitis`.  In addition the `.../bert/` represents the location where your BERT repository exists on your computer.
 
 The hardware for the project is a Huffman Encoder design where 4 memories are used:
 * A 1024x8b memory with 8b characters that will be encoded, called `rawTextMem`
@@ -45,7 +45,7 @@ installation site.  This is not needed for Vitis.
 ## Step 1. Obtaining A Sample Design
 As mentioned, the first step is to create your hardware design in Vivado, compile it to a bitstream, and then write out the needed files for BERT to use your design.
 
-For this tutorial, however, a complete set of such files are provided for you within the bert GIT repo for the Ultra96-V2 board to save time.  You can find those in this directory: `.../bert/docs/tutorials/huffman/hw_huffman_TOOL` in the repo.  Copy the files from there into a directory where you intend to work through this tutorial (which we will refer to as `WORK` for the rest of the tutorial).  Also, when we refer to paths like `.../bert/` we are referring to the location where you have checked out the github BERT repo into (an example would be `/home/steve/bert`).
+For this tutorial, however, a complete set of such files are provided for you within the bert GIT repo for the Ultra96-V2 board to save time.  You can find those in this directory: `.../bert/docs/tutorials/huffman/hw_huffman_TOOL` in the repo.  Copy the files from there into a directory where you intend to work through this tutorial (which we will refer to as `WORK` for the rest of the tutorial).  
 
 ## Step 2. Setup Xilinx SDK With The Proper Libraries.
 If you are running SDK, the next step is to set up the Xilinx SDK environment.  This tutorial was written for Vivado 2018.3 but the BERT tools require `xilfpga` libraries for 2019.1 and so there are a number of steps required to get the proper libraries and files set up. Follow the instructions [here on 2018.3 setup](../../embedded/xilinx2018_3.md) if you are running a version of Vivado prior to 2019.2.  This will set up the files you need in your SDK environment.  You should only have to do this once per installation site.  Obviously, this is not needed for Vitis since it pertains to Xilinx 2019.2 and later.
@@ -64,7 +64,7 @@ If you are running SDK, the next step is to set up the Xilinx SDK environment.  
 * `-Wl,--start-group,-lxilfpga,-lxil,-lxilsecure,-lgcc,-lc,--end-group`
 *  `-Wl,--start-group,-lxilsecure,-lxil,-lgcc,-lc,--end-group`
 
-NOTE: we have seen these get reset by the SDK/Vitis when switching workspaces, among other things.  So. if at the end of the process you are getting compile errors, re-check these settings!
+Add these if they are missing.  NOTE: we have seen these get reset by the SDK/Vitis when switching workspaces, among other things.  So, if at the end of the process you are getting compile errors, re-check these settings!
 
 ## Step 4. Integrating BERT into Your Project and Writing Your Source Code
 Now that you have an application project and BSP established, you need to assemble the needed source code files to create your BERT application.  To simplify this a script has been created which will copy the needed files into your applicationn source directory for you.  If you are running SDK that source directory will be `WORK/SDKWorkspace/huffman_demo/src`.  If you are running Vitis that source directory will be `WORK/huffman_demo/src`.  Here are the files that will be copied:
@@ -88,9 +88,9 @@ The provided `hellobert.c` application source code (mentioned above) does the fo
 * It then writes ascending input to the `rawTextMem` and an identity encoding as the Huffman table in the running design, and then checks the encoded results in the `resultMem` to verify they are correct.
 
 The application allocates memory to use for its activities.  Before executing it, you need to tell the SDK how much memory it will use.  To do this, edit the `ldscript.ld` in SDK:
-* on the left, if necessary, click on triangle to the left of huffman_demo to list its contents
-* click on triangle to the left of src to list its contents
-*  double-click the on `lscript.ld` file to open.
+* On the left, if necessary, click on triangle to the left of huffman_demo to list its contents
+* Click on triangle to the left of src to list its contents
+* Double-click the on `lscript.ld` file to open.
 
 The default heap size of the program is too small to store the configuration frames needed to write to memories. In the worst case, all 4 memories exist in different frame ranges. The bits of a BRAM36/18 span 256 frames (+1 dummy frame for flushing the data). Thus, we need enough memory to hold 4 x 257 frames, and each frame is 93 x 4 bytes. So the approximate memory usage is 382,416 bytes. Round up and set the heap size to 0x60000 (6 followed by 4 zeros -- this is hex for roughly 400 kilobytes).  For more discussion on how to size the heap, see the 'Dynamic Memory Usage' section in [the BERT API documentation](../../embedded/bert.md). Once changed, select File->Save from top menu to apply the changes and rebuild the program.
 
@@ -130,25 +130,19 @@ If all goes well, the program will run and will print results to the SDK Termina
 
 Congratulations!  You have run a successful demo application using BERT.
 
-### Visit Instructions
+### Vitis Instructions
 Start by opening "Run Configurations."  You can do this by right-clicking on the project application (`huffman_demo`) and selecting 'Run As->Launch on Hardware (Single Application Debug)'.   This will run the application.
 
-TODO:
-- In the Target Setup pane to the right you will need to select a number of reset options like below:
-- In addition you will have to fill in the name of the bitfile to use.  You do this by clicking the Browse Button and selecting the file `WORK/top.bit`.
-- Once you have done so, click Apply and then Close.  At this point you have a new configuration you can use when you run with or without the debugger.
+But first, if you select the 'Debug Perspective' (upper right of screen), the 'Vitis Serial Terminal' will show up near the bottom of the window. You should next open the serial port to the board so you can observe the program output. Click the green plus ('+') sign in the "Vitis Serial Terminal" tab's window accomplishes this.  On Windows it will be a COM port, on Linux it will be /dev/ttyUSB1.
 
-Later, to run just click the green circle with white triangle at the top center of the screen.  This will run what you just created.
+![Opening the serial port](../../images/openserialportlinux_vitis.png)
+
+Later, to run again, just click the green circle with white triangle at the top center of the screen.  This will run what you just created.
 
 ![Starting a Run](../../images/RunDebug.png)
 
 Watch the lower right screen - you will see it going through a whole series of startup steps - loading code, programming the FPGA, resetting the system, etc.  This can take as long as 30 seconds.  When it all finishes and runs the actual application the focus will switch to the console window in the lower center of the screen.  That will be your cue that the application has run.  
 
-If you select the 'Debug Perspective' (upper right of screen), the 'Vitis Terminal' will show up below. 
-
-Before or during the launch of the program, open the serial port to the board so you can observe the program output. Clicking the green plus ('+') sign in the "SDK Terminal" tab's window accomplishes this.  On Windows it will be a COM port, on Linux it will be /dev/ttyUSB1.
-
-![Opening the serial port](../../images/openserialportlinux.png)
 
 Alternatively, you can run the debugger using the debug icon just to the left of the run button (this icon looks like a bug).  This will run the debugger.  The debugger will start up with a breakpoint at main.  To resume execution, select Core 0 and press the `Resume` button, which is shaped like a play button (rectangle followed by green arrow, two icons over from the run button).
 
