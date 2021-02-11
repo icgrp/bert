@@ -75,7 +75,7 @@ Now that you have an application project and BSP established, you need to assemb
 
 To copy these all into your source directory now do this:
 ```
-python3 BERT/docs/tutorials/huffman/copyappfiles_TOOL.py WORK
+python3 .../bert/docs/tutorials/huffman/copyappfiles_TOOL.py WORK
 ```
 where `TOOL` is either `sdk` or `vitis`.
 
