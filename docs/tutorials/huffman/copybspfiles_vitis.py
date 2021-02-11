@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     workDir = pathlib.Path(args.workDir).resolve()
     assert os.path.isdir(str(workDir)) 
-    sdkDir  = workDir / "design_1_wrapper"
+    sdkDir  = workDir / "top"
     assert os.path.isdir(str(sdkDir)) 
     appBspDir = sdkDir / "psu_cortexa53_0" / "standalone_domain" / "bsp" / "psu_cortexa53_0" / "libsrc" / "xilfpga_v5_1" / "src"
     assert os.path.isdir(str(appBspDir))
