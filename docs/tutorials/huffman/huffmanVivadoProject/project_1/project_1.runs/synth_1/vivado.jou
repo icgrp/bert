@@ -2,8 +2,8 @@
 # Vivado v2018.3 (64-bit)
 # SW Build 2405991 on Thu Dec  6 23:36:41 MST 2018
 # IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
-# Start of session at: Sat Jan  2 09:40:36 2021
-# Process ID: 3364
+# Start of session at: Thu Jan  7 15:00:41 2021
+# Process ID: 18028
 # Current directory: /home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1
 # Command line: vivado -log design_1_wrapper.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source design_1_wrapper.tcl
 # Log file: /home/nelson/bert/docs/tutorials/huffman/huffmanVivadoProject/project_1/project_1.runs/synth_1/design_1_wrapper.vds

@@ -42,7 +42,7 @@ module encode(
 
     logic[31:0] r;  // Register where we assemble the outgoing stream
 
-    (* ram_style = "block" *)   logic[19:0] huffmanMem[256];   // The memory where the codes are stored
+    (* dont_touch = "true" *) (* ram_style = "block" *)   logic[19:0] huffmanMem[256];   // The memory where the codes are stored
 
     typedef enum logic[2:0] {A, LDCODE, B, C, D, ERR='X} stateType;
     stateType ns, cs;

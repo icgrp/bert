@@ -14,7 +14,7 @@ module histogram(
     output logic [15:0] psHistDout
     );
     
-    (* ram_style = "block" *)  logic [15:0] histMem [256];
+    (* dont_touch = "true" *) (* ram_style = "block" *)  logic [15:0] histMem [256];
 
     
     typedef enum logic [1:0] {idle,write,init,ERR='X} stateType;

@@ -24,7 +24,7 @@ module consume(
     logic[15:0] results;
 
     
-    (* ram_style = "block" *)   logic[15:0] resultsMem[TEXTLEN];
+    (* dont_touch = "true" *) (* ram_style = "block" *)   logic[15:0] resultsMem[TEXTLEN];
 
     typedef enum logic[1:0] {A, B, ERR='X} stateType;
     stateType ns, cs;
