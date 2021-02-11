@@ -131,8 +131,8 @@ proc file_gen { dirName } {
     file mkdir $dirName
     write_bitstream -force -logic_location_file $dirName/top.bit
     puts "##############################"
-    puts "Step 2: Writing top.hdf file to $dirName"
-    write_hw_platform -fixed -force  -include_bit -file write_hwdef  -force $dirName/top.xsa
+    puts "Step 2: Writing top.xsa file to $dirName"
+    write_hw_platform -fixed -force  -include_bit -file $dirName/top.xsa
     puts "##############################"
     puts "Step 3: Writing top.mdd file to $dirName"
     mddMake $dirName/top.mdd
@@ -145,7 +145,7 @@ proc file_gen { dirName } {
     puts "Now you have the following files:"
     puts "  $dirName/top.bit"
     puts "  $dirName/top.ll"
-    puts "  $dirName/top.hdf"
+    puts "  $dirName/top.xsa"
     puts "  $dirName/top.mdd"
     puts "  $dirName/top.dcp"
     puts "You can move on by changing to your .../bert/host_tools/bert_gen directory and then executing './gen.sh -gen $dirName'"
