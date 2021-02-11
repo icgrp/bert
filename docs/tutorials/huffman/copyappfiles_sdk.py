@@ -19,7 +19,7 @@ if __name__ == "__main__":
     # Check that all directories exist
     bertSrcDir = bertDir / "embedded" / "src" / "bert"
     assert os.path.isdir(str(bertSrcDir))
-    bertSWHuffmanDir = bertDir / "docs" / "tutorials" / "huffman" / "sw_huffman"
+    bertSWHuffmanDir = bertDir / "docs" / "tutorials" / "huffman" / "sw_huffman_sdk" 
     assert os.path.isdir(str(bertSWHuffmanDir))
 
     assert os.path.isdir(str(workDir)) 

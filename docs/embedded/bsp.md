@@ -20,9 +20,9 @@ Since BERT takes advantage of custom API calls, the xilfpga library source code 
 
 To help you do this, however, a script has been created which will do this copying for you (as well as copying BERT sources over).    This script can be run as:
 ```
-python3 BERT/docs/tutorials/huffman/copybspfiles.py WORK
+python3 .../bert/docs/tutorials/huffman/copybspfiles_sdk.py WORK
 ```
-where BERT is where your BERT repo lives and WORK is the directory you copied the provided files into at the start of this tutorial.
+where `.../bert` is where your BERT repo lives and WORK is the directory you copied the provided files into at the start of this tutorial.
 
 NOTE: If other bsp parameters are later changed in `system.mss` or the `Re-generate BSP Sources` button is clicked, the BSP code will be regenerated *and this modified version of xilfpga will be overwritten with the vanilla xilfpga version from the local SDK installation*, negating what you just did. Thus, it is best to completely configure the rest of the BSP before replacing the custom xilfpga library source code. 
 
@@ -47,7 +47,7 @@ Then click OK and you will have configured your BSP.
 
 ### Over-write xilfpga API Library Source Code in BSP
 Since BERT takes advantage of custom API calls, the xilfpga library source code must be overwritten in the BSP with modified versions.  These are found at `.../bert/embedded/libsrc/xilfpga_v5_1/src` and are to be copied to 
-`WORK/design_1_wrapper/psu_cortexa53_0/standalone_domain/bsp/psu_cortexa53_0/libsrc/xilfpga_v5_1/src` (where WORK is the directory you set up at the start of this tutorial).
+`WORK/top/psu_cortexa53_0/standalone_domain/bsp/psu_cortexa53_0/libsrc/xilfpga_v5_1/src` (where WORK is the directory you set up at the start of this tutorial).
 
 To help you do this, however, a script has been created which will do this copying for you (as well as copying BERT sources over).    This script can be run as:
 ```
