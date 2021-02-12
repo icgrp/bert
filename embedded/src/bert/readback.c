@@ -1,39 +1,61 @@
 #include "xil_printf.h"
 #include "xfpga_config.h"
 #include "xilfpga.h"
+#include "xilfpga_pcap.h"
 #include "readback.h"
+#include "bits.h"
+
+/* Firmware State Definitions */
+#define XFPGA_FIRMWARE_STATE_UNKNOWN	0U
+#define XFPGA_FIRMWARE_STATE_SECURE	1U
+#define XFPGA_FIRMWARE_STATE_NONSECURE	2U
+
+#define PCAP_READ_DIV 10
+#define PCAP_WRITE_DIV 4
+
+
+#define CFGREG_SRCDMA_OFFSET	0x8U
+#define CFGDATA_DSTDMA_OFFSET	0x1FCU
+#define BIN_READBACK_OFFSET (93 + 25) * 4
+
+#define XDC_TYPE_SHIFT                  29U
+#define XDC_REGISTER_SHIFT              13U
+#define XDC_OP_SHIFT                    27U
+#define XDC_TYPE_1                      1U
+#define XDC_TYPE_2			2U
+#define OPCODE_NOOP			0U
+#define OPCODE_READ                     1U
+#define OPCODE_WRITE			2U
+#define XFPGA_DESTINATION_PCAP_ADDR	(0XFFFFFFFFU)
+#define XFPGA_PART_IS_ENC		(0x00000080U)
+#define XFPGA_PART_IS_AUTH		(0x00008000U)
+#define DUMMY_BYTE			(0xFFU)
+#define SYNC_BYTE_POSITION		64U
+#define BOOTGEN_DATA_OFFSET		0x2800U
+#define XFPGA_ADDR_WORD_ALIGN_MASK	(0x3U)
 
 int readback_XilfpgaWrapper(XFpga *InstancePtr, u32 far, u32 words, u32* data);
+static u32 XFpga_GetPLConfigDataRange(const XFpga *InstancePtr);
 
-XFpga Instance = {0U};
-int globalFrameBase = 0;
-int globalFrameLen = 0;
+static XFpga Instance = {0U};
+static int globalFrameBase = 0;
+static int globalFrameLen = 0;
+static u32 globalIDCODE = -1;
+static XCsuDma *CsuDmaPtr;
 int readback_Frame(u32 frameAddr, u32 frameCnt, u32* framedata);
 
 int readback_Init(XFpga* XFpgaInstance, u32 idcode) {
 	s32 Status;
-	Status = XFpga_Initialize(XFpgaInstance, idcode);
+	Status = XFpga_Initialize(XFpgaInstance);
 	if (Status != XFPGA_SUCCESS) {
 		xil_printf("XFpga_Initialize failed\r\n");
 		return XST_FAILURE;
 	}
-	XFpgaInstance->XFpga_GetConfigData = XFpga_GetPlConfigDataRange;
+	globalIDCODE = idcode;
+	XFpgaInstance->XFpga_GetConfigData = XFpga_GetPLConfigDataRange;
 	XFpga_PL_PostConfig(XFpgaInstance); //so firmware status is not unknown, throws error otherwise
+	CsuDmaPtr = Xsecure_GetCsuDma();
 	Instance = *XFpgaInstance;
-	return XST_SUCCESS;
-}
-
-int readback_Bitstream(u32* framedata) {
-	s32 Status;
-	u32 WrdCnt = WORDS_PER_FRAME * (FRAMES + 1) + PAD_WORDS;
-
-	Status = XFpga_GetPlConfigData(&Instance, (UINTPTR)framedata, WrdCnt, 0);
-	if (Status != XST_SUCCESS) {
-		xil_printf("readback_Bitstream() failed\r\n");
-		return XST_FAILURE;
-	}
-	xil_printf("Full bitstream readback done\r\n");
-
 	return XST_SUCCESS;
 }
 
@@ -41,7 +63,7 @@ int readback_Frame(u32 frameAddr, u32 frameCnt, u32* framedata) {
 	s32 Status;
 	u32 WrdCnt = WORDS_PER_FRAME * (frameCnt + 1) + PAD_WORDS;
 
-	Status = XFpga_GetPlConfigData(&Instance, (UINTPTR)framedata, WrdCnt, frameAddr);
+	Status = XFpga_GetPlConfigDataRange(&Instance, (UINTPTR)framedata, WrdCnt, frameAddr);
 	if (Status != XST_SUCCESS) {
 		xil_printf("readback_Frame(%X, %X) failed\r\n", frameAddr, frameCnt);
 		return XST_FAILURE;
@@ -73,17 +95,72 @@ u32 XFpga_GetPlConfigDataRange(XFpga *InstancePtr, UINTPTR ReadbackAddr,
 	return Status;
 }
 
+static u32 XFpga_WriteToPcap(u32 Size, UINTPTR BitstreamAddr)
+{
+	u32 Status = XFPGA_FAILURE;
+
+	/*
+	 * Setup the  SSS, setup the PCAP to receive from DMA source
+	 */
+	Xil_Out32(CSU_CSU_SSS_CFG, XFPGA_CSU_SSS_SRC_SRC_DMA);
+	Xil_Out32(CSU_PCAP_RDWR, 0x0U);
+
+	/* Setup the source DMA channel */
+	XCsuDma_Transfer(CsuDmaPtr, XCSUDMA_SRC_CHANNEL, BitstreamAddr, Size, 0U);
+
+	/* wait for the SRC_DMA to complete and the pcap to be IDLE */
+	Status = XCsuDma_WaitForDoneTimeout(CsuDmaPtr, XCSUDMA_SRC_CHANNEL);
+	if (Status != XFPGA_SUCCESS) {
+		goto END;
+	}
+
+	/* Acknowledge the transfer has completed */
+	XCsuDma_IntrClear(CsuDmaPtr, XCSUDMA_SRC_CHANNEL, XCSUDMA_IXR_DONE_MASK);
+
+	Status = Xil_WaitForEvent(CSU_PCAP_STATUS,
+			PCAP_STATUS_PCAP_WR_IDLE_MASK,
+			PCAP_STATUS_PCAP_WR_IDLE_MASK,
+			PL_DONE_POLL_COUNT);
+END:
+	return Status;
+}
+static u32 Xfpga_RegAddr(u8 Register, u8 OpCode, u16 Size)
+{
+
+	/*
+	 * Type 1 Packet Header Format
+	 * The header section is always a 32-bit word.
+	 *
+	 * HeaderType | Opcode | Register Address | Reserved | Word Count
+	 * [31:29]      [28:27]         [26:13]      [12:11]     [10:0]
+	 * --------------------------------------------------------------
+	 *   001          xx      RRRRRRRRRxxxxx        RR      xxxxxxxxxxx
+	 *
+	 * ï¿½Rï¿½ means the bit is not used and reserved for future use.
+	 * The reserved bits should be written as 0s.
+	 *
+	 * Generating the Type 1 packet header which involves sifting of Type 1
+	 * Header Mask, Register value and the OpCode which is 01 in this case
+	 * as only read operation is to be carried out and then performing OR
+	 * operation with the Word Length.
+	 */
+	return ((u32)(((u32)XDC_TYPE_1 << (u32)XDC_TYPE_SHIFT) |
+		((u32)Register << (u32)XDC_REGISTER_SHIFT) |
+		((u32)OpCode << (u32)XDC_OP_SHIFT)) | (u32)Size);
+}
+
 static u32 XFpga_GetPLConfigDataRange(const XFpga *InstancePtr)
 {
 	u32 Status = XFPGA_FAILURE;
-	UINTPTR Address = globalFrameBase;
+	UINTPTR Address = InstancePtr->ReadInfo.ReadbackAddr;
 	u32 NumFrames = globalFrameLen;
 	u32 RegVal;
 	u32 cmdindex;
 	u32 *CmdBuf;
 	s32 i;
-	u32 far = InstancePtr->ReadInfo.FarAddr;
-	Status = XFpga_GetFirmwareState();
+	u32 far = globalFrameBase;
+	Status = (Xil_In32(PMU_GLOBAL_GEN_STORAGE5) & XFPGA_STATE_MASK) >>
+			XFPGA_STATE_SHIFT;
 
 	if (Status == XFPGA_FIRMWARE_STATE_UNKNOWN) {
 		Xfpga_Printf(XFPGA_DEBUG, "Error while reading configuration "
@@ -107,7 +184,18 @@ static u32 XFpga_GetPLConfigDataRange(const XFpga *InstancePtr)
 	Xil_Out32(PCAP_CLK_CTRL, RegVal | PCAP_CLK_EN_MASK);
 
 	/* Take PCAP out of Reset */
-	Status = XFpga_PcapInit(1U);
+	RegVal = Xil_In32(CSU_PCAP_RESET);
+	RegVal &= (~CSU_PCAP_RESET_RESET_MASK);
+	Xil_Out32(CSU_PCAP_RESET, RegVal);
+
+	/* Select PCAP mode and change PCAP to write mode */
+	RegVal = CSU_PCAP_CTRL_PCAP_PR_MASK;
+	Xil_Out32(CSU_PCAP_CTRL, RegVal);
+	Xil_Out32(CSU_PCAP_RDWR, 0x0U);
+	Status = Xil_WaitForEvent(CSU_PCAP_STATUS,
+			CSU_PCAP_STATUS_PL_INIT_MASK,
+			CSU_PCAP_STATUS_PL_INIT_MASK,
+			PL_DONE_POLL_COUNT);
 	if (Status != XFPGA_SUCCESS) {
 		Status = XPFGA_ERROR_PCAP_INIT;
 		Xfpga_Printf(XFPGA_DEBUG, "PCAP init failed\n\r");
@@ -171,7 +259,8 @@ static u32 XFpga_GetPLConfigDataRange(const XFpga *InstancePtr)
 	CmdBuf[cmdindex] =  Xfpga_RegAddr(FDRO, OPCODE_READ, 0U);
 	cmdindex++;
 			      /* Type 2 Read Wordlenght Words from FDRO */
-	CmdBuf[cmdindex] = Xfpga_Type2Pkt(OPCODE_READ, NumFrames);
+	CmdBuf[cmdindex] = ((u32)(((u32)XDC_TYPE_2 << (u32)XDC_TYPE_SHIFT) |
+			((u32)OPCODE_READ << (u32)XDC_OP_SHIFT)) | (u32)NumFrames);;
 	cmdindex++;
 
 	/* Step 9 --- 64 NOOPS Words */
@@ -190,7 +279,10 @@ static u32 XFpga_GetPLConfigDataRange(const XFpga *InstancePtr)
 	XCsuDma_Transfer(CsuDmaPtr, XCSUDMA_DST_CHANNEL,
 			 Address + CFGDATA_DSTDMA_OFFSET, NumFrames, 0U);
 
-	Status = XFpga_PcapWaitForDone();
+	Status = Xil_WaitForEvent(CSU_PCAP_STATUS,
+			PCAP_STATUS_PCAP_WR_IDLE_MASK,
+			PCAP_STATUS_PCAP_WR_IDLE_MASK,
+			PL_DONE_POLL_COUNT);
 	if (Status != XFPGA_SUCCESS) {
 		Xfpga_Printf(XFPGA_DEBUG, "Write to PCAP Failed\n\r");
 		Status = XFPGA_FAILURE;
@@ -222,7 +314,10 @@ static u32 XFpga_GetPLConfigDataRange(const XFpga *InstancePtr)
 	/* Acknowledge the transfer has completed */
 	XCsuDma_IntrClear(CsuDmaPtr, XCSUDMA_DST_CHANNEL, XCSUDMA_IXR_DONE_MASK);
 
-	Status = XFpga_PcapWaitForidle();
+	Status = Xil_WaitForEvent(CSU_PCAP_STATUS,
+			PCAP_STATUS_PCAP_RD_IDLE_MASK,
+			PCAP_STATUS_PCAP_RD_IDLE_MASK,
+			PL_DONE_POLL_COUNT);
 	if (Status != XFPGA_SUCCESS) {
 		Xfpga_Printf(XFPGA_DEBUG, "Reading data from PL through PCAP Failed\n\r");
 		Status = XFPGA_FAILURE;
@@ -286,7 +381,7 @@ u32 XFpga_PL_Frames_Load(XFpga *InstancePtr,
 	 for (int i = 0; i < header_LEN; i++) {
 		 arr[i] = header[i];
 	 }
-	 arr[158] = InstancePtr->WriteInfo.idcode;
+	 arr[158] = globalIDCODE;
 
 	 arr = (u32*) (ContentAddr + WrdCnt*4);
 	 for (int i = 0; i < footer_LEN; i++) {
