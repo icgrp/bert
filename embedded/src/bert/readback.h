@@ -14,5 +14,7 @@
 int readback_Init(XFpga* XFpgaInstance, u32 idcode);
 int readback_Bitstream(u32* framedata);
 int readback_Frame(u32 frameAddr, u32 frameCnt, u32* framedata);
+u32 XFpga_GetPlConfigDataRange(XFpga *InstancePtr, UINTPTR ReadbackAddr, u32 NumFrames, u32 FrameAddr);
+u32 XFpga_PL_Frames_Load(XFpga *InstancePtr, UINTPTR ReadbackAddr, u32 Flags, u32 WrdCnt);
 
 #endif
