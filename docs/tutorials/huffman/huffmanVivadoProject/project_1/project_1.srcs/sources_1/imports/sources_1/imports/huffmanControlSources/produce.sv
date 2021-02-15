@@ -26,7 +26,7 @@ module produce(
     logic incCnt, clrCnt, doRead;
     logic[9:0] cnt;
     
-    (* ram_style = "block" *)   logic[7:0] rawTextMem[TEXTLEN];
+    (* dont_touch = "true" *) (* ram_style = "block" *)   logic[7:0] rawTextMem[TEXTLEN];
 
     typedef enum logic[1:0] {A, B, C, D, ERR='X} stateType;
     stateType ns, cs;

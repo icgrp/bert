@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="design_1_top_0_0_synth_1" LaunchPart="xczu3eg-sbva484-1-i" LaunchTime="1609608389">
+<GenRun Id="design_1_top_0_0_synth_1" LaunchPart="xczu3eg-sbva484-1-i" LaunchTime="1610060343">
   <File Type="RDS-UTIL-PB" Name="design_1_top_0_0_utilization_synth.pb"/>
   <File Type="RDS-UTIL" Name="design_1_top_0_0_utilization_synth.rpt"/>
   <File Type="RDS-RDS" Name="design_1_top_0_0.vds"/>
