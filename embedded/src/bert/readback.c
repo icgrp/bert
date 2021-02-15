@@ -2,7 +2,7 @@
 #include "xfpga_config.h"
 #include "xilfpga.h"
 #include "xilfpga_pcap.h"
-#include "readback.h"
+#include "xilfpga_extension.h"
 #include "bits.h"
 
 // Repeat definitions from xilfpga
