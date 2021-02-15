@@ -4,18 +4,25 @@ proc getConsts { m } {
     set gnds []
     foreach j $p {
         if { [lsearch [get_nets -of $j] *const1*] != -1 } {
-            set vs [regsub -all "\\\["  [regsub -all "\\\]" $j " "] " " ]
-            lappend vss "[lindex [split $vs] end]"
+            set vs [regsub -all "\\\["  [regsub -all "\\\]" $j "|"] "|" ]
+            # puts "$vs"
+            # set p [split $vs |]
+            # puts "$p"
+            lappend vss "[lindex [split $vs |] end-1]"
              
         }
         if { [lsearch [get_nets -of $j] *const0*] != -1 } {
-            set gnd [regsub -all "\\\["  [regsub -all "\\\]" $j " "] " " ]
-            lappend gnds "[lindex [split $gnd] end]"
+            set gnd [regsub -all "\\\["  [regsub -all "\\\]" $j "|"] "|" ]
+            # puts "$gnd"
+            # set p [split $gnd |]
+            # puts "$p"
+            lappend gnds "[lindex [split $gnd |] end-1]"
         }
     }
 
     lsort -integer -decreasing $vss
     lsort -integer -decreasing $gnds
+    
     
     set highOrder []
     set lowOrder []
