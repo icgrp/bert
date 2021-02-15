@@ -4,11 +4,8 @@
 #include "xil_types.h"
 #include "xilfpga.h"
 
-#define IDCODE_MASK   0x0FFFFFFF
-#define FRAMES		14964 // Total num frames
-#define WORDS_PER_FRAME 93
-#define PAD_WORDS	25 // dummy words from pipelining
-#define TOTAL_WORDS WORDS_PER_FRAME * (FRAMES + 1) + 0x1FCU + SUFFIXLENGTH // Space for bits, dummy bits, header commands, and suffix commands
+#define DATA_DMA_OFFSET 0x1FCU // Where the first readback word is. The first valid frame is 93 + 25 past this point.
+#define TOTAL_WORDS WORDS_PER_FRAME * (FRAMES + 1) + DATA_DMA_OFFSET + SUFFIXLENGTH // Space for bits, dummy bits, header commands, and suffix commands
 
 
 int readback_Init(XFpga* XFpgaInstance, u32 idcode);
