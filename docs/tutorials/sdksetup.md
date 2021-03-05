@@ -30,7 +30,7 @@ Now click finish again and you are brought back to the Project Explorer.  At thi
 ## Vitis Instructions
 
 ### 1. Launch Vitis
-After launching Vitis, for the workspace to switch use the WORK directory you copied the files into above.  NOTE: this is different from the SDK instructions above where you created a subdirectory inside of WORK.  Just use WORK in this case.
+After launching Vitis, for the workspace to use, just specify the WORK directory you copied the files into above.  NOTE: this is different from the SDK instructions above where you created a subdirectory inside of WORK.  Just use WORK in this case.
 
 ### 2. Create Hardware Platform and Application Project
 Next you need to create a hardware platform.  Create one by clicking "Create 
