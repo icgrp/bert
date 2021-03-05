@@ -2,7 +2,7 @@
 #include "xil_printf.h"
 #include "stdint.h"
 #include "bert.h"
-#include "readback.h"
+#include "xilfpga_extension.h"
 #include "bzlib_private.h"
 #include "mydesign.h"
 
