@@ -12,19 +12,19 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     bertDir = pathlib.Path(sys.path[0]).resolve().parent.parent.parent
-    assert os.path.isdir(str(bertDir))
+    assert os.path.isdir(str(bertDir)), "Cannot find directory: " + str(bertDir)
     workDir = pathlib.Path(args.workDir).resolve()
     sdkDir  = workDir / "SDKWorkspace"
     
     # Check that all directories exist
     bertSrcDir = bertDir / "embedded" / "src" / "bert"
-    assert os.path.isdir(str(bertSrcDir))
+    assert os.path.isdir(str(bertSrcDir)), "Cannot find directory: " + str(bertSrcDir)
     bertSWHuffmanDir = bertDir / "docs" / "tutorials" / "huffman" / "sw_huffman_sdk" 
-    assert os.path.isdir(str(bertSWHuffmanDir))
+    assert os.path.isdir(str(bertSWHuffmanDir)), "Cannot find directory: " + str(bertSWHuffmanDir)
 
-    assert os.path.isdir(str(workDir)) 
+    assert os.path.isdir(str(workDir)), "Cannot find directory: " + str(workDir)
     appSrcDir = sdkDir / "huffman_demo" / "src"
-    assert os.path.isdir(str(appSrcDir))
+    assert os.path.isdir(str(appSrcDir)), "Cannot find directory: " + str(appSrcDir)
 
     print("Step 1. Copying files from '{}' to \n                           '{}'".format(bertSrcDir, appSrcDir))
     for name in glob.glob(str(bertSrcDir / '*')):
