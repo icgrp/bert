@@ -10,7 +10,7 @@ This tutorial will show you how to generate the needed files to run your own des
 3. To ensure that your design is complete (synthesized, placed, routed, and ready for bitstream generation) select "Run Implementation" in Vivado.  If Vivado thinks the project is not out of date it will say "A completed implementation run exists?  Re-run anyway?".  You do not need to if that is the case but if it is not, you will have to wait while it re-runs the implementation steps.
 4. Next, click "Open Implemented Design" to load all the information needed for the following steps.
 5. In the Vivado Tcl Console, do `source .../bert/host_tools/file_gen/file_gen_TOOL.tcl` where `.../bert` refers to the location where you cloned the BERT github repo to and `TOOL` is either `sdk` or `vitis`.  
-6. Then in the Tcl Console do `filegen dirName` where `dirName` is a directory where you want the files deposited.
+6. Then in the Tcl Console do `file_gen dirName` where `dirName` is a directory where you want the files deposited.
 
 The last step will do a number of things:
 - It will generate a .hdf (SDK) or .xsa (Vitis) file which you use to set up an SDK/Vitis project.  This  file contains inside of it the bitfile that will be used.

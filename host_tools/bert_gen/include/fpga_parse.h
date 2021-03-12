@@ -9,16 +9,18 @@
 #include <string>
 #include <map>
 
-#define BUFF_SIZE 1024
 #define MAX_LINE 4096
 
 #include "fpga_type.h"
+#include "../include/fpga_err.h"
+#include "../include/fpga_type.h"
+#include "../include/fpga_helper.h"
 
 void parse_list(FILE* list, std::map<uint32_t, std::string>& logical_mapping);
 
-void read_ultra96(FILE *curr, map<uint32_t, unique_ptr<frame_pos>> &bit_map,
-                  map<uint32_t, unique_ptr<frame_pos>> &par_bit_map,
-                  const char *format = "Bit %s 0x%x %d %s %s Block=RAMB%d_X%dY%d RAM=B:%s\n");
+void read_generic(FILE *curr, map<uint32_t, unique_ptr<bertType::frame_pos>> &bit_map,
+                  map<uint32_t, unique_ptr<bertType::frame_pos>> &par_bit_map, int yMax,
+                  const char *format, fpga_PL fpga_tag);
 
 uint32_t get_IDCODE(FILE* file);
 
