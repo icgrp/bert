@@ -185,7 +185,7 @@ This will prevent Vivado from optimizing the memory away if it is not read from.
 You can run an [accelerated version of translation](accel/README.md) to speed up
   translation on simpler memories (all the memories in this design are
   simple enough)
-* To change the DMA transfer speed, modify PCAP_READ_DIV or PCAP_WRITE_DIV in xilfpga_pcap.h in the BSP file
+* To change the DMA transfer speed, modify PCAP_READ_DIV or PCAP_WRITE_DIV in xilfpga_extension.c in the project src
   * By default, we have it set to a high speed that works for us
     * set it lower (higher values) if that times out for you
     * set it higher (lower values) if you want to try running faster
@@ -219,10 +219,10 @@ You can run an [accelerated version of translation](accel/README.md) to speed up
   * Press the reset button on the board (the button behind the USB port closed to the edge of the board). This is sometimes needed between program launches.
 * Program hangs (never finishes)
   * Check that the heap size is large enough. The default size is not! See step 4, section 'The Application.'
-  * If bert_read/write returns `BST_XILFPGA_FAILURE`, the DMA operation is likely failing. Try slowing down the PCAP clock speed. Do this by increasing PCAP_WRITE_DIV and PCAP_READ_DIV in psu_cortexa53_0/libsrc/xilfpga_v5_1/sourcexilfpga_pcap.h
+  * If bert_read/write returns `BST_XILFPGA_FAILURE`, the DMA operation is likely failing. Try slowing down the PCAP clock speed. Do this by increasing PCAP_WRITE_DIV and PCAP_READ_DIV in xilfpga_extension.c
 * Reads work but writes do not
   * Verify the IDCODE for your board is correct in mydesign.h (U96 IDCODE is 0x04A42093). Manually adjust it if need be.
-  * Slow down the PCAP clock speed. Do this by increasing PCAP_WRITE_DIV and PCAP_READ_DIV in psu_cortexa53_0/libsrc/xilfpga_v5_1/sourcexilfpga_pcap.h
+  * Slow down the PCAP clock speed. Do this by increasing PCAP_WRITE_DIV and PCAP_READ_DIV in xilfpga_extension.c
 * BERT always reads 0 values no matter the state of the memory
   * Check that the bitstream, .hdf, .dcp, and mydesign.c/h are all consistent
   * If you intend to use a different bitstream other than the one embedded in the .hdf, point to the intended bitstream in the debug/run configuration menu. See the 'Bitstream File' field in the screenshot below step 5.
