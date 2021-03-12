@@ -28,7 +28,12 @@ Now click finish again and you are brought back to the Project Explorer.  At thi
 - One will be `huffman_demo_bsp` and is the board support package.
 
 ## Vitis Instructions
-First you need to create a hardware platform.  Create one by clicking "Create 
+
+### 1. Launch Vitis
+After launching Vitis, for the workspace to use, just specify the WORK directory you copied the files into above.  NOTE: this is different from the SDK instructions above where you created a subdirectory inside of WORK.  Just use WORK in this case.
+
+### 2. Create Hardware Platform and Application Project
+Next you need to create a hardware platform.  Create one by clicking "Create 
 Create a new application by clicking the "Create Application Project" link as shown below.
 ![Example of new workspace](../images/newworkspace_vitis.png)
 

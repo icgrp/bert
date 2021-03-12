@@ -65,8 +65,9 @@ def readInitStringsFromFASMFile(fasmFile):
 
 
 # Return a dict mapping names to [words, bits] lists
+# !!! might not be usage due to change in the read mdd function
 def getMDDMemories(mddName):
-    mdd = parse_mdd.parse_mdd.read_mdd(mddName)
+    mdd, _ = parse_mdd.parse_mdd.read_mdd(mddName)
     lst = dict()
     for m in mdd:
         # Create memory name from cell_name and ram_name

@@ -13,8 +13,12 @@
 #include <string>
 
 #include "../include/fpga_type.h"
+#include "../include/fpga_helper.h"
+#include "../include/fpga_type.h"
+#include "../include/fpga_parse.h"
 
 using namespace std;
+using namespace bertType;
 
 /*
  * This part of the code encapsulate the generation of the .c file and .h file
@@ -31,7 +35,9 @@ void print_logicalNames(FILE *header_c, map<uint32_t, string> &all_logical);
 
 void print_frame(const char *path, pair<uint32_t, string> &logical, FILE *header_c,
                  list<unique_ptr<logical_memory>> &logical_memories,
-                 map<uint32_t, unique_ptr<frame_pos>> &bit_map, map<uint32_t, unique_ptr<frame_pos>> &par_bit_map);
+                 map<uint32_t, unique_ptr<frame_pos>> &bit_map,
+                 map<uint32_t, unique_ptr<frame_pos>> &par_bit_map,
+                 fpga_PL XfpgaInstance);
 
 void find_map(const char *path, map<uint32_t, unique_ptr<frame_pos>> &bit_map,
               map<uint32_t, unique_ptr<frame_pos>> &par_bit_map, list<unique_ptr<bram>> &list_of_bram,

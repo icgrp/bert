@@ -1,2 +1,6 @@
 
 *.pyc
+
+host_tools/bert_gen/cmake-build-debug/
+
+host_tools/bert_gen/.idea/
