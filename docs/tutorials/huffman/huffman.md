@@ -205,7 +205,7 @@ You can run an [accelerated version of translation](accel/README.md) to speed up
 
 * Program will not compile
   * Right click the project then click 'Clean Project' to make sure there are no stale builds. Doing this rebuilds the BSP as well.
-  * Check that all bert files are present in /src: bert.c/h , bert_types.h, readback.c/h, ultrascale_plus.c/h
+  * Check that all bert files are present in /src: bert.c/h , bert_types.h, xilfpga_extension.c/h, ultrascale_plus.c/h
   * Check that the Huffman code is present in /src: bzlib_min.c, bzlib_private.h, bzlib.h, hellobert.c, huffman.c, spec.c, spec.h
   * Check that xilfpga patch hasn't been overwritten back to the default state (For instance, this happens when changing a uart setting). If so, copy xilfpga again.
   * Check project's linker flags are set. They sometimes get wiped out. See step 3c.
