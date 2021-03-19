@@ -2,7 +2,7 @@
 
 #define NUM_LOGICAL 4
 
-#define IDCODE 0x77865107
+#define PART_ID 0x04A42093
 
 #define MEM_0 0
 #define MEM_1 1
