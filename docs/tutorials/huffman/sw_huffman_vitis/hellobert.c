@@ -71,12 +71,11 @@ unsigned int *results = (unsigned int *)0xA0004000;
 // Pointer to control register to reset Huffman encoder
 unsigned int *huffRegs = (unsigned int *)0xA0000000;
 
-// TO DEBUG: double the space to decrease chance of out of bounds write
-uint64_t bert_results[1024 * 2];
-uint64_t bert_hist[2048 * 2];
-uint64_t bert_huff[512 * 2];
-uint64_t axi_hist[2048 * 2];
-uint64_t axi_results[1024 * 2];
+uint64_t bert_results[1024];
+uint64_t bert_hist[256];
+uint64_t bert_huff[512];
+uint64_t axi_hist[256];
+uint64_t axi_results[1024];
 uint64_t bert_raw[1024];
 
 /*
