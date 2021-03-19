@@ -2,7 +2,7 @@
 ## Overview
 This tutorial will lead you through using BERT to read and write memories in a hardware design.  
 
-The tutorial covers the use of BERT with both Xilinx SDK (Xilinx tools 2019.1 and earlier) as well as with Vitis (Xilinx tools 2019.2 and later).  At times below, there will be instructions to copy files from a particular directory or to run a particular script.  A typical example would be the location of the sample files, either `.../bert/docs/tutorials/huffman/hw_huffman_sdk` or `.../bert/docs/tutorials/huffman/hw_huffman_vitis`.  To simplify the discussion, that location would be listed as `.../bert/docs/tutorials/huffman/hw_huffman_TOOL` - you would need to replace the word `TOOL` with either `sdk` or `vitis`.  In addition the `.../bert/` represents the location where your BERT repository exists on your computer.
+The tutorial covers the use of BERT with both Xilinx SDK (Xilinx tools 2019.1 and earlier) as well as with Vitis (Xilinx tools 2019.2 and later).  At times below, there will be instructions to copy files from a particular directory or to run a particular script within the repo.  An example would be copying the sample hardware design files: `.../bert/docs/tutorials/huffman/hw_huffman_sdk` or `.../bert/docs/tutorials/huffman/hw_huffman_vitis` (depending on which tool is used). To simplify the discussion, that location would be listed as `.../bert/docs/tutorials/huffman/hw_huffman_TOOL` - you would need to replace the word `TOOL` with either `sdk` or `vitis`.  In addition the `.../bert/` represents the location where your BERT repository exists on your computer.
 
 The hardware for the project is a Huffman Encoder design where 4 memories are used:
 * A 1024x8b memory with 8b characters that will be encoded, called `rawTextMem`
@@ -14,7 +14,7 @@ In the design, the memories can be read and written by BERT.  However, we have a
 
 ![Huffman Encoder Design](../../images/huffman_encoder_design.gif)
 
-When the design is running if the sotware  toggles a register bit on the AXI bus, that will cause the encoder to run and the  `resultsMem` to be updated with the encoding of `rawTextMem`, based on the dictionary found in `huffmanMem`. 
+The software toggles a bit in a control register exposed to the AXI bus. This causes the encoder to update `resultsMem` with the encoding of `rawTextMem`, based on the dictionary found in `huffmanMem`. 
 
 During runtime, the software can do the following by writing or reading the BRAMs in the hardware:
 * Setting the text that needs to be encoded
