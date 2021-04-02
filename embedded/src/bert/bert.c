@@ -7,8 +7,10 @@
 #include "bert.h"
 #ifdef HOST_SIDE
 #include <string.h>
+#include "../../../host_tools/bitstream_gen/dummy_xilinx.h"
 #define PRINT printf
 #else
+#include "xilfpga_extension.h"
 #include "readback.h"
 #include "strings.h"
 //DEBUG on Embedded Platform
@@ -905,7 +907,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
       
 	  uint32_t WrdCnt = WORDS_PER_FRAME * (the_frame_set->ranges[i].len + 1)
 	    + PAD_WORDS; // AMD: match corrections above + DATA_DMA_OFFSET/4;
-	  Status = XFpga_GetPlConfigData(XFpgaInstance,
+	  Status = XFpga_GetPlConfigDataRange(XFpgaInstance,
 					 (UINTPTR)&frame_data[the_frame_set->ranges[i].offset-(WORDS_PER_FRAME+PAD_WORDS+DATA_DMA_OFFSET/4)],
 					 WrdCnt,
 					 the_frame_set->ranges[i].frame_base);

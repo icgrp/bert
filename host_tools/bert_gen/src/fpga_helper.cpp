@@ -2,40 +2,82 @@
 // Created by zhiyaot on 7/9/2020.
 //
 #include <string>
-#include <iomanip>
+#include <iostream>
 #include "../include/fpga_helper.h"
 #include "../include/fpga_type.h"
 
-int minFrame[6][3] = {{0x01000000, 0x01040000, 0x01080000},
-                      {0x01000100, 0x01040100, 0x01080100},
-                      {0x01000200, 0x01040200, 0x01080200},
-                      {0x01000300, 0x01040300, 0x01080300},
-                      {0x01000400, 0x01040400, 0x01080400},
-                      {0x01000500, 0x01040500, 0x01080500}};
+using namespace std;
+using namespace bertType;
 
-uint64_t calc_bit_pos_ultra96(uint32_t x_pos, uint32_t y_pos, uint32_t bit_num, uint32_t type)
+void findPart(fpga_PL &XfpgaInstance, char *part)
 {
-    if (type == 36)
+    string Xpart{part};
+
+    if (Xpart.find("eg") != string::npos)
     {
-        return (x_pos * 36 + y_pos) * BRAM_SIZE + bit_num;
+        XfpgaInstance.type = fpgaType::Zynq_USp_ZUEG;
+        if (Xpart.find("3eg") != string::npos)
+        {
+            XfpgaInstance.subSeries = 3;
+            cout << "Found FPGA type US+3EG" << endl;
+        }
+        else if (Xpart.find("9eg") != string::npos)
+        {
+            XfpgaInstance.subSeries = 9;
+            cout << "Found FPGA type US+9EG" << endl;
+        }
+    }
+    else if (Xpart.find("xc7") != string::npos)
+    {
+        XfpgaInstance.type = fpgaType::Zynq7;
+        if (Xpart.find("020clg"))
+        {
+            XfpgaInstance.subSeries = 2;
+            cout << "Found FPGA type Zynq7020" << endl;
+        }
+    }
+    ASSERT(llFormat.find(XfpgaInstance.type) != llFormat.end(),
+           "Unable to find matching ll expression, unknown FPGA type", fpga_err::NO_SUCH_LL);
+    XfpgaInstance.llStrFormat = llFormat.at(XfpgaInstance.type);
+}
+
+
+void calcNFrameRanges_generic(set<uint32_t> &allFrameAddr, list<pair<uint32_t, uint32_t>> &foundRanges,
+                              fpga_PL &XfpgaInstance)
+{
+    ASSERT(!allFrameAddr.empty(), "Zero frames found when finding nframe_ranges", fpga_err::EMPTY_FRAME_SET);
+    list<uint32_t> allFrameSorted{allFrameAddr.begin(), allFrameAddr.end()};
+    allFrameSorted.sort();
+    auto prev = allFrameSorted.front();
+    auto curr = prev;
+    auto bounds = boundaries.at(XfpgaInstance.type).at(XfpgaInstance.subSeries);
+
+    foundRanges.emplace_back(make_pair(prev, 1));
+
+    for (auto i = allFrameSorted.begin().operator++(); i != allFrameSorted.end(); ++i)
+    {
+        if (*i != curr + 1 || bounds.find(*i) != bounds.end())
+        {
+            prev = *i;
+            curr = prev;
+            foundRanges.emplace_back(make_pair(prev, 1));
+            continue;
+        }
+        curr = *i;
+        foundRanges.back().second++;
+    }
+}
+
+
+uint64_t calcBitPosition_generic(uint32_t x_pos, uint32_t y_pos, uint32_t bit_num, uint32_t bramType, uint32_t yMax)
+{
+    if (bramType == 36)
+    {
+        return (x_pos * yMax + y_pos) * BRAM_SIZE + bit_num;
     }
     else
     {
-        return (x_pos * 72 + y_pos) * BRAM_SIZE / 2 + bit_num;
+        return (x_pos * yMax * 2 + y_pos) * BRAM_SIZE / 2 + bit_num;
     }
 }
 
-void calc_nframe_range(list<unique_ptr<bram>> &all_logical, vector<vector<int>> &range_mark)
-{
-    for (auto &bram : all_logical)
-    {
-        if (bram->ramType == 36)
-        {
-            range_mark[bram->ram_pos_x][bram->ram_pos_y / 12] = 1;
-        }
-        else
-        {
-            range_mark[bram->ram_pos_x][bram->ram_pos_y / 24] = 1;
-        }
-    }
-}

@@ -1,12 +1,21 @@
-#include "../../embedded/src/bert/bert.h"
-#include "../../embedded/src/bert/ultrascale_plus.h"
-//#include "dummy_xilinx.h"
+#include "bert.h"
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+
+#define SEVEN_SERIES
+
+#ifdef SEVEN_SERIES
+#include "7series.h"
+#endif
+
+#ifdef ULTRASCALE_PLUS
+#include "ultrascale_plus.h"
+#endif
 
 // Macros to deal with uint64_t discrepancy
 #ifdef __linux__

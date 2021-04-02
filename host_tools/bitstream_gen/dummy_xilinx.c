@@ -7,7 +7,7 @@ uint32_t swap(uint32_t in) {
     return (big << 16) | little;
 }
 
-int XFpga_GetPlConfigData(XFpga *XFpgaInstance, UINTPTR frame_data, int words, int frame_base) {
+int XFpga_GetPlConfigDataRange(XFpga *XFpgaInstance, UINTPTR frame_data, int words, int frame_base) {
     return XST_SUCCESS;
 }
 

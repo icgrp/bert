@@ -16,7 +16,7 @@
 #define footer_LEN 54
 #define CFGDATA_DSTDMA_OFFSET	0x1FCU
 #define BIN_READBACK_OFFSET (93 + 25) * 4
-#define WORDS_PER_FRAME 93
+#define DATA_DMA_OFFSET 0x1FCU
 #define PAD_WORDS	25 // dummy words from pipelining
 
 typedef struct XFpga {
@@ -26,7 +26,7 @@ typedef struct XFpga {
 } XFpga;
 
 
-int XFpga_GetPlConfigData(XFpga *XFpgaInstance, UINTPTR frame_data, int words, int frame_base);
+int XFpga_GetPlConfigDataRange(XFpga *XFpgaInstance, UINTPTR frame_data, int words, int frame_base);
 int XFpga_PL_Frames_Load(XFpga *InstancePtr, UINTPTR ReadbackAddr, u32 Flags, u32 WrdCnt);
 int hostwrite_Init(XFpga *XFpgaInstance, uint32_t IDCODE, FILE* out);
 

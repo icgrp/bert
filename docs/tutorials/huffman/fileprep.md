@@ -4,27 +4,16 @@
 This tutorial will show you how to generate the needed files to run your own design with BERT.  In the first part you will open the Huffman project in Vivado and run a TCL script to pull the needed information from the design and place it into a directory.  In the second part, you will run a program called `bert_gen` to process those files into what is needed for BERT.
 
 ## First Steps: Vivado
-1. If you don't have the board support package for the `xczu3eg-sbva484-1-i` board already insrtalled you must do so before proceeding.
+1. If you don't have the board support package for the `xczu3eg-sbva484-1-i` board already installed you must do so before proceeding.   You can obtain the needed file at [https://github.com/Avnet/bdf](https://github.com/Avnet/bdf).  There are instructions at that location as well.
 
-TODO: do we need to point them to the installation package?  They wouldn't
-be running these tutorials if they didn't already know about this.
-
-AMD: at some point I didn't have one.  I'm now unclear if this is resolved
-by the .hdf, or if this is something you need to get the hdf to work.
-
-BEN: it is not resolved by the .hdf.  It is something you need to do even if you never run this tutorial - you need to install the board files into Vivado before you can get Vivado to target the board at all.  Back at the start of the first tutorial, the question I wrote was how much should we expect?  Can we expect they already know how to target this board with Vivado designs?  If not, then are we saying we intend on teaching them how to do that?  I would hope not.  Can we expect they know how to synthesize and implement designs?  Can we expect they know how to use the IP integrator?  Can we expect they know how to run the SDK?  And the list goes on and on and on.  This ought to be a point of discussion at a meeting very soon.
-
-2. From the BERT repository, use Vivado 2018.3 to open the project in `.../bert/docs/tutorials/huffman/huffmanVivadoProject`.
+2. From the BERT repository, use your version of Vivado to open the project in `.../bert/docs/tutorials/huffman/huffmanVivadoProject`.
 3. To ensure that your design is complete (synthesized, placed, routed, and ready for bitstream generation) select "Run Implementation" in Vivado.  If Vivado thinks the project is not out of date it will say "A completed implementation run exists?  Re-run anyway?".  You do not need to if that is the case but if it is not, you will have to wait while it re-runs the implementation steps.
 4. Next, click "Open Implemented Design" to load all the information needed for the following steps.
-
-BN: There is a Tcl command to do the above but it requires a run number.  While it is usually 'impl_1' it may not be, depending on what the user has done (while it might be rare for them to have created a new run, Vivado does allow it).  So, the user is going to have to 'Open Implemented Design' to ensure we don't open the wrong one.
-
-5. In the Vivado Tcl Console, do `source .../bert/host_tools/file_gen/file_gen.tcl` where `.../bert` refers to the location where you cloned the BERT github repo to.  
-6. Then in the Tcl Console do `filegen dirName` where `dirName` is a directory where you want the files deposited.
+5. In the Vivado Tcl Console, do `source .../bert/host_tools/file_gen/file_gen_TOOL.tcl` where `.../bert` refers to the location where you cloned the BERT github repo to and `TOOL` is either `sdk` or `vitis`.  
+6. Then in the Tcl Console do `file_gen dirName` where `dirName` is a directory where you want the files deposited.
 
 The last step will do a number of things:
-- It will generate a .hdf file which you use to set up an SDK project.  This .hdf file contains inside of it the bitfile that will be used.
+- It will generate a .hdf (SDK) or .xsa (Vitis) file which you use to set up an SDK/Vitis project.  This  file contains inside of it the bitfile that will be used.
 - It will also generate a stand-alone .bit file along with a .ll file which provides bitstream mapping information.
 - It will generate a .mdd file which is a description of the memories in your design, where they are located, and what HDL variables they correspond to. 
 - It will create a Vivado checkpoint (.dcp) file of the design.
@@ -56,7 +45,7 @@ The default running the above is to generated an accelerated design.  To generat
 
 ## Running the Original Huffman Tutorial
 If you return to the original Huffman Tutorial you can now redo the tutorial, substituting the following generated files in `dirName` for those originally provided:
-- `top.hdf`
+- `top.hdf` or `top.xsa`
 - `mydesign.c`
 - `mydesign.h`
 
@@ -67,6 +56,3 @@ Using these files you should be able to replicate your results in that original 
 ## Moving On
 Once you create your own design you would follow the steps in the two tutorials to run your design using BERT. 
 
-A few things you will need to address as you do so include:
-
-TODO: add things to address here for the general case where they create their own design.
