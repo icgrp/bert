@@ -3,6 +3,16 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#define SEVEN_SERIES
+//#define ULTRASCALE_PLUS
+#ifdef SEVEN_SERIES
+#include "7series.h"
+#endif
+
+#ifdef ULTRASCALE_PLUS
+#include "ultrascale_plus.h"
+#endif
+
 #define XST_SUCCESS 0
 #define XST_FAILURE 1
 #define s32 int

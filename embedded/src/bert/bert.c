@@ -1,6 +1,5 @@
 #include "stdint.h"
 #include "bert_types.h"
-#include "ultrascale_plus.h"
 #include "stdio.h"
 #include "stdlib.h"
 
@@ -8,8 +7,10 @@
 #ifdef HOST_SIDE
 #include <string.h>
 #include "../../../host_tools/bitstream_gen/dummy_xilinx.h"
+// dummy_xilinx includes the #define's for the correct part (7series vs us+)
 #define PRINT printf
 #else
+#include "ultrascale_plus.h"
 #include "xilfpga_extension.h"
 #include "readback.h"
 #include "strings.h"

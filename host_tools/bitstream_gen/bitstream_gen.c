@@ -8,7 +8,7 @@
 #include <stdbool.h>
 
 #define SEVEN_SERIES
-
+//#define ULTRASCALE_PLUS
 #ifdef SEVEN_SERIES
 #include "7series.h"
 #endif
