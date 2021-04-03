@@ -64,7 +64,7 @@ void gen_header(const char *path, const char *header_name)
     print_preproc(all_logical, header_c, part_id);
 
 
-    fprintf(header_h, "#define FPGA_TYPE %s\n", part);
+    fprintf(header_h, "#define %s // this is the part-number for board\n", part);
 
     print_header(header_h);
     fclose(header_h);
@@ -173,19 +173,20 @@ void print_frame(const char *path, pair<uint32_t, string> &logical, FILE *header
             bram_y{0}, width{0}, fasm_y{0}, fasm_p{0}, fasm_line{0},
             fasm_bit{0}, bit{0}, offset{0};
 
-    uint32_t bit_tracking{0}, xyz;
+    uint32_t bit_tracking{0}, xyz{0};
+
+    uint32_t bram_series{0};
 
     auto temp_list_of_addr = make_unique<list<pair<uint32_t, uint32_t>>>();
     auto final_list_of_addr = make_unique<list<pair<uint32_t, uint32_t>>>();
     auto replica = 1, curr_rep = 1;
     while (fscanf(bram_file, "%[^\n]\n", line) != EOF)
     {
-
         if (sscanf(line,
-                   "word=%d, bit=%d, loc=RAMB%dE2_X%dY%d, bits=%d, fasmY=%d, "
+                   "word=%d, bit=%d, loc=RAMB%dE%d_X%dY%d, bits=%d, fasmY=%d, "
                    "fasmINITP=%d, fasmLine=%d, fasmBit=%d, xyz=%d, offset=%d",
-                   &loc_line, &loc_bit, &bram_type, &bram_x,
-                   &bram_y, &width, &fasm_y, &fasm_p, &fasm_line, &fasm_bit, &bit, &offset) == 12)
+                   &loc_line, &loc_bit, &bram_type, &bram_series, &bram_x,
+                   &bram_y, &width, &fasm_y, &fasm_p, &fasm_line, &fasm_bit, &bit, &offset) == 13)
         {
             if (curr_rep == replica && (loc_bit != 0 || loc_line != 0)) curr_rep = 1;
 
