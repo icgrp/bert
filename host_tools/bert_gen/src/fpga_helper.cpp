@@ -1,3 +1,6 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "hicpp-exception-baseclass"
+#pragma ide diagnostic ignored "misc-throw-by-value-catch-by-reference"
 //
 // Created by zhiyaot on 7/9/2020.
 //
@@ -81,3 +84,5 @@ uint64_t calcBitPosition_generic(uint32_t x_pos, uint32_t y_pos, uint32_t bit_nu
     }
 }
 
+
+#pragma clang diagnostic pop
