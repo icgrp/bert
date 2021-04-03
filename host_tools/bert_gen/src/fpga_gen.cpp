@@ -1,10 +1,13 @@
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#pragma ide diagnostic ignored "hicpp-exception-baseclass"
+#pragma ide diagnostic ignored "misc-throw-by-value-catch-by-reference"
 //
 // Created by zhiyaot on 7/17/2020.
 //
 
 #include "../include/fpga_gen.h"
 
-#include <algorithm>
 #include <cassert>
 #include <iostream>
 #include <list>
@@ -15,7 +18,6 @@
 using namespace std;
 using namespace bertType;
 
-#define mkstr(s) #s
 
 //#define USE_DATABASE
 
@@ -28,7 +30,7 @@ void gen_header(const char *path, const char *header_name)
     strsteam << path << header_name << ".h";
     auto header_h = fopen(strsteam.str().c_str(), "w");
     ASSERT(header_h != nullptr, "Unable to write header file .c",
-           fpga_err::FILE_PTR_NULL); // NOLINT(misc-throw-by-value-catch-by-reference,hicpp-exception-baseclass)
+           fpga_err::FILE_PTR_NULL);
 
     strsteam.str("");
     strsteam << path << header_name << ".c";
@@ -70,6 +72,7 @@ void gen_header(const char *path, const char *header_name)
     std::list<unique_ptr<logical_memory>> logical_memories;
 
     map<uint32_t, unique_ptr<frame_pos>> bit_map;
+    map<bit_pos, unique_ptr<frame_pos>> bit_map2;
     map<uint32_t, unique_ptr<frame_pos>> par_bit_map;
 
 #ifndef USE_DATABASE
@@ -354,3 +357,5 @@ void find_map(const char *path, map<uint32_t, unique_ptr<frame_pos>> &bit_map,
     }
 #endif
 }
+
+#pragma clang diagnostic pop
