@@ -21,8 +21,9 @@ if __name__ == "__main__":
     # Check that all BERT subdirectories exist
     bertSrcDir = bertDir / "embedded" / "src" / "bert"
     assert os.path.isdir(str(bertSrcDir)), "Cannot find directory: " + str(bertSrcDir) + "\n Run in same directory as script"
-    bertSWHuffmanDir = bertDir / "docs" / "tutorials" / "huffman" / "sw_huffman_sdk" 
+    bertSWHuffmanDir = bertDir / "docs" / "tutorials" / "huffman" / "sw_huffman" 
     assert os.path.isdir(str(bertSWHuffmanDir)), "Cannot find directory: " + str(bertSWHuffmanDir)
+    # Does not matter where we pull mydesign.c/h from (sdk vs vitis)
     bertHWHuffmanDir = bertDir / "docs" / "tutorials" / "huffman" / "hw_huffman_sdk" 
     assert os.path.isdir(str(bertSWHuffmanDir)), "Cannot find directory: " + str(bertHWHuffmanDir)
 
