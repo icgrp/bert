@@ -18,5 +18,5 @@
     *    (reduce initial download to 10s of MB vs. 350MB)
  * [after cleanup ... rerun tutorials...regression...]	 
 
-*** Done ***
+***Done***
  * paper in repo (once have final camera-ready PDF, andre)
