@@ -75,7 +75,7 @@ Now that you have an application project and BSP established, you need to assemb
 
 To copy these all into your source directory now do this:
 ```
-python3 .../bert/docs/tutorials/huffman/copyappfiles_TOOL.py WORK
+python3 .../bert/docs/tutorials/huffman/copyappfiles.py WORK
 ```
 where `TOOL` is either `sdk` or `vitis`.
 
@@ -96,7 +96,7 @@ The default heap size of the program is too small to store the configuration fra
 
 At this point you have a complete application.  Right-click the application (`huffman_demo`) in the Project Explorer and select 'Build Project' to get a complete build done.
 
-Note: the `copyappfiles_TOOL.py` script you ran above copied a number of source files to assemble what you need for a BERT application to run.  By examining the output printed out while running that script you should be able to determine what pieces of source code were copied into your SDK application project (`huffman_demo`).  You can use the output of `copyappfiles_TOOL.py` as a guide when you get ready to do your new design later and have to assemble the source code files yourself.
+Note: the `copyappfiles.py` script you ran above copied a number of source files to assemble what you need for a BERT application to run.  By examining the output printed out while running that script you should be able to determine what pieces of source code were copied into your SDK application project (`huffman_demo`).  You can use the output of `copyappfiles.py` as a guide when you get ready to do your new design later and have to assemble the source code files yourself.
 
 ## Step 5. Test on hardware
 
