@@ -1,11 +1,14 @@
 # Preparing Files from a Vivado Design for BERT Use
 
 ## Overview
-This tutorial will show you how to generate the needed files to run your own design with BERT.  In the first part you will open the Huffman project in Vivado and run a TCL script to pull the needed information from the design and place it into a directory.  In the second part, you will run a program called `bert_gen` to process those files into what is needed for BERT.
+This tutorial will show you how to generate the needed files to run your own design with BERT.  To do so we will use the project that the Huffman Tutorial was based on.  Before proceeding, you will need to download that project.  It is a submodule of the BERT repo that you have already downloaded.  To download it do the following after changing into the BERT directory on your computer:
+```
+git submodule update --init --recursive
+```
+This will download the project and put it into the directory: `.../bert/docs/tutorials/huffman/huffmanVivadoProject`.
 
 ## First Steps: Vivado
 1. If you don't have the board support package for the `xczu3eg-sbva484-1-i` board already installed you must do so before proceeding.   You can obtain the needed file at [https://github.com/Avnet/bdf](https://github.com/Avnet/bdf).  There are instructions at that location as well.
-
 2. From the BERT repository, use your version of Vivado to open the project in `.../bert/docs/tutorials/huffman/huffmanVivadoProject`.
 3. To ensure that your design is complete (synthesized, placed, routed, and ready for bitstream generation) select "Run Implementation" in Vivado.  If Vivado thinks the project is not out of date it will say "A completed implementation run exists?  Re-run anyway?".  You do not need to if that is the case but if it is not, you will have to wait while it re-runs the implementation steps.
 4. Next, click "Open Implemented Design" to load all the information needed for the following steps.
