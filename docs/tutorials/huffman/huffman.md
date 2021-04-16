@@ -2,6 +2,8 @@
 ## Overview
 This tutorial will lead you through using BERT to read and write memories in a hardware design.  
 
+NOTE: this tutorial was written for Linux.  While the basic steps will work in Windows, how SDK and Vitis organize things might be different and you should adjust your procedures accordingly.  Also, the tutorial has been verified to work for Xilinx tools 2018.3 through 2019.2.  Future versions may require further adjustments.
+
 The tutorial covers the use of BERT with both Xilinx SDK (Xilinx tools 2019.1 and earlier) as well as with Vitis (Xilinx tools 2019.2 and later).  At times below, there will be instructions to copy files from a particular directory or to run a particular script within the repo.  An example would be copying the sample hardware design files: `.../bert/docs/tutorials/huffman/hw_huffman_sdk` or `.../bert/docs/tutorials/huffman/hw_huffman_vitis` (depending on which tool is used). To simplify the discussion, that location would be listed as `.../bert/docs/tutorials/huffman/hw_huffman_TOOL` - you would need to replace the word `TOOL` with either `sdk` or `vitis`.  In addition the `.../bert/` represents the location where your BERT repository exists on your computer.
 
 The hardware for the project is a Huffman Encoder design where 4 memories are used:
