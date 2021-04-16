@@ -77,9 +77,10 @@ Now that you have an application project and BSP established, you need to assemb
 
 To copy these all into your source directory now do this:
 ```
-python3 .../bert/docs/tutorials/huffman/copyappfiles.py WORK
+cd .../bert/docs/tutorials/huffman
+python3 ./copyappfiles.py WORK
 ```
-where `TOOL` is either `sdk` or `vitis`.
+where `...` is where your bert repository is found.
 
 Next, you may also see that your application source directory has a `helloworld.c` file in it (often automatically created by SDK/Vitis when you create the application).  If so, remove that file before proceeding.
 ### The Application
