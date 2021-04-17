@@ -22,6 +22,8 @@ header_gen() {
     # shellcheck disable=SC2129
     echo "#include \"${headerName}_uncompressed.h\"" >>"${headerName}"_compress.c
     echo "#include \"stdio.h\"" >>"${headerName}"_compress.c
+    # TODO 4/17/2021 -- need to condition this...or change how do to support 7-series
+    echo "#include \"ultrascale_plus.h\"" >>${headerName}_compress.c
     echo "#include \"compress_generic.c\"" >>"${headerName}"_compress.c
     gcc -c "${headerName}"_compress.c
     gcc -c ultrascale_plus.c
