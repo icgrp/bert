@@ -9,11 +9,12 @@ usage() {
 }
 
 header_gen() {
-    "$bertDir"/bert_gen "$baseDir" "${headerName}"_uncompressed
+    # had to add slash -- does this differ across OSes? -- AMD 4/17/2021
+    "$bertDir"/bert_gen "$baseDir/" "${headerName}"_uncompressed
     cp "$bertDir"/compress/compress_generic.c "$baseDir"
     cp "$bertDir"/accel/accel_all.c "$baseDir"
     cp "$bertDir"/compress/ultrascale_plus.? "$baseDir"
-    cp "$bertDir"/compress/7series.h
+    cp "$bertDir"/compress/7series.h "$baseDir"
     cp "$bertDir"/compress/bert_types.h "$baseDir"
     cp "$bertDir"/compress/compressed_bert_types.h "$baseDir"
     cd "$baseDir" || exit
@@ -38,10 +39,7 @@ header_gen() {
     gcc -c "${headerName}".c
     gcc -c "${headerName}"_uaccel.c
     gcc -o "${headerName}"_uaccel_${accelNameAddition} "${headerName}".o ultrascale_plus.o "${headerName}"_uaccel.o
-    cp ${headerName}_uaccel ${headerName}_noaccel
     ./"${headerName}"_uaccel_${accelNameAddition} "${headerName}"_tables
-    ./${headerName}_noaccel ${headerName}_no_tables 
-    cp ${headerName}.h ${headerName}_noaccel.h 
     mv "${headerName}".c "${headerName}"_header.c
     cat "${headerName}"_header.c "${headerName}"_tables.c  > "${headerName}".c
     rm ultrascale_plus.o "${headerName}"_compress.o "${headerName}"_uncompressed.o "${headerName}"_ucompress "${headerName}"_uaccel.o "${headerName}".o
