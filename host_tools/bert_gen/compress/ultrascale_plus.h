@@ -1,9 +1,12 @@
 // for UltraScale+
 #define WORDS_PER_FRAME 93
 #define FRAMES_PER_BRAM 256
+#define BITS_PER_FRAME 144
 // for 7020
- //#define WORDS_PER_FRAME 101
- //#define FRAMES_PER_BRAM 128
+//#define WORDS_PER_FRAME 101
+//#define FRAMES_PER_BRAM 128
+//#define BITS_PER_FRAME 288
+
 #define DATA_DMA_OFFSET 0x1FCU
 // dummy words from pipelining
 #define PAD_WORDS       25 

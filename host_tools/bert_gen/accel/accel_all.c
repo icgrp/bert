@@ -8,9 +8,8 @@
 #define min(x,y) ((x<y)?x:y)
 #define max(x,y) ((x<y)?y:x)
 
-//#define VERBOSE
-//#define DEBUG_LOGICAL
-// for debug
+#undef VERBOSE
+#undef DEBUG_LOGICAL
 #undef CLEAR_TABLE_ON_ALLOC
 
 const char *logical_physical_upper[] ={"PHYSICAL","LOGICAL"};
@@ -24,60 +23,72 @@ int count_bits(uint64_t v)
       res++;
   return(res);
 }
-int base(int num_bits, int *all_bits)
+int base(int num_seq, int num_bits, struct frame_bits *all_bits)
 {
-  return(all_bits[0]);
+  return(all_bits[0].bit_loc[0]);
   // maybe check makes sense for a RAMB36 or RAMB18
   
 }
 
-int bram_bits_in_frame(int num_bits, int *all_bits)
+int bram_bits_in_frame(int num_seq, int num_bits, struct frame_bits *all_bits)
 {
-  if (all_bits[1]-all_bits[0]==12)
+  int bit0=all_bits[0].bit_loc[0];
+  int bit1;
+  if (num_bits>1)
+    bit1=all_bits[0].bit_loc[1];
+  else
+    bit1=all_bits[1].bit_loc[0];
+  if (bit1-bit0==12)
     return(120); // RAMB18 case
-  else if (all_bits[1]-all_bits[0]==132)
+  else if (bit1-bit0==132)
     return(240); // RAMB36 case
   else
     {
       fprintf(stderr,"Unexpected bit 0 to bit 1 separation %d from 0 at %d and 1 at %d\n",
-	      all_bits[1]-all_bits[0],all_bits[1],all_bits[0]);
+	      bit1-bit0,bit1,bit0);
       exit(10);
       
     }
 }
 
-int max_frame_bit(int num_bits, int *all_bits)
+int max_frame_bit(int num_seq, int num_bits, struct frame_bits *all_bits)
 {
-  int offset=all_bits[0];
+  int offset=all_bits[0].bit_loc[0];
   int maxbit=offset;
-  for (int i=1;i<num_bits;i++)
-    maxbit=max(maxbit,all_bits[i]);
+  for (int i=0;i<num_seq;i++)
+    for (int j=0;j<num_bits;j++)
+    maxbit=max(maxbit,all_bits[i].bit_loc[j]);
   return(maxbit-offset);
   
 }
 
-int word_offset_from_frame_bitpos(int wordlen,int bitpos, int frame_bit_offset, int num_bits,
-				  int *all_bits)
+int word_offset_from_frame_bitpos(int wordlen, int seqpos, int bitpos,
+				  int frame_bit_offset,
+				  int num_seq, int num_bits,
+				  struct frame_bits *all_bits)
 {
-  int bram_base=base(num_bits,all_bits);
-  for (int i=0;i<num_bits;i++)
-    if (all_bits[i]==bitpos+bram_base)
-      // CHECK -8/12/2020 - should be adding frame_bit_offset --> can mean write out of frame slot range??
-      //   ... frame_bit_offset should be applied on extracting bit... on frame side...this is wor side
-      //return((i+frame_bit_offset)/wordlen);
-      return((i)/wordlen);
+  int bram_base=base(num_seq,num_bits,all_bits);
+  for (int i=0;i<num_seq;i++)
+    for (int j=0;j<num_bits;j++)
+      //if (all_bits[i].bit_loc[j]==bitpos+bram_base)
+    if (all_bits[i].bit_loc[j]==(seqpos*num_bits+bitpos)+bram_base)
+      return((i*num_bits+j)/wordlen);
   return(-1);
 }
 
-int bit_offset_from_frame_bitpos(int wordlen, int bitpos, int frame_bit_offset, int num_bits,
-				 int *all_bits)
+
+
+int bit_offset_from_frame_bitpos(int wordlen, int seqpos, int bitpos,
+				  int frame_bit_offset,
+				  int num_seq, int num_bits,
+				  struct frame_bits *all_bits)
 {
-  int bram_base=base(num_bits,all_bits);
-  for (int i=0;i<num_bits;i++)
-    if (all_bits[i]==bitpos+bram_base)
-      // CHECK -- should be adding frame_bit_offset --> can mean write out of frame slot range??
-      //return((i+frame_bit_offset)%wordlen);
-      return((i)%wordlen);
+  int bram_base=base(num_seq,num_bits,all_bits);
+  for (int i=0;i<num_seq;i++)
+    for (int j=0;j<num_bits;j++)
+      //    if (all_bits[i].bit_loc[j]==bitpos+bram_base)
+      if (all_bits[i].bit_loc[j]==(seqpos*num_bits+bitpos)+bram_base)
+	return((i*num_bits+j)%wordlen);
   return(-1);
 }
 
@@ -114,9 +125,10 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
   
   int words=logical_memories[which].words;
   int wordlen=logical_memories[which].wordlen;
-  int bits_in_repeat=logical_memories[which].repeats[0].bits_in_repeat;
-  int slots_in_repeat=logical_memories[which].repeats[0].slots_in_repeat;
-  int num_bits=logical_memories[which].repeats[0].frame_bits[0].num_bits;
+  int bits_in_repeat=logical_memories[which].repeats[0][0].bits_in_repeat;
+  int slots_in_repeat=logical_memories[which].repeats[0][0].slots_in_repeat;
+  int num_seq=logical_memories[which].repeats[0][0].frame_seq[0].sequence_length;
+  int num_bits=logical_memories[which].repeats[0][0].frame_seq[0].frame_bits[0].num_bits;
 
 #ifdef VERBOSE
     if (logical==1)
@@ -124,12 +136,14 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
     else
       fprintf(stdout,"Conversion to_physical %d quanta=%d\n",which,lookup_quanta);
 #endif
-    
-  int *all_bits=logical_memories[which].repeats[0].frame_bits[0].bit_loc;
 
-  int bram_base=base(num_bits,all_bits);
+    // was int
+    //int *all_bits=logical_memories[which].repeats[0][0].frame_seq[0].frame_bits[0].bit_loc;
+    struct frame_bits *all_bits=logical_memories[which].repeats[0][0].frame_seq[0].frame_bits;
+
+    int bram_base=base(num_seq,num_bits,all_bits);
   // BRAM18 vs. BRAM36
-  int frame_bits_len=bram_bits_in_frame(num_bits,all_bits);
+    int frame_bits_len=bram_bits_in_frame(num_seq,num_bits,all_bits);
 
 #ifdef VERBOSE  
   printf("// words=%d wordlen=%d\n",words,wordlen);
@@ -179,10 +193,14 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
 	      for(int k=0;k<lookup_quanta;k++)
 		{
 		  int bitpos=i*lookup_quanta+k;
+		  int seqpos=bitpos/num_bits;
+		  int bit_in_seq=bitpos%num_bits;
 		  int bitval=((j>>k) & 0x01);
-		  int frame_loc=all_bits[bitpos]-bram_base+frame_bit_offset;
+		  int frame_loc=all_bits[seqpos].bit_loc[bit_in_seq]-bram_base+frame_bit_offset;
 		  int u64_word=frame_loc/64;
 		  int u64_bit=frame_loc%64;
+		  //		  fprintf(stderr,"CHECK_PHYSICAL bitpos %d frame_loc %d u64_word %d u64_bit %d bram_base %d frame_bit_offset %d\n",
+		  //			  bitpos,frame_loc,u64_word,u64_bit,bram_base,frame_bit_offset);
 		  // stick bit in frame
 		  if (bitval==0)
 		    {
@@ -193,8 +211,12 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
 		    }
 		  else
 		    trans_tables[i][j*u64_per_lookup_result+u64_word]|=(((uint64_t)1)<<u64_bit);
+
 		}
 	    }
+#ifdef VERBOSE	  
+	  printf("\t finished trans_table[%d]\n",i);
+#endif	  
       
 	}
     }
@@ -203,7 +225,7 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
       fprintf(cfp,"//to_logical\n");
       // how many tables?
       // one per 8b in data (or one per 8b in frame bits)
-      int max_bit=max_frame_bit(num_bits,all_bits);
+      int max_bit=max_frame_bit(num_seq,num_bits,all_bits);
       fprintf(cfp,"//max_bit=%d\n",max_bit);
       num_trans_tables=(max_bit+1+(lookup_quanta-1))/lookup_quanta;
       fprintf(cfp,"#define ACCEL_LOOKUP_TABLES_LOGICAL_%d %d\n",which,num_trans_tables);
@@ -242,16 +264,21 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
 	  // code above is enforcing that is multipler
 #ifdef DEBUG_LOGICAL
 	  printf("memory %d table %d bits_in_use:",which,i);
-#endif	  
+#endif
 	  for (int j=0;j<(1<<lookup_quanta);j++)
 	    {
 	      int bits_in_use=0;
 	      for(int k=0;k<lookup_quanta;k++)
 		{
 		  int bitpos=i*lookup_quanta+k;
+		  int seqpos=bitpos/num_bits;
+		  int bit_in_seq=bitpos%num_bits;
 		  int bitval=((j>>k) & 0x01);
-		  int logical_word_offset=word_offset_from_frame_bitpos(wordlen,bitpos,
+		  int logical_word_offset=word_offset_from_frame_bitpos(wordlen,
+									seqpos,
+									bit_in_seq,
 									frame_bit_offset,
+									num_seq,
 									num_bits,
 									all_bits);
 		  
@@ -265,8 +292,11 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
 #ifdef DEBUG_LOGICAL_VERBOSE
 		      fprintf(stdout,"[%d (%d) %d]",logical_word_offset,u64_per_lookup_result,bitpos);
 #endif		      
-		      int logical_bit_offset=bit_offset_from_frame_bitpos(wordlen,bitpos,
+		      int logical_bit_offset=bit_offset_from_frame_bitpos(wordlen,
+									  seqpos,
+									  bit_in_seq,
 									  frame_bit_offset,
+									  num_seq,
 									  num_bits,
 									  all_bits);
 		      int u64_word_offset=0;
@@ -282,7 +312,8 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
 			fprintf(stdout,"ERROR: u64 offset=%d u64_per_lookup=%d slots_per_u64=%d\n",
 				u64_word_offset,u64_per_lookup_result,slots_per_u64);
 #endif		      
-		      
+		      //fprintf(stderr,"CHECK_LOGICAL bitpos %d logical_bit_offset %d final_bit_offset %d u64_word %d u64_bit %d\n",
+		      //  bitpos,logical_bit_offset,final_bit_offset,u64_word_offset,u64_bit_offset);		      
 		      // DEBUG
 		      //fprintf(stdout,"wordlen=%d bitoffset=%d\n",wordlen,logical_bit_offset);
 		      // stick bit in word
@@ -319,6 +350,9 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
       
     }
 
+#ifdef VERBOSE	  
+  printf("starting common print\n");
+#endif	  
 
   // common print routine
   for (int i=0;i<num_trans_tables;i++)
@@ -414,20 +448,22 @@ int main (int argc, char **argv)
   // TODO: maybe these go earlier (or already included for stdint)
 #ifdef INCLUDE_HEADERS  
   fprintf(cfp,"#include <stdint.h>\n");
-  fprintf(cfp,"#include \"bert_types.h\"\n");
+  fprintf(cfp,"#include \"compressed_bert_types.h\"\n");
   fprintf(cfp,"#include \"%s\"\n",h_file_name);
 #endif  
   
   for (int i=0;i<NUM_LOGICAL;i++)
     {
-      int bits_in_repeat=logical_memories[i].repeats[0].bits_in_repeat;
-      int num_bits=logical_memories[i].repeats[0].frame_bits[0].num_bits;
+      int bits_in_repeat=logical_memories[i].repeats[0][0].bits_in_repeat;
+      int num_seq=logical_memories[i].repeats[0][0].frame_seq[0].sequence_length;
+      int num_bits=logical_memories[i].repeats[0][0].frame_seq[0].frame_bits[0].num_bits;
       int wordlen=logical_memories[i].wordlen;
       
       if ((logical_memories[i].nframe_ranges>1)
-	  ||(logical_memories[i].num_segments>1)
-	  ||(logical_memories[i].repeats[0].num_frames>1)
-	  ||(num_bits!=bits_in_repeat)
+	  ||(logical_memories[i].replicas>1)
+	  ||(logical_memories[i].num_segments[0]>1)
+	  ||(logical_memories[i].repeats[0][0].num_frames>1)
+	  ||((num_seq*num_bits)!=bits_in_repeat)
 	  ||(wordlen>64)
 	  ||(noaccel==1)
 	  )
@@ -435,7 +471,17 @@ int main (int argc, char **argv)
 	  noaccel_memory(i,0,cfp);
 	  noaccel_memory(i,1,cfp);
 #ifdef VERBOSE	  
-	  fprintf(stdout,"No acceleration for memory %d\n",i);
+	  fprintf(stdout,"No acceleration for memory %d frame ranges %d replicas %d segments %d repeats %d nyn_frames %d num_seq %d num_bits %d bits_in_repeat %d wordlen %d\n",i,
+		  logical_memories[i].nframe_ranges,
+		  logical_memories[i].replicas,
+		  logical_memories[i].num_segments[0],
+		  logical_memories[i].repeats[0][0].num_repeats,
+		  logical_memories[i].repeats[0][0].num_frames,
+		  num_seq,
+		  num_bits,
+		  bits_in_repeat,
+		  wordlen
+		  );
 #endif	  
 	}
       else
