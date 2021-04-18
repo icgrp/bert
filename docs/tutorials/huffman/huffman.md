@@ -129,7 +129,7 @@ Alternatively, you can run the debugger using the debug icon just to the left of
 
 If all goes well, the program will run and will print results to the SDK Terminal as shown below:
 
-![Printout of successful run](../../images/finalresults.png)
+![Printout of successful run](../../images/finalresults_corrected.png)
 
 Congratulations!  You have run a successful demo application using BERT.
 
