@@ -1,86 +1,64 @@
 #include <stdio.h>
 #include <stdint.h>
-#include "bert_types.h"
+#include "compressed_bert_types.h"
 #define NUM_LOGICAL 4
-int bert_compress_version=2; // ramb18 wes
+int bert_compress_version=3; // non-uniform memory, ramb18 wes
 const char *logical_names[] = {"design_1_i/top_0/inst/HUFFMAN/CONSUMER/resultsMem","design_1_i/top_0/inst/HUFFMAN/ENCODER/HIST/histMem","design_1_i/top_0/inst/HUFFMAN/ENCODER/inst/HUFFMAN/ENCODER/huffmanMem","design_1_i/top_0/inst/HUFFMAN/PRODUCER/inst/HUFFMAN/PRODUCER/rawTextMem"};
 // Beginning of Logical Memory 0
-#define MEM0SEG0BITS_IN_FRAME0 64
-int mem0seg0frame0bits[64]={960,972,984,996,1020,1032,1044,1056,966,978,990,1002,1026,1038,1050,1062,963,975,987,999,1023,1035,1047,1059,969,981,993,1005,1029,1041,1053,1065,962,974,986,998,1022,1034,1046,1058,968,980,992,1004,1028,1040,1052,1064,965,977,989,1001,1025,1037,1049,1061,971,983,995,1007,1031,1043,1055,1067};
-#define MEM0SEG0FRAME0 {MEM0SEG0BITS_IN_FRAME0,0x1040100,mem0seg0frame0bits}
-//MEM0SEG0 repeat distance 64 covering 1 frames
-#define MEM0SEG0FRAMES_IN_REPEAT 1
-#define MEM0SEG0BITS_IN_REPEAT 64
-#define MEM0SEG0SLOTS_IN_REPEAT 4
-struct frame_bits mem0seg0frames[1]={MEM0SEG0FRAME0};
-#define MEM0SEG0REPEATS 256
-#define MEM0SEG0UNIQUE_FRAMES_IN_REPEAT 1
-int mem0seg0unique_frames[1]= {0x1040100};
-#define MEM0SEG0 {MEM0SEG0REPEATS,MEM0SEG0FRAMES_IN_REPEAT,MEM0SEG0BITS_IN_REPEAT,MEM0SEG0SLOTS_IN_REPEAT,MEM0SEG0UNIQUE_FRAMES_IN_REPEAT,mem0seg0frames,mem0seg0unique_frames}
-#define MEM0SEGMENTS 1
-struct segment_repeats mem0repeats[1]={MEM0SEG0};
-#define MEM0FR0WEBITS (0x100)
-// End of Logical Memory 0
 // Beginning of Logical Memory 1
-#define MEM1SEG0BITS_IN_FRAME0 64
-int mem1seg0frame0bits[64]={1200,1212,1224,1236,1260,1272,1284,1296,1206,1218,1230,1242,1266,1278,1290,1302,1203,1215,1227,1239,1263,1275,1287,1299,1209,1221,1233,1245,1269,1281,1293,1305,1202,1214,1226,1238,1262,1274,1286,1298,1208,1220,1232,1244,1268,1280,1292,1304,1205,1217,1229,1241,1265,1277,1289,1301,1211,1223,1235,1247,1271,1283,1295,1307};
-#define MEM1SEG0FRAME0 {MEM1SEG0BITS_IN_FRAME0,0x10401c0,mem1seg0frame0bits}
-//MEM1SEG0 repeat distance 64 covering 1 frames
-#define MEM1SEG0FRAMES_IN_REPEAT 1
-#define MEM1SEG0BITS_IN_REPEAT 64
-#define MEM1SEG0SLOTS_IN_REPEAT 4
-struct frame_bits mem1seg0frames[1]={MEM1SEG0FRAME0};
-#define MEM1SEG0REPEATS 64
-#define MEM1SEG0UNIQUE_FRAMES_IN_REPEAT 1
-int mem1seg0unique_frames[1]= {0x10401c0};
-#define MEM1SEG0 {MEM1SEG0REPEATS,MEM1SEG0FRAMES_IN_REPEAT,MEM1SEG0BITS_IN_REPEAT,MEM1SEG0SLOTS_IN_REPEAT,MEM1SEG0UNIQUE_FRAMES_IN_REPEAT,mem1seg0frames,mem1seg0unique_frames}
-#define MEM1SEGMENTS 1
-struct segment_repeats mem1repeats[1]={MEM1SEG0};
-#define MEM1FR0WEBITS (0x400)
-// End of Logical Memory 1
 // Beginning of Logical Memory 2
-#define MEM2SEG0BITS_IN_FRAME0 40
-int mem2seg0frame0bits[40]={720,732,744,756,780,792,804,816,726,738,750,762,786,798,810,822,723,735,747,759,722,734,746,758,782,794,806,818,728,740,752,764,788,800,812,824,725,737,749,761};
-#define MEM2SEG0FRAME0 {MEM2SEG0BITS_IN_FRAME0,0x1040100,mem2seg0frame0bits}
-//MEM2SEG0 repeat distance 40 covering 1 frames
-#define MEM2SEG0FRAMES_IN_REPEAT 1
-#define MEM2SEG0BITS_IN_REPEAT 40
-#define MEM2SEG0SLOTS_IN_REPEAT 2
-struct frame_bits mem2seg0frames[1]={MEM2SEG0FRAME0};
-#define MEM2SEG0REPEATS 256
-#define MEM2SEG0UNIQUE_FRAMES_IN_REPEAT 1
-int mem2seg0unique_frames[1]= {0x1040100};
-#define MEM2SEG0 {MEM2SEG0REPEATS,MEM2SEG0FRAMES_IN_REPEAT,MEM2SEG0BITS_IN_REPEAT,MEM2SEG0SLOTS_IN_REPEAT,MEM2SEG0UNIQUE_FRAMES_IN_REPEAT,mem2seg0frames,mem2seg0unique_frames}
-#define MEM2SEGMENTS 1
-struct segment_repeats mem2repeats[1]={MEM2SEG0};
-#define MEM2FR0WEBITS (0x40)
-// End of Logical Memory 2
 // Beginning of Logical Memory 3
-#define MEM3SEG0BITS_IN_FRAME0 32
-int mem3seg0frame0bits[32]={852,864,876,888,912,924,936,948,855,867,879,891,915,927,939,951,854,866,878,890,914,926,938,950,857,869,881,893,917,929,941,953};
-#define MEM3SEG0FRAME0 {MEM3SEG0BITS_IN_FRAME0,0x1040100,mem3seg0frame0bits}
-//MEM3SEG0 repeat distance 32 covering 1 frames
-#define MEM3SEG0FRAMES_IN_REPEAT 1
-#define MEM3SEG0BITS_IN_REPEAT 32
-#define MEM3SEG0SLOTS_IN_REPEAT 4
-struct frame_bits mem3seg0frames[1]={MEM3SEG0FRAME0};
-#define MEM3SEG0REPEATS 256
-#define MEM3SEG0UNIQUE_FRAMES_IN_REPEAT 1
-int mem3seg0unique_frames[1]= {0x1040100};
-#define MEM3SEG0 {MEM3SEG0REPEATS,MEM3SEG0FRAMES_IN_REPEAT,MEM3SEG0BITS_IN_REPEAT,MEM3SEG0SLOTS_IN_REPEAT,MEM3SEG0UNIQUE_FRAMES_IN_REPEAT,mem3seg0frames,mem3seg0unique_frames}
-#define MEM3SEGMENTS 1
-struct segment_repeats mem3repeats[1]={MEM3SEG0};
-#define MEM3FR0WEBITS (0x80)
-// End of Logical Memory 3
-struct frame_range mem0_frame_ranges[1] = {{0x1040100,256,MEM0FR0WEBITS,0} };
-struct frame_range mem1_frame_ranges[1] = {{0x10401c0,64,MEM1FR0WEBITS,0} };
-struct frame_range mem2_frame_ranges[1] = {{0x1040100,256,MEM2FR0WEBITS,1} };
-struct frame_range mem3_frame_ranges[1] = {{0x1040100,256,MEM3FR0WEBITS,1} };
-struct logical_memory logical_memories[NUM_LOGICAL] ={
-	{1,16,1024,MEM0SEGMENTS,mem0_frame_ranges,mem0repeats}
-,	{1,16,256,MEM1SEGMENTS,mem1_frame_ranges,mem1repeats}
-,	{1,20,512,MEM2SEGMENTS,mem2_frame_ranges,mem2repeats}
-,	{1,8,1024,MEM3SEGMENTS,mem3_frame_ranges,mem3repeats}
+int mem0num_segments[1]={1};
+int mem1num_segments[1]={1};
+int mem2num_segments[1]={1};
+int mem3num_segments[1]={1};
+struct compressed_frame_range mem0_frame_ranges[1]={{0x1040100, 256, 0x100,0}};
+struct compressed_frame_range mem1_frame_ranges[1]={{0x10401c0, 64, 0x400,0}};
+struct compressed_frame_range mem2_frame_ranges[1]={{0x1040100, 256, 0x40,1}};
+struct compressed_frame_range mem3_frame_ranges[1]={{0x1040100, 256, 0x80,1}};
+int16_t mem0replica0seg0frame_bits0bit_loc0[16]={960,972,984,996,1020,1032,1044,1056,966,978,990,1002,1026,1038,1050,1062};
+int16_t mem0replica0seg0frame_bits0bit_loc1[16]={963,975,987,999,1023,1035,1047,1059,969,981,993,1005,1029,1041,1053,1065};
+int16_t mem0replica0seg0frame_bits0bit_loc2[16]={962,974,986,998,1022,1034,1046,1058,968,980,992,1004,1028,1040,1052,1064};
+int16_t mem0replica0seg0frame_bits0bit_loc3[16]={965,977,989,1001,1025,1037,1049,1061,971,983,995,1007,1031,1043,1055,1067};
+struct frame_bits mem0replica0seg0frame_bits0[4]={{16,mem0replica0seg0frame_bits0bit_loc0},{16,mem0replica0seg0frame_bits0bit_loc1},{16,mem0replica0seg0frame_bits0bit_loc2},{16,mem0replica0seg0frame_bits0bit_loc3}};
+struct frame_sequence mem0replica0seg0frame_sequence[1]={{0x1040100,4,mem0replica0seg0frame_bits0}};
+int mem0replica0seg0unique_frames[1]={0x1040100};
+struct segment_repeats mem0replica0repeats[1]={{256,1,64,4,1,mem0replica0seg0frame_sequence,mem0replica0seg0unique_frames}
+};
+struct segment_repeats *mem0repeats[1]={mem0replica0repeats};
+int16_t mem1replica0seg0frame_bits0bit_loc0[16]={1200,1212,1224,1236,1260,1272,1284,1296,1206,1218,1230,1242,1266,1278,1290,1302};
+int16_t mem1replica0seg0frame_bits0bit_loc1[16]={1203,1215,1227,1239,1263,1275,1287,1299,1209,1221,1233,1245,1269,1281,1293,1305};
+int16_t mem1replica0seg0frame_bits0bit_loc2[16]={1202,1214,1226,1238,1262,1274,1286,1298,1208,1220,1232,1244,1268,1280,1292,1304};
+int16_t mem1replica0seg0frame_bits0bit_loc3[16]={1205,1217,1229,1241,1265,1277,1289,1301,1211,1223,1235,1247,1271,1283,1295,1307};
+struct frame_bits mem1replica0seg0frame_bits0[4]={{16,mem1replica0seg0frame_bits0bit_loc0},{16,mem1replica0seg0frame_bits0bit_loc1},{16,mem1replica0seg0frame_bits0bit_loc2},{16,mem1replica0seg0frame_bits0bit_loc3}};
+struct frame_sequence mem1replica0seg0frame_sequence[1]={{0x10401c0,4,mem1replica0seg0frame_bits0}};
+int mem1replica0seg0unique_frames[1]={0x10401c0};
+struct segment_repeats mem1replica0repeats[1]={{64,1,64,4,1,mem1replica0seg0frame_sequence,mem1replica0seg0unique_frames}
+};
+struct segment_repeats *mem1repeats[1]={mem1replica0repeats};
+int16_t mem2replica0seg0frame_bits0bit_loc0[20]={720,732,744,756,780,792,804,816,726,738,750,762,786,798,810,822,723,735,747,759};
+int16_t mem2replica0seg0frame_bits0bit_loc1[20]={722,734,746,758,782,794,806,818,728,740,752,764,788,800,812,824,725,737,749,761};
+struct frame_bits mem2replica0seg0frame_bits0[2]={{20,mem2replica0seg0frame_bits0bit_loc0},{20,mem2replica0seg0frame_bits0bit_loc1}};
+struct frame_sequence mem2replica0seg0frame_sequence[1]={{0x1040100,2,mem2replica0seg0frame_bits0}};
+int mem2replica0seg0unique_frames[1]={0x1040100};
+struct segment_repeats mem2replica0repeats[1]={{256,1,40,2,1,mem2replica0seg0frame_sequence,mem2replica0seg0unique_frames}
+};
+struct segment_repeats *mem2repeats[1]={mem2replica0repeats};
+int16_t mem3replica0seg0frame_bits0bit_loc0[8]={852,864,876,888,912,924,936,948};
+int16_t mem3replica0seg0frame_bits0bit_loc1[8]={855,867,879,891,915,927,939,951};
+int16_t mem3replica0seg0frame_bits0bit_loc2[8]={854,866,878,890,914,926,938,950};
+int16_t mem3replica0seg0frame_bits0bit_loc3[8]={857,869,881,893,917,929,941,953};
+struct frame_bits mem3replica0seg0frame_bits0[4]={{8,mem3replica0seg0frame_bits0bit_loc0},{8,mem3replica0seg0frame_bits0bit_loc1},{8,mem3replica0seg0frame_bits0bit_loc2},{8,mem3replica0seg0frame_bits0bit_loc3}};
+struct frame_sequence mem3replica0seg0frame_sequence[1]={{0x1040100,4,mem3replica0seg0frame_bits0}};
+int mem3replica0seg0unique_frames[1]={0x1040100};
+struct segment_repeats mem3replica0repeats[1]={{256,1,32,4,1,mem3replica0seg0frame_sequence,mem3replica0seg0unique_frames}
+};
+struct segment_repeats *mem3repeats[1]={mem3replica0repeats};
+struct compressed_logical_memory  logical_memories[NUM_LOGICAL]={
+	{1,16,1024,1,mem0num_segments,mem0_frame_ranges,mem0repeats}
+,	{1,16,256,1,mem1num_segments,mem1_frame_ranges,mem1repeats}
+,	{1,20,512,1,mem2num_segments,mem2_frame_ranges,mem2repeats}
+,	{1,8,1024,1,mem3num_segments,mem3_frame_ranges,mem3repeats}
 };
 #define ACCEL_LOOKUP_QUANTA_MEM_LOGICAL_0 8
 #define ACCEL_FRAME_BIT_OFFSET_LOGICAL_0 0
