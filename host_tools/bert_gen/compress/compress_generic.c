@@ -759,7 +759,7 @@ int main ()
   printf("int pad_words=%d;\n",ULTRASCALE_PAD_WORDS);
   printf("int we_bits_per_frame=%d;\n",ULTRASCALE_WE_BITS_PER_FRAME);
   printf("int bitlocations[ULTRASCALE_WE_BITS_PER_FRAME]=%s;\n",ULTRASCALE_BITLOCATIONS);
-  printf("int bram_starts[ULTRASCALE_WE_BITS_PER_FRAME+1]=;\n",ULTRASCALE_BRAM_STARTS);
+  printf("int bram_starts[ULTRASCALE_WE_BITS_PER_FRAME+1]=%s;\n",ULTRASCALE_BRAM_STARTS);
 #endif
 
   
