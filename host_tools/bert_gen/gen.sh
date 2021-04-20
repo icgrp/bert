@@ -26,9 +26,8 @@ header_gen() {
     echo "#include \"ultrascale_plus.h\"" >>${headerName}_compress.c
     echo "#include \"compress_generic.c\"" >>"${headerName}"_compress.c
     gcc -c "${headerName}"_compress.c
-    gcc -c ultrascale_plus.c
     gcc -c "${headerName}"_uncompressed.c
-    gcc -o "${headerName}"_ucompress "${headerName}"_compress.o "${headerName}"_uncompressed.o ultrascale_plus.o
+    gcc -o "${headerName}"_ucompress "${headerName}"_compress.o "${headerName}"_uncompressed.o
     ./"${headerName}"_ucompress >"${headerName}".c
     sed "s/bert_types/compressed_bert_types/g" <${headerName}_uncompressed.h | sed "s/logical_memory/compressed_logical_memory/g" > ${headerName}.h
     echo "#include \"stdint.h\"" >"${headerName}"_uaccel.c
@@ -40,7 +39,7 @@ header_gen() {
     cp "$bertDir"/accel/bert_types.h .
     gcc -c "${headerName}".c
     gcc -c "${headerName}"_uaccel.c
-    gcc -o "${headerName}"_uaccel_${accelNameAddition} "${headerName}".o ultrascale_plus.o "${headerName}"_uaccel.o
+    gcc -o "${headerName}"_uaccel_${accelNameAddition} "${headerName}".o "${headerName}"_uaccel.o
     ./"${headerName}"_uaccel_${accelNameAddition} "${headerName}"_tables
     mv "${headerName}".c "${headerName}"_header.c
     cat "${headerName}"_header.c "${headerName}"_tables.c  > "${headerName}".c
