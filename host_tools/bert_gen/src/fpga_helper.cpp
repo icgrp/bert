@@ -86,9 +86,9 @@ uint64_t calcBitPosition_generic(uint32_t x_pos, uint32_t y_pos, uint32_t bit_nu
 
 int xilinxSeries7(fpga_PL &XfpgaInstance)
 {
- if ((XfpgaInstance.type==Zynq_USp_ZUEG)||
-     (XfpgaInstance.type==Zynq_USp_ZUCG)||
-     (XfpgaInstance.type==Zynq_USp_ZUEV))
+ if ((XfpgaInstance.type==fpgaType::Zynq_USp_ZUEG)||
+     (XfpgaInstance.type==fpgaType::Zynq_USp_ZUCG)||
+     (XfpgaInstance.type==fpgaType::Zynq_USp_ZUEV))
         return(1);
     else
 	return(0);
@@ -96,8 +96,8 @@ int xilinxSeries7(fpga_PL &XfpgaInstance)
 
 int xilinxUltraScale(fpga_PL &XfpgaInstance)
 {
- if ((XfpgaInstance.type==Zynq7)||
-     (XfpgaInstance.type==Zynq7s))
+ if ((XfpgaInstance.type==fpgaType::Zynq7)||
+     (XfpgaInstance.type==fpgaType::Zynq7s))
         return(1);
     else
 	return(0);
