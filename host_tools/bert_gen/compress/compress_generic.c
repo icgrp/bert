@@ -1,7 +1,20 @@
 #include <stdlib.h>
 #include <stdint.h>
+#include "7series.h"
+#include "ultrascale_plus.h"
 #include "compressed_bert_types.h"
 
+#ifdef XILINX_SERIES7
+#define WORDS_PER_FRAME=SERIES7_WORDS_PER_FRAME
+#define WE_BITS_PER_FRAME=SERIES7_WE_BITS_PER_FRAME
+  int bram18_starts[SERIES7_BRAM18_STARTS_PER_FRAME]=SERIES7_BRAM18_STARTS;
+#endif
+
+#ifdef XILINX_ULTRASCALE
+#define WORDS_PER_FRAME=ULTRASCALE_WORDS_PER_FRAME
+#define WE_BITS_PER_FRAME=ULTRASCALE_WE_BITS_PER_FRAME
+  int bram18_starts[ULTRASCALE_BRAM18_STARTS_PER_FRAME+1]=ULTRASCALE_BRAM18_STARTS;
+#endif
 
 #undef DEBUG
 #undef VERBOSE
@@ -33,12 +46,10 @@ int offset_range(int bitloc)
     {
 #ifdef DEBUG_OFFSET_RANGE
       fprintf(stderr,"\tnow checking %d\n",i);
-      fprintf(stderr,"\t&bram_starts=0x%x\n",i,&bram_starts);
-      fprintf(stderr,"\t&bitlocation=0x%x\n",i,&bitlocation);
-      fprintf(stderr,"\t&bram_starts[%d]=0x%x\n",i,&(bram_starts[i]));
-      fprintf(stderr,"\t&bram_starts[%d]=0x%x\n",i+1,&(bram_starts[i+1]));
-      fprintf(stderr,"\t&bitlocation[%d]=0x%x\n",i,&(bitlocation[i]));
-      fprintf(stderr,"\t\tbram_starts[%d]=%d\n",i,bram_starts[i]);
+      fprintf(stderr,"\t&bram18_starts=0x%x\n",i,&bram18_starts);
+      fprintf(stderr,"\t&bram18_starts[%d]=0x%x\n",i,&(bram18_starts[i]));
+      fprintf(stderr,"\t&bram18_starts[%d]=0x%x\n",i+1,&(bram18_starts[i+1]));
+      fprintf(stderr,"\t\tbram18_starts[%d]=%d\n",i,bram18_starts[i]);
 #endif	
       if ((bram18_starts[i]<=bitloc) && (bram18_starts[i+1]>bitloc))
 #ifdef DEBUG_OFFSET_RANGE
@@ -723,6 +734,31 @@ int main ()
   printf("#define NUM_LOGICAL %d\n",NUM_LOGICAL);
 
   printf("int bert_compress_version=3; // non-uniform memory, ramb18 wes\n");
+
+
+#ifdef XILINX_SERIES7
+  printf("int words_per_frame=SERIES7_WORDS_PER_FRAME;\n");
+  printf("int frames_per_bram=SERIES7_FRAMES_PER_BRAM;\n");
+  printf("int words_between_frames=SERIES7_WORDS_BETWEEN_FRAMES;\n");
+  printf("int words_after_frames=SERIES7_WORDS_AFTER_FRAMES;\n");
+  printf("int words_before_frames=SERIES7_WORDS_BEFORE_FRAMES;\n");
+  printf("int pad_words=SERIES7_PAD_WORDS;\n");
+  printf("int we_bits_per_frame=SERIES7_WE_BITS_PER_FRAME;\n");
+  printf("int bitlocations[SERIES7_WE_BITS_PER_FRAME]=SERIES7_BITLOCATIONS;\n");
+  printf("int bram_starts[SERIES7_WE_BITS_PER_FRAME]=SERIES7_BRAM_STARTS;\n");
+#endif
+
+#ifdef XILINX_ULTRASCALE
+  printf("int words_per_frame=ULTRASCALE_WORDS_PER_FRAME;\n");
+  printf("int frames_per_bram=ULTRASCALE_FRAMES_PER_BRAM;\n");
+  printf("int words_between_frames=ULTRASCALE_WORDS_BETWEEN_FRAMES;\n");
+  printf("int words_after_frames=ULTRASCALE_WORDS_AFTER_FRAMES;\n");
+  printf("int words_before_frames=ULTRASCALE_WORDS_BEFORE_FRAMES;\n");
+  printf("int pad_words=ULTRASCALE_PAD_WORDS;\n");
+  printf("int we_bits_per_frame=ULTRASCALE_WE_BITS_PER_FRAME;\n");
+  printf("int bitlocations[ULTRASCALE_WE_BITS_PER_FRAME]=ULTRASCALE_BITLOCATIONS;\n");
+  printf("int bram_starts[ULTRASCALE_WE_BITS_PER_FRAME+1]=ULTRASCALE_BRAM_STARTS;\n");
+#endif
 
   
   // reprint names

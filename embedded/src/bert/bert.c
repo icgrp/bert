@@ -1,6 +1,5 @@
 #include "stdint.h"
 #include "compressed_bert_types.h"
-#include "ultrascale_plus.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "xilfpga_extension.h"
@@ -13,6 +12,22 @@
 #define PRINT xil_printf
 // maybe for host
 // #define PRINT printf
+
+// for compatibility with how this was originally written
+//    -- these should now be defined in mydesign.c (linked mydesign.o) -- 
+#define WORDS_PER_FRAME words_per_frame
+#define FRAMES_PER_BRAM frames_per_bram
+#define WORDS_BETWEEN_FRAMES words_between_frames
+#define WORDS_AFTER_FRAMES  words_after_frames
+#define WORDS_BEFORE_FRAMES words_before_frames
+#define PAD_WORDS pad_words
+#define WE_BITS_PER_FRAME we_bits_per_frame
+extern int words_per_frame, frames_per_bram;
+extern int words_between_frames, words_after_frames, words_before_frames, pad_words;
+extern int we_bits_per_frame;
+extern int bitlocation[WE_BITS_PER_FRAME];
+extern int bram_starts[WE_BITS_PER_FRAME+1];
+
 
 #ifdef TIME_BERT
 #include "xtime_l.h" 

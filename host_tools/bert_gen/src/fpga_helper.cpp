@@ -84,5 +84,24 @@ uint64_t calcBitPosition_generic(uint32_t x_pos, uint32_t y_pos, uint32_t bit_nu
     }
 }
 
+void int xilinxSeries7(fpga_PL &XfpgaInstance)
+{
+ if ((XfpgaInstance.type==Zynq_USp_ZUEG)||
+     (XfpgaInstance.type==Zynq_USp_ZUCG)||
+     (XfpgaInstance.type==Zynq_USp_ZUEV))
+        return(1);
+    else
+	return(0);
+ }
+
+void int xilinxUltraScale(fpga_PL &XfpgaInstance);
+{
+ if ((XfpgaInstance.type==Zynq7)||
+     (XfpgaInstance.type==Zynq7s))
+        return(1);
+    else
+	return(0);
+ }
+
 
 #pragma clang diagnostic pop
