@@ -25,8 +25,8 @@
 extern int words_per_frame, frames_per_bram;
 extern int words_between_frames, words_after_frames, words_before_frames, pad_words;
 extern int we_bits_per_frame;
-extern int bitlocation[WE_BITS_PER_FRAME];
-extern int bram_starts[WE_BITS_PER_FRAME+1];
+extern int *bitlocation;
+extern int *bram_starts;
 
 
 #ifdef TIME_BERT

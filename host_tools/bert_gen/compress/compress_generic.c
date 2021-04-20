@@ -746,7 +746,7 @@ int main ()
   printf("int words_before_frames=%d;\n",SERIES7_WORDS_BEFORE_FRAMES);
   printf("int pad_words=%d;\n",SERIES7_PAD_WORDS);
   printf("int we_bits_per_frame=%d;\n",SERIES7_WE_BITS_PER_FRAME);
-  printf("int bitlocations[%d]=%s;\n",SERIES7_WE_BITS_PER_FRAME,SERIES7_BITLOCATIONS);
+  printf("int bitlocation[%d]=%s;\n",SERIES7_WE_BITS_PER_FRAME,SERIES7_BITLOCATION);
   printf("int bram_starts[%d]=%s;\n",(SERIES7_WE_BITS_PER_FRAME+1),SERIES7_BRAM_STARTS);
 #endif
 
@@ -758,7 +758,7 @@ int main ()
   printf("int words_before_frames=%d;\n",ULTRASCALE_WORDS_BEFORE_FRAMES);
   printf("int pad_words=%d;\n",ULTRASCALE_PAD_WORDS);
   printf("int we_bits_per_frame=%d;\n",ULTRASCALE_WE_BITS_PER_FRAME);
-  printf("int bitlocations[%d]=%s;\n",ULTRASCALE_WE_BITS_PER_FRAME,ULTRASCALE_BITLOCATIONS);
+  printf("int bitlocation[%d]=%s;\n",ULTRASCALE_WE_BITS_PER_FRAME,ULTRASCALE_BITLOCATION);
   printf("int bram_starts[%d]=%s;\n",(ULTRASCALE_WE_BITS_PER_FRAME+1),ULTRASCALE_BRAM_STARTS);
 #endif
 
