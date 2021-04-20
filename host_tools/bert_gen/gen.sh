@@ -43,7 +43,7 @@ header_gen() {
     ./"${headerName}"_uaccel_${accelNameAddition} "${headerName}"_tables
     mv "${headerName}".c "${headerName}"_header.c
     cat "${headerName}"_header.c "${headerName}"_tables.c  > "${headerName}".c
-    rm ultrascale_plus.o "${headerName}"_compress.o "${headerName}"_uncompressed.o "${headerName}"_ucompress "${headerName}"_uaccel.o "${headerName}".o
+    rm "${headerName}"_compress.o "${headerName}"_uncompressed.o "${headerName}"_ucompress "${headerName}"_uaccel.o "${headerName}".o
 }
 
 map_gen() {

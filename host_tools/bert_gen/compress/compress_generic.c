@@ -739,27 +739,27 @@ int main ()
 
 
 #ifdef XILINX_SERIES7
-  printf("int words_per_frame=SERIES7_WORDS_PER_FRAME;\n");
-  printf("int frames_per_bram=SERIES7_FRAMES_PER_BRAM;\n");
-  printf("int words_between_frames=SERIES7_WORDS_BETWEEN_FRAMES;\n");
-  printf("int words_after_frames=SERIES7_WORDS_AFTER_FRAMES;\n");
-  printf("int words_before_frames=SERIES7_WORDS_BEFORE_FRAMES;\n");
-  printf("int pad_words=SERIES7_PAD_WORDS;\n");
-  printf("int we_bits_per_frame=SERIES7_WE_BITS_PER_FRAME;\n");
-  printf("int bitlocations[SERIES7_WE_BITS_PER_FRAME]=SERIES7_BITLOCATIONS;\n");
-  printf("int bram_starts[SERIES7_WE_BITS_PER_FRAME]=SERIES7_BRAM_STARTS;\n");
+  printf("int words_per_frame=%d;\n",SERIES7_WORDS_PER_FRAME);
+  printf("int frames_per_bram=%d;\n",SERIES7_FRAMES_PER_BRAM);
+  printf("int words_between_frames=%d;\n",SERIES7_WORDS_BETWEEN_FRAMES);
+  printf("int words_after_frames=%d;\n",SERIES7_WORDS_AFTER_FRAMES);
+  printf("int words_before_frames=%d;\n",SERIES7_WORDS_BEFORE_FRAMES);
+  printf("int pad_words=%d;\n",SERIES7_PAD_WORDS);
+  printf("int we_bits_per_frame=%d;\n",SERIES7_WE_BITS_PER_FRAME);
+  printf("int bitlocations[SERIES7_WE_BITS_PER_FRAME]=%s;\n",SERIES7_BITLOCATIONS);
+  printf("int bram_starts[SERIES7_WE_BITS_PER_FRAME]=%s;\n",SERIES7_BRAM_STARTS);
 #endif
 
 #ifdef XILINX_ULTRASCALE
-  printf("int words_per_frame=ULTRASCALE_WORDS_PER_FRAME;\n");
-  printf("int frames_per_bram=ULTRASCALE_FRAMES_PER_BRAM;\n");
-  printf("int words_between_frames=ULTRASCALE_WORDS_BETWEEN_FRAMES;\n");
-  printf("int words_after_frames=ULTRASCALE_WORDS_AFTER_FRAMES;\n");
-  printf("int words_before_frames=ULTRASCALE_WORDS_BEFORE_FRAMES;\n");
-  printf("int pad_words=ULTRASCALE_PAD_WORDS;\n");
-  printf("int we_bits_per_frame=ULTRASCALE_WE_BITS_PER_FRAME;\n");
-  printf("int bitlocations[ULTRASCALE_WE_BITS_PER_FRAME]=ULTRASCALE_BITLOCATIONS;\n");
-  printf("int bram_starts[ULTRASCALE_WE_BITS_PER_FRAME+1]=ULTRASCALE_BRAM_STARTS;\n");
+  printf("int words_per_frame=%d;\n",ULTRASCALE_WORDS_PER_FRAME);
+  printf("int frames_per_bram=%d;\n",ULTRASCALE_FRAMES_PER_BRAM);
+  printf("int words_between_frames=%d;\n",ULTRASCALE_WORDS_BETWEEN_FRAMES);
+  printf("int words_after_frames=%d;\n",ULTRASCALE_WORDS_AFTER_FRAMES);
+  printf("int words_before_frames=%d;\n",ULTRASCALE_WORDS_BEFORE_FRAMES);
+  printf("int pad_words=%d;\n",ULTRASCALE_PAD_WORDS);
+  printf("int we_bits_per_frame=%d;\n",ULTRASCALE_WE_BITS_PER_FRAME);
+  printf("int bitlocations[ULTRASCALE_WE_BITS_PER_FRAME]=%s;\n",ULTRASCALE_BITLOCATIONS);
+  printf("int bram_starts[ULTRASCALE_WE_BITS_PER_FRAME+1]=;\n",ULTRASCALE_BRAM_STARTS);
 #endif
 
   
