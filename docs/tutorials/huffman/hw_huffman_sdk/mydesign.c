@@ -3,6 +3,15 @@
 #include "compressed_bert_types.h"
 #define NUM_LOGICAL 4
 int bert_compress_version=3; // non-uniform memory, ramb18 wes
+int words_per_frame=93;
+int frames_per_bram=256;
+int words_between_frames=7;
+int words_after_frames=54;
+int words_before_frames=196;
+int pad_words=25;
+int we_bits_per_frame=12;
+int bitlocation[12]={115,323,595,803,1075,1283,1651,1859,2131,2339,2611,2819};
+int bram_starts[13]={0,240,480,720,960,1200,1536,1776,2016,2256,2496,2736,2976};
 const char *logical_names[] = {"design_1_i/top_0/inst/HUFFMAN/CONSUMER/resultsMem","design_1_i/top_0/inst/HUFFMAN/ENCODER/HIST/histMem","design_1_i/top_0/inst/HUFFMAN/ENCODER/inst/HUFFMAN/ENCODER/huffmanMem","design_1_i/top_0/inst/HUFFMAN/PRODUCER/inst/HUFFMAN/PRODUCER/rawTextMem"};
 // Beginning of Logical Memory 0
 // Beginning of Logical Memory 1

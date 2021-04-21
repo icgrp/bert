@@ -9,6 +9,8 @@
 #define MEM_2 2
 #define MEM_3 3
 
-#define xczu3eg-sbva484-1-i // this is the part-number for board
+#define X_PART_NUMBER "xczu3eg-sbva484-1-i" // this is the part-number for board
+#undef XILINX_SERIES7
+#define XILINX_ULTRASCALE
 extern const char * logical_names[NUM_LOGICAL];
 extern struct compressed_logical_memory logical_memories[NUM_LOGICAL];
