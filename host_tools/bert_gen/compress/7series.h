@@ -13,4 +13,4 @@
 
 extern int bitlocation[10]; // write enables
 extern int bram_starts[10]; // for groups of bits
-extern int bram18_starts[10];
+extern int bram18_starts[20];
