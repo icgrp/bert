@@ -57,5 +57,5 @@ All other files you worked with in that tutorial are not design-specific and the
 Using these files you should be able to replicate your results in that original tutorial.
 
 ## Moving On
-Once you create your own design you would follow the steps in the two tutorials to run your design using BERT. 
+Once you create your own design you would follow the steps in the two tutorials provided to run your design using BERT.   That is, you would first follow the instructions in this tutorial to create the needed files via Vivado and `bert_gen`.  Then, you would follow the instructions in the main [Huffman tutorial](huffman.md) to create a software project for your design, replacing 'hellobert_sdk.c' or 'hellobert_vitis.c' with your own program code.
 
