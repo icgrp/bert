@@ -1,9 +1,9 @@
-﻿# File: bitMapping.py
-# Author: Brent Nelson
-# Created: 24 June 2020
-# Description:
-#    Will compute bit mappings from init.mem bit locations to FASM INIT/INITP lines/bits and to frame/bitoffset values
-
+﻿# Portions of this software derived from code in the prjxray-bram-patch open source repository
+# (https://github.com/symbiflow/prjxray-bram-patch).  
+# Use of that source code is governed by a ISC-style
+# license that can be found in the COPYING file in that repository or at
+# https://opensource.org/licenses/ISC
+#
 import argparse
 import os
 import pathlib

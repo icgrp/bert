@@ -1,3 +1,9 @@
+# Portions of this software derived from code in the prjxray-bram-patch open source repository
+# (https://github.com/symbiflow/prjxray-bram-patch).  
+# Use of that source code is governed by a ISC-style
+# license that can be found in the COPYING file in that repository or at
+# https://opensource.org/licenses/ISC
+#
 proc getConsts { m } {
     set p [get_pins -of_objects $m -filter {DIRECTION == IN && NAME =~ "*ADDRA*"}]
     set vss []
