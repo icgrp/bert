@@ -851,13 +851,16 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
   int u64_per_lookup=accel_memories_physical[logical].u64_per_lookup;
   int tabsize=(u64_per_lookup*(1<<lookup_quanta));
   uint64_t **translation_tables=accel_memories_physical[logical].trans_tables;
-  
+
+  int bit_high=accel_memories_physical[logical].bit_high;
+  int bit_low=accel_memories_physical[logical].bit_low;
   
   int wordlen=logical_memories[logical].wordlen;
   int words=logical_memories[logical].words;
   uint64_t mask_quanta=(((uint64_t) 1)<<lookup_quanta)-1;
   int offset=the_frame_set->ranges[0].offset;
   int offset_in_frame=logical_memories[logical].repeats[0][0].frame_seq[0].frame_bits[0].bit_loc[0];
+  int frame_word_offset=offset_in_frame/32;
   int slots_per_frame=logical_memories[logical].repeats[0][0].slots_in_repeat;
   uint64_t *new_frame_data=(uint64_t *)malloc(sizeof(uint64_t)*(u64_per_lookup));
   if (new_frame_data == NULL)
@@ -874,6 +877,19 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
 	printf("\n");
       }  
 #endif  
+
+  // mask for bits that should be written for this memory
+  //  useful for ramb18 case where u64s may overlap between intended memory bits
+  //  and the partner memory bits
+  uint64_t *write_mask=(uint32_t *)malloc(sizeof(uint32_t)*(2*u64_per_lookup));
+  for (int i=0;i<2*u64_per_lookup;i++)
+    {
+      write_mask[i]=0;
+      for (int j=0;j<32;j++)
+	int current_bit=(frame_word_offset+i)*32+j;
+      if ((current_bit>=bit_low) && (current_bit<=bit_high))
+	write_mask[i]|=(0x01<<j);
+    }
   
   for (int i=0;i<the_frame_set->ranges[0].len;i++)
     {
@@ -913,7 +929,6 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
 #endif	      
 	    }
 	}
-      int frame_word_offset=offset_in_frame/32;
       // int frame_bit_offset=offset_in_frame%32; -- assume already taken care of
       // may not be zero -- assume table was built to be aligned
       // TODO ...could record that data and check here to make sure consistent
@@ -926,8 +941,12 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
 #ifdef DEBUG
 	  printf("frame_data[%d]\n",(offset+i*WORDS_PER_FRAME+frame_word_offset+j*2));
 #endif	  
-	      frame_data[offset+i*WORDS_PER_FRAME+frame_word_offset+j*2]=new_frame_data[j]&((uint64_t)0xFFFFFFFF);
-	      frame_data[offset+i*WORDS_PER_FRAME+frame_word_offset+j*2+1]=(new_frame_data[j]>>32)&((uint64_t)0xFFFFFFFF);
+	      frame_data[offset+i*WORDS_PER_FRAME+frame_word_offset+j*2]=
+		((new_frame_data[j]&((uint64_t)0xFFFFFFFF))&write_mask[j*2])
+		|((frame_data[offset+i*WORDS_PER_FRAME+frame_word_offset+j*2])&~write_mask[j*2]);
+	      frame_data[offset+i*WORDS_PER_FRAME+frame_word_offset+j*2+1]=
+		((new_frame_data[j]>>32)&((uint64_t)0xFFFFFFFF)&write_mask[j*2+1])
+		|((frame_data[offset+i*WORDS_PER_FRAME+frame_word_offset+j*2+1])&~write_mask[j*2+1]);
 	}
     }
 

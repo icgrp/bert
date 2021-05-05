@@ -230,6 +230,8 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
       num_trans_tables=(max_bit+1+(lookup_quanta-1))/lookup_quanta;
       fprintf(cfp,"#define ACCEL_LOOKUP_TABLES_LOGICAL_%d %d\n",which,num_trans_tables);
 
+      
+
       // 12/19/2020 AMD -- needed to change this
       //   probably due to RAMB18s -- 64/wordlen probably not right
       //    ...maybe the min will take care of that?
@@ -380,6 +382,10 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
       fprintf(cfp,"};\n");
     }
 
+  fprintf(cfp,"#define ACCEL_BIT_LOW_%d %d\n",logical_physical,bram_base);
+  int bit_high=max_frame_bit(num_seq,num_bits,all_bits);
+  fprintf(cfp,"#define ACCEL_BIT_HIGH_%d %d\n",logical_physical,bit_high);
+
   fprintf(cfp,"uint64_t *trans_tables_%s_%d[]={",logical_physical_lower[logical],which);
   for (int i=0;i<num_trans_tables;i++)
     {
@@ -388,11 +394,13 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
     }
   fprintf(cfp,"};\n");
 
-  fprintf(cfp,"#define ACCEL_MEM_%s%d {",logical_physical,which);
+  fprintf(cfp,"#define ACCEL_MEM_%s%d {",logical_physical,which); 
   fprintf(cfp,"ACCEL_LOOKUP_TABLES_%s_%d,",logical_physical,which);
   fprintf(cfp,"ACCEL_U64_PER_LOOKUP_%s_%d,",logical_physical,which);
   fprintf(cfp,"ACCEL_LOOKUP_QUANTA_MEM_%s_%d,",logical_physical,which);
   fprintf(cfp,"ACCEL_FRAME_BIT_OFFSET_%s_%d,",logical_physical,which);
+  fprintf(cfp,"ACCEL_BIT_LOW_%s_%d,",logical_physical,which);
+  fprintf(cfp,"ACCEL_BIT_HIGH_%s_%d,",logical_physical,which);
   fprintf(cfp,"trans_tables_%s_%d}\n",logical_physical_lower[logical],which);
   
 }
