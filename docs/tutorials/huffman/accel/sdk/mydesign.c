@@ -3702,8 +3702,8 @@ uint64_t trans_table_logical_0_13[]={
 0x8000000080000000, // table 13 entry for fe bits=7 table_bits=2
 0x8000800080000000 // table 13 entry for ff bits=8 table_bits=3
 };
-#define ACCEL_BIT_LOW_0 960
-#define ACCEL_BIT_HIGH_0 1067
+#define ACCEL_BIT_LOW_LOGICAL_0 960
+#define ACCEL_BIT_HIGH_LOGICAL_0 1067
 uint64_t *trans_tables_logical_0[]={trans_table_logical_0_0,trans_table_logical_0_1,trans_table_logical_0_2,trans_table_logical_0_3,trans_table_logical_0_4,trans_table_logical_0_5,trans_table_logical_0_6,trans_table_logical_0_7,trans_table_logical_0_8,trans_table_logical_0_9,trans_table_logical_0_10,trans_table_logical_0_11,trans_table_logical_0_12,trans_table_logical_0_13};
 #define ACCEL_MEM_LOGICAL0 {ACCEL_LOOKUP_TABLES_LOGICAL_0,ACCEL_U64_PER_LOOKUP_LOGICAL_0,ACCEL_LOOKUP_QUANTA_MEM_LOGICAL_0,ACCEL_FRAME_BIT_OFFSET_LOGICAL_0,ACCEL_BIT_LOW_LOGICAL_0,ACCEL_BIT_HIGH_LOGICAL_0,trans_tables_logical_0}
 #define ACCEL_LOOKUP_QUANTA_MEM_PHYSICAL_0 8
@@ -5783,8 +5783,8 @@ uint64_t trans_table_physical_0_7[]={
 0x0000800800800000,0x0000080080080080, // table 7 entry for fe bits=7 table_bits=7
 0x0000800800800800,0x0000080080080080 // table 7 entry for ff bits=8 table_bits=8
 };
-#define ACCEL_BIT_LOW_0 960
-#define ACCEL_BIT_HIGH_0 1067
+#define ACCEL_BIT_LOW_PHYSICAL_0 960
+#define ACCEL_BIT_HIGH_PHYSICAL_0 1067
 uint64_t *trans_tables_physical_0[]={trans_table_physical_0_0,trans_table_physical_0_1,trans_table_physical_0_2,trans_table_physical_0_3,trans_table_physical_0_4,trans_table_physical_0_5,trans_table_physical_0_6,trans_table_physical_0_7};
 #define ACCEL_MEM_PHYSICAL0 {ACCEL_LOOKUP_TABLES_PHYSICAL_0,ACCEL_U64_PER_LOOKUP_PHYSICAL_0,ACCEL_LOOKUP_QUANTA_MEM_PHYSICAL_0,ACCEL_FRAME_BIT_OFFSET_PHYSICAL_0,ACCEL_BIT_LOW_PHYSICAL_0,ACCEL_BIT_HIGH_PHYSICAL_0,trans_tables_physical_0}
 #define ACCEL_LOOKUP_QUANTA_MEM_LOGICAL_1 8
@@ -9420,8 +9420,8 @@ uint64_t trans_table_logical_1_13[]={
 0x8000000080000000, // table 13 entry for fe bits=7 table_bits=2
 0x8000800080000000 // table 13 entry for ff bits=8 table_bits=3
 };
-#define ACCEL_BIT_LOW_1 1200
-#define ACCEL_BIT_HIGH_1 1307
+#define ACCEL_BIT_LOW_LOGICAL_1 1200
+#define ACCEL_BIT_HIGH_LOGICAL_1 1307
 uint64_t *trans_tables_logical_1[]={trans_table_logical_1_0,trans_table_logical_1_1,trans_table_logical_1_2,trans_table_logical_1_3,trans_table_logical_1_4,trans_table_logical_1_5,trans_table_logical_1_6,trans_table_logical_1_7,trans_table_logical_1_8,trans_table_logical_1_9,trans_table_logical_1_10,trans_table_logical_1_11,trans_table_logical_1_12,trans_table_logical_1_13};
 #define ACCEL_MEM_LOGICAL1 {ACCEL_LOOKUP_TABLES_LOGICAL_1,ACCEL_U64_PER_LOOKUP_LOGICAL_1,ACCEL_LOOKUP_QUANTA_MEM_LOGICAL_1,ACCEL_FRAME_BIT_OFFSET_LOGICAL_1,ACCEL_BIT_LOW_LOGICAL_1,ACCEL_BIT_HIGH_LOGICAL_1,trans_tables_logical_1}
 #define ACCEL_LOOKUP_QUANTA_MEM_PHYSICAL_1 8
@@ -11501,8 +11501,8 @@ uint64_t trans_table_physical_1_7[]={
 0x8008008000000000,0x0800800800800000,0x0000000000000000, // table 7 entry for fe bits=7 table_bits=7
 0x8008008008000000,0x0800800800800000,0x0000000000000000 // table 7 entry for ff bits=8 table_bits=8
 };
-#define ACCEL_BIT_LOW_1 1200
-#define ACCEL_BIT_HIGH_1 1307
+#define ACCEL_BIT_LOW_PHYSICAL_1 1200
+#define ACCEL_BIT_HIGH_PHYSICAL_1 1307
 uint64_t *trans_tables_physical_1[]={trans_table_physical_1_0,trans_table_physical_1_1,trans_table_physical_1_2,trans_table_physical_1_3,trans_table_physical_1_4,trans_table_physical_1_5,trans_table_physical_1_6,trans_table_physical_1_7};
 #define ACCEL_MEM_PHYSICAL1 {ACCEL_LOOKUP_TABLES_PHYSICAL_1,ACCEL_U64_PER_LOOKUP_PHYSICAL_1,ACCEL_LOOKUP_QUANTA_MEM_PHYSICAL_1,ACCEL_FRAME_BIT_OFFSET_PHYSICAL_1,ACCEL_BIT_LOW_PHYSICAL_1,ACCEL_BIT_HIGH_PHYSICAL_1,trans_tables_physical_1}
 #define ACCEL_LOOKUP_QUANTA_MEM_LOGICAL_2 8
@@ -15138,8 +15138,8 @@ uint64_t trans_table_logical_2_13[]={
 0x0000000000000000, // table 13 entry for fe bits=7 table_bits=0
 0x0000000800000000 // table 13 entry for ff bits=8 table_bits=1
 };
-#define ACCEL_BIT_LOW_2 720
-#define ACCEL_BIT_HIGH_2 824
+#define ACCEL_BIT_LOW_LOGICAL_2 720
+#define ACCEL_BIT_HIGH_LOGICAL_2 824
 uint64_t *trans_tables_logical_2[]={trans_table_logical_2_0,trans_table_logical_2_1,trans_table_logical_2_2,trans_table_logical_2_3,trans_table_logical_2_4,trans_table_logical_2_5,trans_table_logical_2_6,trans_table_logical_2_7,trans_table_logical_2_8,trans_table_logical_2_9,trans_table_logical_2_10,trans_table_logical_2_11,trans_table_logical_2_12,trans_table_logical_2_13};
 #define ACCEL_MEM_LOGICAL2 {ACCEL_LOOKUP_TABLES_LOGICAL_2,ACCEL_U64_PER_LOOKUP_LOGICAL_2,ACCEL_LOOKUP_QUANTA_MEM_LOGICAL_2,ACCEL_FRAME_BIT_OFFSET_LOGICAL_2,ACCEL_BIT_LOW_LOGICAL_2,ACCEL_BIT_HIGH_LOGICAL_2,trans_tables_logical_2}
 #define ACCEL_LOOKUP_QUANTA_MEM_PHYSICAL_2 10
@@ -19255,8 +19255,8 @@ uint64_t trans_table_physical_2_3[]={
 0x1200200200200000,0x0100100100100000,0x0000000000000000, // table 3 entry for 3fe bits=9 table_bits=9
 0x1201200200200000,0x0100100100100000,0x0000000000000000 // table 3 entry for 3ff bits=10 table_bits=10
 };
-#define ACCEL_BIT_LOW_2 720
-#define ACCEL_BIT_HIGH_2 824
+#define ACCEL_BIT_LOW_PHYSICAL_2 720
+#define ACCEL_BIT_HIGH_PHYSICAL_2 824
 uint64_t *trans_tables_physical_2[]={trans_table_physical_2_0,trans_table_physical_2_1,trans_table_physical_2_2,trans_table_physical_2_3};
 #define ACCEL_MEM_PHYSICAL2 {ACCEL_LOOKUP_TABLES_PHYSICAL_2,ACCEL_U64_PER_LOOKUP_PHYSICAL_2,ACCEL_LOOKUP_QUANTA_MEM_PHYSICAL_2,ACCEL_FRAME_BIT_OFFSET_PHYSICAL_2,ACCEL_BIT_LOW_PHYSICAL_2,ACCEL_BIT_HIGH_PHYSICAL_2,trans_tables_physical_2}
 #define ACCEL_LOOKUP_QUANTA_MEM_LOGICAL_3 8
@@ -22633,8 +22633,8 @@ uint64_t trans_table_logical_3_12[]={
 0x0000000080808000, // table 12 entry for fe bits=7 table_bits=3
 0x0000000080808080 // table 12 entry for ff bits=8 table_bits=4
 };
-#define ACCEL_BIT_LOW_3 852
-#define ACCEL_BIT_HIGH_3 953
+#define ACCEL_BIT_LOW_LOGICAL_3 852
+#define ACCEL_BIT_HIGH_LOGICAL_3 953
 uint64_t *trans_tables_logical_3[]={trans_table_logical_3_0,trans_table_logical_3_1,trans_table_logical_3_2,trans_table_logical_3_3,trans_table_logical_3_4,trans_table_logical_3_5,trans_table_logical_3_6,trans_table_logical_3_7,trans_table_logical_3_8,trans_table_logical_3_9,trans_table_logical_3_10,trans_table_logical_3_11,trans_table_logical_3_12};
 #define ACCEL_MEM_LOGICAL3 {ACCEL_LOOKUP_TABLES_LOGICAL_3,ACCEL_U64_PER_LOOKUP_LOGICAL_3,ACCEL_LOOKUP_QUANTA_MEM_LOGICAL_3,ACCEL_FRAME_BIT_OFFSET_LOGICAL_3,ACCEL_BIT_LOW_LOGICAL_3,ACCEL_BIT_HIGH_LOGICAL_3,trans_tables_logical_3}
 #define ACCEL_LOOKUP_QUANTA_MEM_PHYSICAL_3 8
@@ -23678,8 +23678,8 @@ uint64_t trans_table_physical_3_3[]={
 0x2002002000000000,0x0200200200200000,0x0000000000000000, // table 3 entry for fe bits=7 table_bits=7
 0x2002002002000000,0x0200200200200000,0x0000000000000000 // table 3 entry for ff bits=8 table_bits=8
 };
-#define ACCEL_BIT_LOW_3 852
-#define ACCEL_BIT_HIGH_3 953
+#define ACCEL_BIT_LOW_PHYSICAL_3 852
+#define ACCEL_BIT_HIGH_PHYSICAL_3 953
 uint64_t *trans_tables_physical_3[]={trans_table_physical_3_0,trans_table_physical_3_1,trans_table_physical_3_2,trans_table_physical_3_3};
 #define ACCEL_MEM_PHYSICAL3 {ACCEL_LOOKUP_TABLES_PHYSICAL_3,ACCEL_U64_PER_LOOKUP_PHYSICAL_3,ACCEL_LOOKUP_QUANTA_MEM_PHYSICAL_3,ACCEL_FRAME_BIT_OFFSET_PHYSICAL_3,ACCEL_BIT_LOW_PHYSICAL_3,ACCEL_BIT_HIGH_PHYSICAL_3,trans_tables_physical_3}
 struct accel_memory accel_memories_physical[4]={ACCEL_MEM_PHYSICAL0,ACCEL_MEM_PHYSICAL1,ACCEL_MEM_PHYSICAL2,ACCEL_MEM_PHYSICAL3};
