@@ -886,9 +886,11 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
     {
       write_mask[i]=0;
       for (int j=0;j<32;j++)
-	int current_bit=(frame_word_offset+i)*32+j;
-      if ((current_bit>=bit_low) && (current_bit<=bit_high))
-	write_mask[i]|=(0x01<<j);
+	{
+	  int current_bit=(frame_word_offset+i)*32+j;
+	  if ((current_bit>=bit_low) && (current_bit<=bit_high))
+	    write_mask[i]|=(0x01<<j);
+	}
     }
   
   for (int i=0;i<the_frame_set->ranges[0].len;i++)
