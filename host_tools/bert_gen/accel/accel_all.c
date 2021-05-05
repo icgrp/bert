@@ -108,6 +108,8 @@ void noaccel_memory(int which, int logical, FILE *cfp)
   fprintf(cfp,"#define ACCEL_FRAME_BIT_OFFSET_%s_%d %d\n",logical_physical,which,0);
   fprintf(cfp,"#define ACCEL_LOOKUP_TABLES_%s_%d %d\n",logical_physical,which,0);
   fprintf(cfp,"#define ACCEL_U64_PER_LOOKUP_%s_%d %d\n",logical_physical,which,0);
+  fprintf(cfp,"#define ACCEL_BIT_LOW_%s_%d %d\n",logical_physical,which,0);
+  fprintf(cfp,"#define ACCEL_BIT_HIGH_%s_%d %d\n",logical_physical,which,0);
 
   fprintf(cfp,"#define ACCEL_MEM_%s%d {",logical_physical,which);
   fprintf(cfp,"ACCEL_LOOKUP_TABLES_%s_%d,",logical_physical,which);
