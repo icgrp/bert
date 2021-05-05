@@ -384,9 +384,9 @@ void process_memory(int which, int lookup_quanta, int logical, FILE *cfp)
       fprintf(cfp,"};\n");
     }
 
-  fprintf(cfp,"#define ACCEL_BIT_LOW_%s_%d %d\n",logical_physical_lower[logical],which,bram_base);
+  fprintf(cfp,"#define ACCEL_BIT_LOW_%s_%d %d\n",logical_physical,which,bram_base);
   int bit_high=max_frame_bit(num_seq,num_bits,all_bits)+bram_base;
-  fprintf(cfp,"#define ACCEL_BIT_HIGH_%s_%d %d\n",logical_physical_lower[logical],which,bit_high);
+  fprintf(cfp,"#define ACCEL_BIT_HIGH_%s_%d %d\n",logical_physical,which,bit_high);
 
   fprintf(cfp,"uint64_t *trans_tables_%s_%d[]={",logical_physical_lower[logical],which);
   for (int i=0;i<num_trans_tables;i++)
