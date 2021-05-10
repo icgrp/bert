@@ -13,7 +13,7 @@ header_gen() {
     "$bertDir"/bert_gen "$baseDir/" "${headerName}"_uncompressed
     cp "$bertDir"/compress/compress_generic.c "$baseDir"
     cp "$bertDir"/accel/accel_all.c "$baseDir"
-    cp "$bertDir"/compress/ultrascale_plus.? "$baseDir"
+    cp "$bertDir"/compress/ultrascale_plus.h "$baseDir"
     cp "$bertDir"/compress/7series.h "$baseDir"
     cp "$bertDir"/compress/bert_types.h "$baseDir"
     cp "$bertDir"/compress/compressed_bert_types.h "$baseDir"
@@ -22,8 +22,6 @@ header_gen() {
     # shellcheck disable=SC2129
     echo "#include \"${headerName}_uncompressed.h\"" >>"${headerName}"_compress.c
     echo "#include \"stdio.h\"" >>"${headerName}"_compress.c
-    # TODO 4/17/2021 -- need to condition this...or change how do to support 7-series
-    echo "#include \"ultrascale_plus.h\"" >>${headerName}_compress.c
     echo "#include \"compress_generic.c\"" >>"${headerName}"_compress.c
     gcc -c "${headerName}"_compress.c
     gcc -c "${headerName}"_uncompressed.c
