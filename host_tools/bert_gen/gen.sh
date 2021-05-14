@@ -9,12 +9,14 @@ usage() {
 }
 
 header_gen() {
-    "$bertDir"/bert_gen "$baseDir" "${headerName}"_uncompressed
+    # had to add slash -- does this differ across OSes? -- AMD 4/17/2021
+    "$bertDir"/bert_gen "$baseDir/" "${headerName}"_uncompressed
     cp "$bertDir"/compress/compress_generic.c "$baseDir"
     cp "$bertDir"/accel/accel_all.c "$baseDir"
-    cp "$bertDir"/compress/ultrascale_plus.? "$baseDir"
-    cp "$bertDir"/compress/7series.h
+    cp "$bertDir"/compress/ultrascale_plus.h "$baseDir"
+    cp "$bertDir"/compress/7series.h "$baseDir"
     cp "$bertDir"/compress/bert_types.h "$baseDir"
+    cp "$bertDir"/compress/compressed_bert_types.h "$baseDir"
     cd "$baseDir" || exit
     echo "#include \"stdint.h\"" >"${headerName}"_compress.c
     # shellcheck disable=SC2129
@@ -22,11 +24,10 @@ header_gen() {
     echo "#include \"stdio.h\"" >>"${headerName}"_compress.c
     echo "#include \"compress_generic.c\"" >>"${headerName}"_compress.c
     gcc -c "${headerName}"_compress.c
-    gcc -c ultrascale_plus.c
     gcc -c "${headerName}"_uncompressed.c
-    gcc -o "${headerName}"_ucompress "${headerName}"_compress.o "${headerName}"_uncompressed.o ultrascale_plus.o
+    gcc -o "${headerName}"_ucompress "${headerName}"_compress.o "${headerName}"_uncompressed.o
     ./"${headerName}"_ucompress >"${headerName}".c
-    cp "${headerName}"_uncompressed.h "${headerName}".h
+    sed "s/bert_types/compressed_bert_types/g" <${headerName}_uncompressed.h | sed "s/logical_memory/compressed_logical_memory/g" > ${headerName}.h
     echo "#include \"stdint.h\"" >"${headerName}"_uaccel.c
     # shellcheck disable=SC2129
     echo "#include \"${headerName}.h\"" >>"${headerName}"_uaccel.c
@@ -36,11 +37,11 @@ header_gen() {
     cp "$bertDir"/accel/bert_types.h .
     gcc -c "${headerName}".c
     gcc -c "${headerName}"_uaccel.c
-    gcc -o "${headerName}"_uaccel_${accelNameAddition} "${headerName}".o ultrascale_plus.o "${headerName}"_uaccel.o
+    gcc -o "${headerName}"_uaccel_${accelNameAddition} "${headerName}".o "${headerName}"_uaccel.o
     ./"${headerName}"_uaccel_${accelNameAddition} "${headerName}"_tables
     mv "${headerName}".c "${headerName}"_header.c
     cat "${headerName}"_header.c "${headerName}"_tables.c  > "${headerName}".c
-    rm ultrascale_plus.o "${headerName}"_compress.o "${headerName}"_uncompressed.o "${headerName}"_ucompress "${headerName}"_uaccel.o "${headerName}".o
+    rm "${headerName}"_compress.o "${headerName}"_uncompressed.o "${headerName}"_ucompress "${headerName}"_uaccel.o "${headerName}".o
 }
 
 map_gen() {

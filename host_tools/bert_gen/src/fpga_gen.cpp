@@ -64,7 +64,17 @@ void gen_header(const char *path, const char *header_name)
     print_preproc(all_logical, header_c, part_id);
 
 
-    fprintf(header_h, "#define %s // this is the part-number for board\n", part);
+    fprintf(header_h, "#define X_PART_NUMBER \"%s\" // this is the part-number for board\n", part);
+    if (xilinxSeries7(XfpgaInstance))
+      fprintf(header_h,"#define XILINX_SERIES7\n");
+    else
+      fprintf(header_h,"#undef XILINX_SERIES7\n");
+    if (xilinxUltraScale(XfpgaInstance))
+      fprintf(header_h,"#define XILINX_ULTRASCALE\n");
+    else
+      fprintf(header_h,"#undef XILINX_ULTRASCALE\n");
+    
+
 
     print_header(header_h);
     fclose(header_h);

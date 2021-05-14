@@ -1,20 +1,25 @@
 // for UltraScale+
-#define WORDS_PER_FRAME 93
-#define FRAMES_PER_BRAM 256
-// for 7020
- //#define WORDS_PER_FRAME 101
- //#define FRAMES_PER_BRAM 128
-#define DATA_DMA_OFFSET 0x1FCU
-// dummy words from pipelining
-#define PAD_WORDS       25 
+#define ULTRASCALE_WORDS_PER_FRAME 93
+#define ULTRASCALE_FRAMES_PER_BRAM 256
+#define ULTRASCALE_BITS_PER_FRAME 144
 
-// making these up -- please replace
-#define WORDS_BETWEEN_FRAMES 12
-#define WORDS_AFTER_FRAMES 8
+
+//#define DATA_DMA_OFFSET 0x1FCU
+// dummy words from pipelining
+
+#define ULTRASCALE_PAD_WORDS       25 
+
+#define ULTRASCALE_WORDS_BETWEEN_FRAMES 7
+#define ULTRASCALE_WORDS_AFTER_FRAMES 54
+#define ULTRASCALE_WORDS_BEFORE_FRAMES 196
 
 // for ultrascale+
-#define WE_BITS_PER_FRAME 12
+#define ULTRASCALE_WE_BITS_PER_FRAME 12
 
-extern int bitlocation[12]; // write enables
-extern int bram_starts[13]; // for groups of bits
-extern int bram18_starts[25]; // for groups of bits
+#define ULTRASCALE_BRAM18_STARTS_PER_FRAME 24
+
+// these get used in code produced
+#define ULTRASCALE_BITLOCATION "{115,323,595,803,1075,1283,1651,1859,2131,2339,2611,2819}"
+#define ULTRASCALE_BRAM_STARTS "{0,240,480,720,960,1200,1536,1776,2016,2256,2496,2736,2976}"
+// this gets used directly
+#define ULTRASCALE_BRAM18_STARTS {0,120,240,360,480,600,720,840,960,1080,1200,1320,1536,1656,1776,1896,2016,2136,2256,2376,2496,2616,2736,2856,2976}

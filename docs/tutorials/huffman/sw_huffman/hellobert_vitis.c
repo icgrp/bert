@@ -17,7 +17,7 @@
 //#define VERBOSE_AXI 1
 #undef VERBOSE_AXI
 
-// Panic if bert_read does not succeeed.
+// Panic if bert_read does not succeed.
 #define CHECK_ERR
 //#undef CHECK_ERR
 
@@ -34,7 +34,7 @@
         PRINT("ERROR: xilfpga failure. See tutorial for how to deal with BST_XILFPGA_FAILURE\n");        \
         exit(1);                                                                                         \
     default:                                                                                             \
-        PRINT("Bert returned an error code");                                                            \
+        PRINT("Bert returned an error code\n");                                                            \
         exit(1);                                                                                         \
     }
 #else
@@ -54,7 +54,7 @@
         PRINT("ERROR: xilfpga failure. See tutorial for how to deal with BST_XILFPGA_FAILURE\n");        \
         exit(1);                                                                                         \
     default:                                                                                             \
-        PRINT("Bert returned an error code");                                                            \
+        PRINT("Bert returned an error code\n");                                                            \
         exit(1);                                                                                         \
     }
 #else
