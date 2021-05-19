@@ -1,21 +1,11 @@
 #include "bert.h"
-
+#include "mydesign.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
-
-#define SEVEN_SERIES
-//#define ULTRASCALE_PLUS
-#ifdef SEVEN_SERIES
-#include "7series.h"
-#endif
-
-#ifdef ULTRASCALE_PLUS
-#include "ultrascale_plus.h"
-#endif
 
 // Macros to deal with uint64_t discrepancy
 #ifdef __linux__
@@ -26,7 +16,7 @@
 #endif
 
 
-#include "mydesign.h" // Include the primary design file, as well as any acceleration tables if used
+
 //#define DEBUG
 #ifdef DEBUG
 #define DEBUG_PRINT(fmt, args...)    fprintf(stderr, fmt, ## args)
@@ -88,7 +78,7 @@ void setOutput(char* fname) {
 }
 
 void writeBitstream() {
-    if (hostwrite_Init(&XFpgaInstance, IDCODE, output) != 0) { // IDCODE should be defined in mydesign.h
+    if (hostwrite_Init(&XFpgaInstance, PART_ID, output) != 0) { // IDCODE should be defined in mydesign.h
         printf("readback_Init failed\r\n");
         exit(1);
     }
@@ -138,7 +128,7 @@ void prepData(int mem, FILE* input) {
         exit(1);
     }
     struct bert_meminfo* op = &(ops[mem]);
-    struct logical_memory* logicalmem = &(logical_memories[mem]);
+    struct compressed_logical_memory* logicalmem = &(logical_memories[mem]);
     int cellsPerWord = CEIL(logicalmem->wordlen,64);
     int words = logicalmem->words;
     size_t wordSize = CEIL(logicalmem->wordlen,8);
@@ -156,6 +146,7 @@ void prepData(int mem, FILE* input) {
             DEBUG_PRINT("prepData: Staged 0x" FMT_UINT64 " in word %d of mem %d\n", mem_write[mem][i*cellsPerWord + k], i*cellsPerWord + k, mem);
             k++;
         }
+        
         if (wordSize % 8 != 0) {
             res = readWord(&(mem_write[mem][i*cellsPerWord + k]), wordSize % 8, input);
             if (res < 1) {
@@ -163,7 +154,7 @@ void prepData(int mem, FILE* input) {
                 fprintf(stderr, "Mem %d staged for writing\n", mem);
                 goto prepDataEpilogue;
             }
-            DEBUG_PRINT("prepData: Staged 0x" FMT_UINT64 "in word %d of mem %d\n", mem_write[mem][i*cellsPerWord + k], i*cellsPerWord + k, mem);
+            DEBUG_PRINT("prepData: Staged 0x" FMT_UINT64 " in word %d of mem %d\n", mem_write[mem][i*cellsPerWord + k], i*cellsPerWord + k, mem);
         }
     }
     if (!feof(input)) {
@@ -213,7 +204,7 @@ void parseArgs(int argc, char** argv) {
 }
 
 void parseCMD(char* cmd) {
-    char* tok[NUM_LOGICAL*2] = {0U};
+    char* tok[2048] = {0U};
     tok[0] = strtok(cmd, " ");
     int i = 1;
     if (tok[0] == NULL)
@@ -270,6 +261,7 @@ void parseScript(FILE* input) {
             cmd[strlen(cmd) - 1] = '\0';
         DEBUG_PRINT("Parsing line %d '%s'\n", line, cmd);
         parseCMD(cmd);
+        DEBUG_PRINT("Parsed line %d '%s'\n", line, cmd);
         line++;
     }
 }

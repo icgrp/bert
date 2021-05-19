@@ -9,7 +9,7 @@ LDIR =../../embedded/src/bert
 _DEPS = dummy_xilinx.h mydesign.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = dummy_xilinx.o mydesign.o bitstream_gen.o $(LDIR)/bert.o $(LDIR)/ultrascale_plus.o
+_OBJ = dummy_xilinx.o mydesign.o bitstream_gen.o $(LDIR)/bert.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 

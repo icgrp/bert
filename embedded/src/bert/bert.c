@@ -11,7 +11,6 @@
 // dummy_xilinx includes the #define's for the correct part (7series vs us+)
 #define PRINT printf
 #else
-#include "ultrascale_plus.h"
 #include "xilfpga_extension.h"
 #include "readback.h"
 #include "strings.h"
@@ -845,11 +844,6 @@ int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
   return BST_SUCCESS;
 }
 
-<<<<<<< HEAD
-#ifndef DISABLE_ACCEL
-=======
-
->>>>>>> master
 int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				 int start_addr, int data_length, struct frame_set *the_frame_set)
 {
@@ -893,7 +887,7 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
   // mask for bits that should be written for this memory
   //  useful for ramb18 case where u64s may overlap between intended memory bits
   //  and the partner memory bits
-  uint64_t *write_mask=(uint32_t *)malloc(sizeof(uint32_t)*(2*u64_per_lookup));
+  uint64_t *write_mask=(uint64_t *)malloc(sizeof(uint32_t)*(2*u64_per_lookup));
   for (int i=0;i<2*u64_per_lookup;i++)
     {
       write_mask[i]=0;
@@ -969,7 +963,7 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
 #endif  
   return BST_SUCCESS;
 } 
-#endif
+
 
 int  bert_read(int logicalm, uint64_t *data, XFpga* XFpgaInstance)
 {

@@ -3,15 +3,6 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#define SEVEN_SERIES
-//#define ULTRASCALE_PLUS
-#ifdef SEVEN_SERIES
-#include "7series.h"
-#endif
-
-#ifdef ULTRASCALE_PLUS
-#include "ultrascale_plus.h"
-#endif
 
 #define XST_SUCCESS 0
 #define XST_FAILURE 1
@@ -27,7 +18,7 @@
 #define CFGDATA_DSTDMA_OFFSET	0x1FCU
 #define BIN_READBACK_OFFSET (93 + 25) * 4
 #define DATA_DMA_OFFSET 0x1FCU
-#define PAD_WORDS	25 // dummy words from pipelining
+//#define PAD_WORDS	25 // dummy words from pipelining
 
 typedef struct XFpga {
   uint64_t value;
