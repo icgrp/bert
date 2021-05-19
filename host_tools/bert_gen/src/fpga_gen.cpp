@@ -1,10 +1,13 @@
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#pragma ide diagnostic ignored "hicpp-exception-baseclass"
+#pragma ide diagnostic ignored "misc-throw-by-value-catch-by-reference"
 //
 // Created by zhiyaot on 7/17/2020.
 //
 
 #include "../include/fpga_gen.h"
 
-#include <algorithm>
 #include <cassert>
 #include <iostream>
 #include <list>
@@ -15,7 +18,6 @@
 using namespace std;
 using namespace bertType;
 
-#define mkstr(s) #s
 
 //#define USE_DATABASE
 
@@ -28,7 +30,7 @@ void gen_header(const char *path, const char *header_name)
     strsteam << path << header_name << ".h";
     auto header_h = fopen(strsteam.str().c_str(), "w");
     ASSERT(header_h != nullptr, "Unable to write header file .c",
-           fpga_err::FILE_PTR_NULL); // NOLINT(misc-throw-by-value-catch-by-reference,hicpp-exception-baseclass)
+           fpga_err::FILE_PTR_NULL);
 
     strsteam.str("");
     strsteam << path << header_name << ".c";
@@ -62,7 +64,17 @@ void gen_header(const char *path, const char *header_name)
     print_preproc(all_logical, header_c, part_id);
 
 
-    fprintf(header_h, "#define FPGA_TYPE %s\n", part);
+    fprintf(header_h, "#define X_PART_NUMBER \"%s\" // this is the part-number for board\n", part);
+    if (xilinxSeries7(XfpgaInstance))
+      fprintf(header_h,"#define XILINX_SERIES7\n");
+    else
+      fprintf(header_h,"#undef XILINX_SERIES7\n");
+    if (xilinxUltraScale(XfpgaInstance))
+      fprintf(header_h,"#define XILINX_ULTRASCALE\n");
+    else
+      fprintf(header_h,"#undef XILINX_ULTRASCALE\n");
+    
+
 
     print_header(header_h);
     fclose(header_h);
@@ -70,6 +82,7 @@ void gen_header(const char *path, const char *header_name)
     std::list<unique_ptr<logical_memory>> logical_memories;
 
     map<uint32_t, unique_ptr<frame_pos>> bit_map;
+    map<bit_pos, unique_ptr<frame_pos>> bit_map2;
     map<uint32_t, unique_ptr<frame_pos>> par_bit_map;
 
 #ifndef USE_DATABASE
@@ -170,19 +183,20 @@ void print_frame(const char *path, pair<uint32_t, string> &logical, FILE *header
             bram_y{0}, width{0}, fasm_y{0}, fasm_p{0}, fasm_line{0},
             fasm_bit{0}, bit{0}, offset{0};
 
-    uint32_t bit_tracking{0}, xyz;
+    uint32_t bit_tracking{0}, xyz{0};
+
+    uint32_t bram_series{0};
 
     auto temp_list_of_addr = make_unique<list<pair<uint32_t, uint32_t>>>();
     auto final_list_of_addr = make_unique<list<pair<uint32_t, uint32_t>>>();
     auto replica = 1, curr_rep = 1;
     while (fscanf(bram_file, "%[^\n]\n", line) != EOF)
     {
-
         if (sscanf(line,
-                   "word=%d, bit=%d, loc=RAMB%dE2_X%dY%d, bits=%d, fasmY=%d, "
+                   "word=%d, bit=%d, loc=RAMB%dE%d_X%dY%d, bits=%d, fasmY=%d, "
                    "fasmINITP=%d, fasmLine=%d, fasmBit=%d, xyz=%d, offset=%d",
-                   &loc_line, &loc_bit, &bram_type, &bram_x,
-                   &bram_y, &width, &fasm_y, &fasm_p, &fasm_line, &fasm_bit, &bit, &offset) == 12)
+                   &loc_line, &loc_bit, &bram_type, &bram_series, &bram_x,
+                   &bram_y, &width, &fasm_y, &fasm_p, &fasm_line, &fasm_bit, &bit, &offset) == 13)
         {
             if (curr_rep == replica && (loc_bit != 0 || loc_line != 0)) curr_rep = 1;
 
@@ -354,3 +368,5 @@ void find_map(const char *path, map<uint32_t, unique_ptr<frame_pos>> &bit_map,
     }
 #endif
 }
+
+#pragma clang diagnostic pop

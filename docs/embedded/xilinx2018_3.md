@@ -5,7 +5,7 @@ This tutorial was written for SDK 2018.3.  Since that predates the distribution 
 ## Automated Method
 A script to add the needed files to 2018.3 has been provided for you.  It can be found at `.../bert/tutorials/huffman/downloadLibraries.sh` and you can get full usage instructions by doing:
 ```
-.../bert/tutorials/huffman/downloadLibraries.sh 
+.../bert/docs/tutorials/huffman/downloadLibraries.sh 
 ```
 where `.../bert` is the location of your bert repository.
 

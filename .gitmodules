@@ -1,0 +1,3 @@
+[submodule "docs/tutorials/huffman/huffmanVivadoProject"]
+	path = docs/tutorials/huffman/huffmanVivadoProject
+	url = https://github.com/icgrp/huffmanVivadoProject

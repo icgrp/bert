@@ -1,9 +1,10 @@
 #include "stdint.h"
-#include "bert_types.h"
+#include "compressed_bert_types.h"
 #include "stdio.h"
 #include "stdlib.h"
-
 #include "bert.h"
+
+
 #ifdef HOST_SIDE
 #include <string.h>
 #include "../../../host_tools/bitstream_gen/dummy_xilinx.h"
@@ -18,6 +19,22 @@
 #include "xil_printf.h"
 #define PRINT xil_printf
 #endif
+
+// for compatibility with how this was originally written
+//    -- these should now be defined in mydesign.c (linked mydesign.o) -- 
+#define WORDS_PER_FRAME words_per_frame
+#define FRAMES_PER_BRAM frames_per_bram
+#define WORDS_BETWEEN_FRAMES words_between_frames
+#define WORDS_AFTER_FRAMES  words_after_frames
+#define WORDS_BEFORE_FRAMES words_before_frames
+#define PAD_WORDS pad_words
+#define WE_BITS_PER_FRAME we_bits_per_frame
+extern int words_per_frame, frames_per_bram;
+extern int words_between_frames, words_after_frames, words_before_frames, pad_words;
+extern int we_bits_per_frame;
+extern int bitlocation[];
+extern int bram_starts[];
+
 
 #ifdef TIME_BERT
 #include "xtime_l.h" 
@@ -45,7 +62,7 @@ double bert_get_last_physical_time_us() {return(-1);}
 
 // note: instead of linking against mydesign.h
 extern const char * logical_names[];
-extern struct logical_memory logical_memories[];
+extern struct compressed_logical_memory logical_memories[];
 extern struct accel_memory accel_memories_logical[];
 extern struct accel_memory accel_memories_physical[];
 
@@ -54,7 +71,7 @@ extern struct accel_memory accel_memories_physical[];
 #define CLEAR_FRAME_DATA
 
 #undef DEBUG_ACCELERATED_TO_LOGICAL
-//#define DEBUG_ACCELERATED_TO_LOGICAL
+#undef DEBUG_ACCELERATED_TO_LOGICAL
 
 #undef DEBUG_UNION
 #undef DEBUG_TRANSFUSE_WE
@@ -62,6 +79,7 @@ extern struct accel_memory accel_memories_physical[];
 #undef REGENERATE_UNCOMPRESSED_TO_PHYSICAL
 
 #undef DEBUG_START_ADDR
+#undef DEBUG_BOUNDS
 
 #define min(x,y) ((x<y)?x:y)
 #define max(x,y) ((x<y)?y:x)
@@ -116,7 +134,10 @@ int find_offset_from_base(int frame, struct frame_set *the_frame_set)
 int which_frame(int which_mem, int frame_base)
 {
   for (int i=0;i<logical_memories[which_mem].nframe_ranges;i++)
-    if (logical_memories[which_mem].frame_ranges[i].first_frame==frame_base)
+    if ((logical_memories[which_mem].frame_ranges[i].first_frame>=frame_base)
+    		&& (frame_base<(logical_memories[which_mem].frame_ranges[i].first_frame+
+    				        logical_memories[which_mem].frame_ranges[i].len))
+							)
       return(i);
   printf("bert.which_frame: frame %x not found in logical memory %d\n",frame_base,which_mem);
   return -1;
@@ -139,183 +160,197 @@ struct frame_set *bert_union(int num, struct bert_meminfo *info)
       for (int i=0;i<num;i++)
 	{
 	  // process writes first so that they end up first in the frame set
-	  if (((rw==0) & ((info[i].operation==BERT_OPERATION_WRITE)
+	  if (((rw==0) && ((info[i].operation==BERT_OPERATION_WRITE)
 			  ||(info[i].operation==BERT_OPERATION_ACCELERATED_WRITE)))
-	       ||((rw==1) & ((info[i].operation==BERT_OPERATION_READ)
+	       ||((rw==1) && ((info[i].operation==BERT_OPERATION_READ)
 			     ||(info[i].operation==BERT_OPERATION_ACCELERATED_READ))))
 	    {
 
+	      
 	      int slot_base=0;
 	      int next_addr=info[i].start_addr;
 	      int remaining_length=(info[i].data_length); // note -- in slots not repeats
-	      for (int s=0;s<logical_memories[info[i].logical_mem].num_segments;s++)
+	      for (int r=0;r<logical_memories[info[i].logical_mem].replicas;r++)
 		{
-		  int needs_read=0; // is there something that would force a read before write?
-		  //  (a) RAMB18 with live partner (not being written...but not opt. that, yet)
-		  //  (b) write to a few addresses not on frame boundary
-		  struct segment_repeats current_segment=logical_memories[info[i].logical_mem].repeats[s];
-		  int len;
-		  if ((slot_base+current_segment.slots_in_repeat*current_segment.num_repeats)<info[i].start_addr)
+		  if ((rw==1) && (r>1))
+		    break; // only need to process one read -- use 0
+		  
+		  for (int s=0;s<logical_memories[info[i].logical_mem].num_segments[r];s++)
 		    {
-		      len=0;
-		      // skip this segment (code at bottom to advance pointers)
-		    }
-		  else
-		    {
+		      int needs_read=0; // is there something that would force a read before write?
+		      //  (a) RAMB18 with live partner (not being written...but not opt. that, yet)
+		      //  (b) write to a few addresses not on frame boundary
+		      struct segment_repeats current_segment=logical_memories[info[i].logical_mem].repeats[r][s];
+		      int len;
+		      if ((slot_base+current_segment.slots_in_repeat*current_segment.num_repeats)<info[i].start_addr)
+			{
+			  len=0;
+			  // skip this segment (code at bottom to advance pointers)
+			}
+		      else
+			{
 
 			  int start_offset=next_addr%current_segment.slots_in_repeat;
-		      if ((start_offset)!=0)
+			  if ((start_offset)!=0)
 			    needs_read=1; // write may start in middle of a repeat;
-  		                      // need to read stuff before it.
+			  // need to read stuff before it.
 		      
-		      int mem_ranges=current_segment.unique_frames_in_repeat;
+			  int mem_ranges=current_segment.unique_frames_in_repeat;
 		      
-		      // len applies to all ranges
-		      int slot_len=min(remaining_length+start_offset,(current_segment.num_repeats*current_segment.slots_in_repeat-(next_addr-slot_base)));
-		      // rounding up in case partial
-		      len=(slot_len+current_segment.slots_in_repeat-1)/current_segment.slots_in_repeat;
+			  // len applies to all ranges
+			  int slot_len=min(remaining_length+start_offset,(current_segment.num_repeats*current_segment.slots_in_repeat-(next_addr-slot_base)));
+			  // rounding up in case partial
+			  len=(slot_len+current_segment.slots_in_repeat-1)/current_segment.slots_in_repeat;
 
-		      if (len*current_segment.slots_in_repeat!=slot_len)
+			  if (len*current_segment.slots_in_repeat!=slot_len)
 			    needs_read=1; // read may end in the middle of repeat;
-  		                      // need to read stuff after it.
+			  // need to read stuff after it.
 
-		      for (int j=0;j<mem_ranges;j++) 
-			{
-			  int current_frame=current_segment.unique_frames[j];
-			  int which_frame_in_logical_memory=which_frame(info[i].logical_mem,
+			  for (int j=0;j<mem_ranges;j++) 
+			    {
+			      int current_frame=current_segment.unique_frames[j];
+			      int which_frame_in_logical_memory=which_frame(info[i].logical_mem,
 									current_frame);
-			  if (which_frame_in_logical_memory == -1)
-			    return NULL;
-			  int webits=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
-			  int has_live_ramb18_partner=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].has_live_ramb18_partner;
-		  	  if (has_live_ramb18_partner)
-			    needs_read=1; // conservative -- if partner is in this transfuse operation, may not need...but that may require much more complicated calculation for general case
+			      if (which_frame_in_logical_memory == -1) {
+#ifdef DEBUG_UNION
+			      	  printf("which_frame returns -1 for %x for mem %d range %d\n",current_frame,info[i].logical_mem,j);
+				      for (int t=0;t<logical_memories[info[i].logical_mem].nframe_ranges;t++)
+		    	          printf("  %x",logical_memories[info[i].logical_mem].frame_ranges[t].first_frame);
+			      	  printf("\n");
+		#endif
+				        return NULL;
+			      }
+			      int webits=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+			      int has_live_ramb18_partner=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].has_live_ramb18_partner;
+			      if (has_live_ramb18_partner)
+				needs_read=1; // conservative -- if partner is in this transfuse operation, may not need...but that may require much more complicated calculation for general case
 			  
-			  int frame_base=current_segment.unique_frames[j]+(next_addr-slot_base)/current_segment.slots_in_repeat;
+			      int frame_base=current_segment.unique_frames[j]+(next_addr-slot_base)/current_segment.slots_in_repeat;
 #ifdef DEBUG_UNION
-			  printf("current_segment.unique_frame[%d]=%x next_addr=%x slot_base=%x\n",
-				 j,current_segment.unique_frames[j],
-				 next_addr,
-				 slot_base);
-			  printf("bert_union: rw=%d info=%d mem=%d s=%d frame_range=%d frame_range_in_logical_memory=%d,base=%x webits=%x\n",
-				 rw,i,info[i].logical_mem,s,j,which_frame_in_logical_memory,
-				 frame_base,webits);
+			      printf("current_segment.unique_frame[%d]=%x next_addr=%x slot_base=%x\n",
+				     j,current_segment.unique_frames[j],
+				     next_addr,
+				     slot_base);
+			      printf("bert_union: rw=%d info=%d mem=%d s=%d frame_range=%d frame_range_in_logical_memory=%d,base=%x webits=%x\n",
+				     rw,i,info[i].logical_mem,s,j,which_frame_in_logical_memory,
+				     frame_base,webits);
 #endif
 
-			  int found=0;
-			  for (int k=0;k<current_frame_ranges;k++)
-			    {
-			      // TODO: not handling case where a new range
-			      //   would merge two existing ranges into a single range
-			      //   spanning all 3 ranges. (fills in a gap)
-			      if ((ranges[k].frame_base<=frame_base) &&
-				  ((ranges[k].frame_base+ranges[k].len) >= (frame_base+len))
-				  )
+			      int found=0;
+			      for (int k=0;k<current_frame_ranges;k++)
 				{
-				  // this is already in list
-				  found=1;
-#ifdef DEBUG_UNION
-				  printf("bert_union: %x len=%d already covers %x %d\n",
-					 ranges[k].frame_base,ranges[k].len,frame_base,len);
-#endif				  
-				  if (rw==0) // processing writes
+				  // TODO: not handling case where a new range
+				  //   would merge two existing ranges into a single range
+				  //   spanning all 3 ranges. (fills in a gap)
+				  if ((ranges[k].frame_base<=frame_base) &&
+				      ((ranges[k].frame_base+ranges[k].len) >= (frame_base+len))
+				      )
 				    {
-				      ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+				      // this is already in list
+				      found=1;
 #ifdef DEBUG_UNION
-				      printf("bert_union: frame %x webits now %x\n",
-					     frame_base,ranges[k].we_bits);
+				      printf("bert_union: %x len=%d already covers %x %d\n",
+					     ranges[k].frame_base,ranges[k].len,frame_base,len);
+#endif				  
+				      if (rw==0) // processing writes
+					{
+					  ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+#ifdef DEBUG_UNION
+					  printf("bert_union: frame %x webits now %x\n",
+						 frame_base,ranges[k].we_bits);
 #endif
-				      if (needs_read) ranges[k].has_read=1;
+					  if (needs_read) ranges[k].has_read=1;
+					}
+				      else
+					ranges[k].has_read=1;
+				      break;
 				    }
-				  else
-				    ranges[k].has_read=1;
-				  break;
-				}
-			      else if ((frame_base<=ranges[k].frame_base) &&
-				       ((frame_base+len) >= (ranges[k].frame_base+ranges[k].len)))
-				{
-				  // this is larger, redefine entry
-#ifdef DEBUG_UNION
-				  printf("bert_union: %x len=%d smaller than %x %d ... expanding\n",
-					 ranges[k].frame_base,ranges[k].len,frame_base,len);
-#endif				  
-				  found=1;
-				  ranges[k].frame_base=frame_base;
-				  ranges[k].len=len;
-				  if (rw==0) // processing writes
+				  else if ((frame_base<=ranges[k].frame_base) &&
+					   ((frame_base+len) >= (ranges[k].frame_base+ranges[k].len)))
 				    {
-				      ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
-				      if (needs_read) ranges[k].has_read=1;
-				    }
-				  else
-				    ranges[k].has_read=1;
+				      // this is larger, redefine entry
+#ifdef DEBUG_UNION
+				      printf("bert_union: %x len=%d smaller than %x %d ... expanding\n",
+					     ranges[k].frame_base,ranges[k].len,frame_base,len);
+#endif				  
+				      found=1;
+				      ranges[k].frame_base=frame_base;
+				      ranges[k].len=len;
+				      if (rw==0) // processing writes
+					{
+					  ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+					  if (needs_read) ranges[k].has_read=1;
+					}
+				      else
+					ranges[k].has_read=1;
 				  
-				  break;
-				}
-			      else if (((frame_base<ranges[k].frame_base) &&
-					((frame_base+len) <(ranges[k].frame_base+ranges[k].len)) &&
-					((frame_base+len)>ranges[k].frame_base))
-				       ||
-				       ((ranges[k].frame_base<frame_base) &&
-					((ranges[k].frame_base+ranges[k].len)<(frame_base+len)) &&
-					((ranges[k].frame_base+ranges[k].len)>frame_base))
-				       )
-				{
-				  // they intersect, neither subsumes
-				  found=1;
-
-				  if (rw==0) // processing writes
+				      break;
+				    }
+				  else if (((frame_base<ranges[k].frame_base) &&
+					    ((frame_base+len) <(ranges[k].frame_base+ranges[k].len)) &&
+					    ((frame_base+len)>ranges[k].frame_base))
+					   ||
+					   ((ranges[k].frame_base<frame_base) &&
+					    ((ranges[k].frame_base+ranges[k].len)<(frame_base+len)) &&
+					    ((ranges[k].frame_base+ranges[k].len)>frame_base))
+					   )
 				    {
-				      ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
-				      if (needs_read) ranges[k].has_read=1;
+				      // they intersect, neither subsumes
+				      found=1;
+
+				      if (rw==0) // processing writes
+					{
+					  ranges[k].we_bits|=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+					  if (needs_read) ranges[k].has_read=1;
+					}
+				      else
+					ranges[k].has_read=1;
+
+				      int new_base=min(frame_base,ranges[k].frame_base);
+				      int new_len=max(frame_base+len,ranges[k].frame_base+ranges[k].len)-new_base;
+#ifdef DEBUG_UNION
+				      printf("bert_union: %x len=%d overlaps  %x %d ... taking union %x len=%d\n",
+					     ranges[k].frame_base,ranges[k].len,frame_base,len,
+					     new_base,new_len);
+#endif				  				  				  
+				      ranges[k].frame_base=new_base;
+				      ranges[k].len=new_len;
+				    }
+				}
+			      if (found==0)
+				{
+				  if (rw==0) // writes
+				    {
+				      //ranges[current_frame_ranges].has_write=1;
+				      ranges[current_frame_ranges].we_bits=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
+				      ranges[current_frame_ranges].has_read=needs_read;
 				    }
 				  else
-				    ranges[k].has_read=1;
-
-				  int new_base=min(frame_base,ranges[k].frame_base);
-				  int new_len=max(frame_base+len,ranges[k].frame_base+ranges[k].len)-new_base;
-#ifdef DEBUG_UNION
-				  printf("bert_union: %x len=%d overlaps  %x %d ... taking union %x len=%d\n",
-					 ranges[k].frame_base,ranges[k].len,frame_base,len,
-					 new_base,new_len);
-#endif				  				  				  
-				  ranges[k].frame_base=new_base;
-				  ranges[k].len=new_len;
-				}
-			    }
-			  if (found==0)
-			    {
-			      if (rw==0) // writes
-				{
-				  //ranges[current_frame_ranges].has_write=1;
-				  ranges[current_frame_ranges].we_bits=logical_memories[info[i].logical_mem].frame_ranges[which_frame_in_logical_memory].we_bits;
-				  ranges[current_frame_ranges].has_read=needs_read;
-				}
-			      else
-				{
-				  //ranges[current_frame_ranges].has_write=0;
-				  ranges[current_frame_ranges].we_bits=0;
-				  ranges[current_frame_ranges].has_read=1;
-				}
+				    {
+				      //ranges[current_frame_ranges].has_write=0;
+				      ranges[current_frame_ranges].we_bits=0;
+				      ranges[current_frame_ranges].has_read=1;
+				    }
 #ifdef DEBUG_UNION
 				  printf("bert_union: not found, adding  %x %d\n",
 					 frame_base,len);
 #endif				  				  			      
-			      ranges[current_frame_ranges].frame_base=frame_base;
-			      ranges[current_frame_ranges].len=len;
-			      current_frame_ranges++;
-			    }
-			} // over mem ranges
-		      // if we're in this block of code, then
-		      //  start_addr is less than the following
-		      //   ...which is the slot after this segment
-		      // so, set it to that so we process the rest of the addresses?
-		      // new 8/10/2020
-		      next_addr=slot_base+current_segment.slots_in_repeat*current_segment.num_repeats;
-		    } // skip over this segment?
-		  remaining_length-=len*current_segment.slots_in_repeat;
-		  slot_base+=current_segment.slots_in_repeat*current_segment.num_repeats;
-		} // loop over segments
+				  ranges[current_frame_ranges].frame_base=frame_base;
+				  ranges[current_frame_ranges].len=len;
+				  current_frame_ranges++;
+				}
+			    } // over mem ranges
+			  // if we're in this block of code, then
+			  //  start_addr is less than the following
+			  //   ...which is the slot after this segment
+			  // so, set it to that so we process the rest of the addresses?
+			  // new 8/10/2020
+			  next_addr=slot_base+current_segment.slots_in_repeat*current_segment.num_repeats;
+			} // skip over this segment?
+		      remaining_length-=len*current_segment.slots_in_repeat;
+		      slot_base+=current_segment.slots_in_repeat*current_segment.num_repeats;
+		    } // loop over segments
+		} // loop over replicas
 	    } // if read or write
 	} // all memories
     } // rw
@@ -358,7 +393,7 @@ int bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
   int words=logical_memories[logical].words;
   words=min(words,start_addr+data_length);
 
-  int num_segments=logical_memories[logical].num_segments;
+  int num_segments=logical_memories[logical].num_segments[0];
 
   int loc=0;
   int b=0;
@@ -366,9 +401,10 @@ int bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 
 
     
-  for (int s=0;s<num_segments;s++)
+  for (int seg=0;seg<num_segments;seg++)
     {
-      struct segment_repeats ms=logical_memories[logical].repeats[s];
+      //fprintf(stdout,"DEBUG: to_logical starting segment=%d with loc=%d\n",seg,loc);
+      struct segment_repeats ms=logical_memories[logical].repeats[0][seg];
       if ((loc+ms.slots_in_repeat*ms.num_repeats)<start_addr)
 	{
 	  loc+=ms.slots_in_repeat*ms.num_repeats;
@@ -378,67 +414,115 @@ int bert_to_logical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 	  int num_repeats=ms.num_repeats;
 	  int num_frames=ms.num_frames;
 	  int repeat_start=0;
+	  int *frame_seq_indicies=(int *)malloc(sizeof(int)*ms.num_frames);
+	  int *frame_offsets=(int *)malloc(sizeof(int)*ms.num_frames);
 	  if (start_addr>loc)
-	    repeat_start=(start_addr-loc)/ms.slots_in_repeat;
+	    {
+	      repeat_start=(start_addr-loc)/ms.slots_in_repeat;
+	    }
 	  loc+=repeat_start*ms.slots_in_repeat; // fast forward to correct repeat
+	  for (int i=0;i<ms.num_frames;i++)
+	    {
+	      frame_seq_indicies[i]=repeat_start%ms.frame_seq[i].sequence_length;
+	      frame_offsets[i]=repeat_start/ms.frame_seq[i].sequence_length;
+	    }
 	  for (int r=repeat_start;r<num_repeats;r++)
 	    {
-	      for (int f=0;f<num_frames;f++)
+	      
+	      //fprintf(stdout,"DEBUG:   to_logical starting segment=%d r=%d sequence_length=%d num_frames=%d with loc=%d\n",seg,r,ms.frame_seq[0].sequence_length,num_frames,loc);
+	      for (int s=0;s<ms.frame_seq[0].sequence_length;s++)
 		{
-		  struct frame_bits fbits=ms.frame_bits[f];
-		  int frame=fbits.frame_address;
-		  int offset_base=find_offset_base(frame+repeat_start,
-						   the_frame_set);
-		  if (offset_base == -1)
-		    return BST_OFFSET_NOT_FOUND;
-		  int offset_from_base=find_offset_from_base(frame+repeat_start,
-						   the_frame_set);
-		  if (offset_from_base == -1)
-		    return BST_OFFSET_NOT_FOUND;
-		  int frame_offset=offset_base+(offset_from_base+(r-repeat_start))*WORDS_PER_FRAME;
-		  int nbits=fbits.num_bits;
-		  int *bit_location=fbits.bit_loc;
-		  for (int fb=0;fb<nbits;fb++)
+		  for (int f=0;f<num_frames;f++)
 		    {
-		      // don't go through the stuff that isn't in range
-		      if (loc>=(start_addr+data_length))
-			return BST_SUCCESS;
-		      if ((loc>=start_addr) & (loc<(start_addr+data_length)))
+		      struct frame_sequence fseq=ms.frame_seq[f];
+		      int frame=fseq.frame_address;
+		      int nbits=fseq.frame_bits[frame_seq_indicies[f]].num_bits;
+		      if (frame>0)
 			{
-		  
+			  //fprintf(stderr,"DEBUG: frame=%llx f=%d frame_offset=%d sequence_length=%d\n",
+			  //frame,f,frame_offsets[f],
+			  //ms.frame_seq[f].sequence_length); // DEBUG
+			  int offset_base=find_offset_base(frame+frame_offsets[f],
+							   the_frame_set);
+#ifdef DEBUG_BOUNDS			  
+			  if (offset_base==-1)
+			    {
+			      printf("frame=%x f=%d offset=%x\n",frame,f,frame_offsets[f]);
+			      printf("r=%d s=%d f=%d loc=%x b=%d\n",r,s,f,loc,b);
+			      exit(3); // DEBUG
+			    }
+#endif			  
+			  if (offset_base == -1)
+			    return BST_OFFSET_NOT_FOUND;
+			  int offset_from_base=find_offset_from_base(frame+frame_offsets[f],
+								     the_frame_set);
+			  if (offset_from_base == -1)
+			    return BST_OFFSET_NOT_FOUND;
+			  int frame_offset=offset_base+(offset_from_base)*WORDS_PER_FRAME;
+			  int16_t *bit_location=fseq.frame_bits[frame_seq_indicies[f]].bit_loc;
+			  for (int fb=0;fb<nbits;fb++)
+			    {
+			      // don't go through the stuff that isn't in range
+			      if (loc>=(start_addr+data_length))
+				return BST_SUCCESS;
+			      if ((loc>=start_addr) & (loc<(start_addr+data_length)))
+				{
 #ifdef REGENERATE_UNCOMPRESSED_TO_LOGICAL
-			  printf("    {0x%08x, %d},\n",(frame+r),bit_location[fb]);
+				   printf("    {0x%08x, %d},\n",(frame+r),bit_location[fb]);
+
+				   // regenerate and idenitfy bits
+				   // printf("    {0x%08x, %d}, //loc=%x, b=%d\n",(frame+r),bit_location[fb],
+				   //loc,b);
 #endif
-
-			  int frame_word=bit_location[fb]/32;
-			  int bit_in_word=bit_location[fb]%32;
-			  int bit_in_logical=b%64;
-			  int word_logical=b/64;
-			  if (((frame_data[frame_offset+frame_word]>>bit_in_word) & 0x01)==1)
-
-			    logical_data[(loc-start_addr)*b64_per_word+word_logical]|=((uint64_t) 1)<<bit_in_logical;
-			  else
-			    {
-			      uint64_t bit_mask=
-				(((uint64_t)(0xFFFFFFFF)) | (((uint64_t)(0xFFFFFFFF))<<32))
-				-(((uint64_t)1)<<bit_in_logical);
-			      logical_data[(loc-start_addr)*b64_per_word+word_logical]&=bit_mask;
-			    }
-			  if (b<(wordlen-1))
-			    b++;
-			  else
-			    {
-			      b=0;
-			      loc++;
-			    }
-		  
+				  
+				  int frame_word=bit_location[fb]/32;
+				  int bit_in_word=bit_location[fb]%32;
+				  int bit_in_logical=b%64;
+				  int word_logical=b/64;
+				  if (((frame_data[frame_offset+frame_word]>>bit_in_word) & 0x01)==1)
+				
+				    logical_data[(loc-start_addr)*b64_per_word+word_logical]|=((uint64_t) 1)<<bit_in_logical;
+				  else
+				    {
+				      uint64_t bit_mask=
+					(((uint64_t)(0xFFFFFFFF)) | (((uint64_t)(0xFFFFFFFF))<<32))
+					-(((uint64_t)1)<<bit_in_logical);
+				      logical_data[(loc-start_addr)*b64_per_word+word_logical]&=bit_mask;
+				    }
+				  if (b<(wordlen-1))
+				    b++;
+				  else
+				    {
+				      b=0;
+				      loc++;
+				    }
+				}
+			    } // bits in frame
+			} // frame not greater than 0
+		      else // negative frame
+			{
+			  // advance by nbits
+			  b=(b+nbits);
+			  while (b>wordlen) {
+			    b=b-wordlen;
+			    loc++;
+			  }
 			}
-		    }
-		}
-	    }
+		      // reset sequence counter as needed
+		      frame_seq_indicies[f]++;
+		      if (frame_seq_indicies[f]==ms.frame_seq[f].sequence_length)
+			{
+			  frame_seq_indicies[f]=0;
+			  frame_offsets[f]++;
+			}
+		    } // f, frames
+		} // s, sequence (for frame 0)
+	    } // r, repeats
+	  free(frame_seq_indicies);
+	  free(frame_offsets);
 	} // skip segements
 
-    } // for each segment
+    } // for each segment (seg)
   return BST_SUCCESS;
 }
 #ifndef DISABLE_ACCEL
@@ -461,7 +545,7 @@ int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logic
   int words=logical_memories[logical].words;
   words=min(words,start_addr+data_length);
 
-  int num_segments=logical_memories[logical].num_segments;
+  int num_segments=logical_memories[logical].num_segments[0];
 
 
   if (logical_memories[logical].nframe_ranges!=1)
@@ -469,13 +553,13 @@ int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logic
       printf("bert_accelerated_to_logical should only have one frame range\n");
       return BST_EXCESS_FRAME_RANGES;
     }
-  if (logical_memories[logical].num_segments!=1)
+  if (logical_memories[logical].num_segments[0]!=1)
     {
       printf("bert_accelerated_to_logical should only have one segment\n");
       return BST_EXCESS_SEGMENTS;
     }
 
-  struct segment_repeats ms=logical_memories[logical].repeats[0];
+  struct segment_repeats ms=logical_memories[logical].repeats[0][0];
   if (ms.num_frames!=1)
     {
       printf("bert_accelerated_to_logical segment should only have one frame\n");
@@ -509,9 +593,9 @@ int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logic
 
   // only one frame
   int num_repeats=ms.num_repeats;
-  struct frame_bits fbits=ms.frame_bits[0];
-  int frame=fbits.frame_address;
-  int nbits=fbits.num_bits;
+  struct frame_bits fbits=ms.frame_seq[0].frame_bits[0];
+  int frame=ms.frame_seq[0].frame_address;
+  int nbits=ms.frame_seq[0].sequence_length*ms.frame_seq[0].frame_bits[0].num_bits;
   int offset_base=find_offset_base(frame+repeat_start,
 				   the_frame_set);
   if (offset_base == -1)
@@ -521,7 +605,7 @@ int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logic
   if (offset_from_base == -1)
     return BST_OFFSET_NOT_FOUND;
   uint64_t mask_quanta=(((uint64_t) 1)<<lookup_quanta)-1;
-  int offset_in_frame=logical_memories[logical].repeats[0].frame_bits[0].bit_loc[0];
+  int offset_in_frame=logical_memories[logical].repeats[0][0].frame_seq[0].frame_bits[0].bit_loc[0];
 
   
   for (int r=repeat_start;r<num_repeats;r++)
@@ -621,7 +705,6 @@ int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
     return BST_SUCCESS; // nothing to translate
 
 
-    int num_segments=logical_memories[logical].num_segments;
 
   int wordlen=logical_memories[logical].wordlen;
   int b64_per_word=(wordlen+63)/64;  
@@ -631,97 +714,142 @@ int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
   int loc=0;
   int b=0;
 
-
-
-  for (int s=0;s<num_segments;s++)
+  for (int replica=0;replica<logical_memories[logical].replicas;replica++)
     {
-      struct segment_repeats ms=logical_memories[logical].repeats[s];
-      if ((loc+ms.slots_in_repeat*ms.num_repeats)<start_addr)
-	{
-	  loc+=ms.slots_in_repeat*ms.num_repeats;
-	}
-      else
-	{
-	  int num_repeats=ms.num_repeats;
-	  int num_frames=ms.num_frames;
-	  int repeat_start=0;
-	  if (start_addr>loc) {
-	    repeat_start=(start_addr-loc)/ms.slots_in_repeat;
-#ifdef DEBUG_START_ADDR
-	    PRINT("start_addr=%x dat_length=%d loc=%x b=%x\n",start_addr,data_length,loc,b);
-#endif
-	  }
-	  loc+=repeat_start*ms.slots_in_repeat; // fast forward to correct repeat
-#ifdef DEBUG_START_ADDR
-	    PRINT("after fast forward: start_addr=%x repeat_start=%d loc=%x b=%x num_repeats=% num_frames=%d\n",start_addr,repeat_start,loc,b,num_repeats,num_frames);
-#endif
 
-	  for (int r=repeat_start;r<num_repeats;r++)
+      int num_segments=logical_memories[logical].num_segments[replica];
+
+      for (int seg=0;seg<num_segments;seg++)
+	{
+	  //fprintf(stdout,"DEBUG: to_physical starting segment=%d with loc=%d\n",seg,loc);
+	  struct segment_repeats ms=logical_memories[logical].repeats[replica][seg];
+	  if ((loc+ms.slots_in_repeat*ms.num_repeats)<start_addr)
 	    {
-	      for (int f=0;f<num_frames;f++)
-		{
-		  struct frame_bits fbits=ms.frame_bits[f];
-		  int frame=fbits.frame_address;
-		  // TODO: may not work if unioned with something...
-		  int offset_base=find_offset_base(frame+repeat_start,
-						   the_frame_set);
-		  if (offset_base == -1)
-		    return BST_OFFSET_NOT_FOUND;
-		  int frame_offset=offset_base+(r-repeat_start)*WORDS_PER_FRAME;
-		  //  to here
-		  int nbits=fbits.num_bits;
-		  int *bit_location=fbits.bit_loc;
-		  for (int fb=0;fb<nbits;fb++)
-		    {
-		      // don't go through the stuff that isn't in range
-		      if (loc>=(start_addr+data_length))
-		      {
+	      loc+=ms.slots_in_repeat*ms.num_repeats;
+	    }
+	  else
+	    {
+	      int num_repeats=ms.num_repeats;
+	      int num_frames=ms.num_frames;
+	      int repeat_start=0;
+	      int *frame_seq_indicies=(int *)malloc(sizeof(int)*ms.num_frames);
+	      int *frame_offsets=(int *)malloc(sizeof(int)*ms.num_frames);
+
+	      if (start_addr>loc) {
+		repeat_start=(start_addr-loc)/ms.slots_in_repeat;
 #ifdef DEBUG_START_ADDR
-	    PRINT("returning success: start_addr=%x data_length=%d loc=%x b=%x\n",start_addr,data_length,loc,b);
+		PRINT("start_addr=%x dat_length=%d loc=%x b=%x\n",start_addr,data_length,loc,b);
 #endif
-		    	  return BST_SUCCESS;
-		      }
-		      if ((loc>=start_addr) && (loc<(start_addr+data_length)))
-			{		      
-			  // only needs to be in one, but this gets called first...
-#ifdef REGENERATE_UNCOMPRESSED_TO_PHYSICAL
-			  PRINT("\t{0x%x,%d},\n",(frame+r),bit_location[fb]);
+	      }
+	      loc+=repeat_start*ms.slots_in_repeat; // fast forward to correct repeat
+#ifdef DEBUG_START_ADDR
+	      PRINT("after fast forward: start_addr=%x repeat_start=%d loc=%x b=%x num_repeats=% num_frames=%d\n",start_addr,repeat_start,loc,b,num_repeats,num_frames);
 #endif
-			  
-			  int frame_word=bit_location[fb]/32;
-			  int bit_in_word=bit_location[fb]%32;
-			  
-			  int bit_in_logical=b%64;
-			  int word_logical=b/64;
-			  int bit=(logical_data[(loc-start_addr)*b64_per_word+word_logical]>>bit_in_logical) & 0x01;
+	      for (int i=0;i<ms.num_frames;i++)
+		{
+		  frame_seq_indicies[i]=repeat_start%ms.frame_seq[i].sequence_length;
+		  frame_offsets[i]=repeat_start/ms.frame_seq[i].sequence_length;
+		}
 
-			  uint32_t bit_mask=0xFFFFFFFF-(1<<bit_in_word);
-			  if (bit==0)
-			    frame_data[frame_offset+frame_word]=
-			      frame_data[frame_offset+frame_word]&bit_mask;
-			  else
-			    frame_data[frame_offset+frame_word]=
-			      frame_data[frame_offset+frame_word] | (1<<bit_in_word);
-			  
-			  } // if bit in range
-		    if (b<(wordlen-1))
-			    b++;
-			else
+	      for (int r=repeat_start;r<num_repeats;r++)
+		{
+		  for (int s=0;s<ms.frame_seq[0].sequence_length;s++)
+		    {
+		      for (int f=0;f<num_frames;f++)
+			{
+			  struct frame_sequence fseq=ms.frame_seq[f];
+
+			  int frame=fseq.frame_address;
+			  int nbits=fseq.frame_bits[frame_seq_indicies[f]].num_bits;
+			  if (frame>0)
 			    {
-			      b=0;
-			      loc++;
+			  
+			      // TODO: may not work if unioned with something...
+			      int offset_base=find_offset_base(frame+frame_offsets[f],
+							       the_frame_set);
+			      if (offset_base == -1)
+				return BST_OFFSET_NOT_FOUND;
+			      int offset_from_base=find_offset_from_base(frame+frame_offsets[f],
+									 the_frame_set);
+			      int frame_offset=offset_base+(offset_from_base)*WORDS_PER_FRAME;		      
+			      //  to here
+			      int16_t *bit_location=fseq.frame_bits[frame_seq_indicies[f]].bit_loc;
+			  
+			      for (int fb=0;fb<nbits;fb++)
+				{
+				  // don't go through the stuff that isn't in range
+				  if (loc>=(start_addr+data_length))
+				    {
+#ifdef DEBUG_START_ADDR
+				      PRINT("returning success: start_addr=%x data_length=%d loc=%x b=%x\n",start_addr,data_length,loc,b);
+#endif
+				      return BST_SUCCESS;
+				    }
+				  if ((loc>=start_addr) && (loc<(start_addr+data_length)))
+				    {		      
+				      // only needs to be in one, but this gets called first...
+#ifdef REGENERATE_UNCOMPRESSED_TO_PHYSICAL
+				      PRINT("\t{0x%x,%d},\n",(frame+r),bit_location[fb]);
+				      //PRINT("frame_offset=%x frame_offsets=%x repeat=%x loc=%d bit=%d f=%d\n",frame_offset,
+				      //frame_offsets[f],r,loc,b,f); // DEBUG
+#endif
+				  
+				    int frame_word=bit_location[fb]/32;
+				    int bit_in_word=bit_location[fb]%32;
+				    
+				    int bit_in_logical=b%64;
+				    int word_logical=b/64;
+				    int bit=(logical_data[(loc-start_addr)*b64_per_word+word_logical]>>bit_in_logical) & 0x01;
+			      
+				    uint32_t bit_mask=0xFFFFFFFF-(1<<bit_in_word);
+				    if (bit==0)
+				      frame_data[frame_offset+frame_word]=
+					frame_data[frame_offset+frame_word]&bit_mask;
+				    else
+				      frame_data[frame_offset+frame_word]=
+					frame_data[frame_offset+frame_word] | (1<<bit_in_word);
+				    } // if bit in range
+				  if (b<(wordlen-1))
+				    b++;
+				  else
+				    {
+				      b=0;
+				      loc++;
+				    }
+				} // fb, nbits
 			    }
-		  
-		    } // fb, nbits
-		  } // f , num_frames
-	    } // r, num_repeates
-	} // skip ahead 
-
-    }
+			  else // negative frame
+			    {
+			      // advance by nbits
+			      b=(b+nbits);
+			      while (b>wordlen) {
+				b=b-wordlen;
+				loc++;
+			      }
+			    }
+			  // reset sequence counter as needed
+			  frame_seq_indicies[f]++;
+			  if (frame_seq_indicies[f]==ms.frame_seq[f].sequence_length)
+			    {
+			      frame_seq_indicies[f]=0;
+			      frame_offsets[f]++;
+			    }
+			} // f , num_frames
+		    } // s, frame sequences in first frame
+		} // r, num_repeates
+	      free(frame_seq_indicies);
+	      free(frame_offsets);
+	    } // skip ahead 
+	} // for each segment
+    } // replicas
   return BST_SUCCESS;
 }
 
+<<<<<<< HEAD
 #ifndef DISABLE_ACCEL
+=======
+
+>>>>>>> master
 int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				 int start_addr, int data_length, struct frame_set *the_frame_set)
 {
@@ -735,14 +863,17 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
   int u64_per_lookup=accel_memories_physical[logical].u64_per_lookup;
   int tabsize=(u64_per_lookup*(1<<lookup_quanta));
   uint64_t **translation_tables=accel_memories_physical[logical].trans_tables;
-  
+
+  int bit_high=accel_memories_physical[logical].bit_high;
+  int bit_low=accel_memories_physical[logical].bit_low;
   
   int wordlen=logical_memories[logical].wordlen;
   int words=logical_memories[logical].words;
   uint64_t mask_quanta=(((uint64_t) 1)<<lookup_quanta)-1;
   int offset=the_frame_set->ranges[0].offset;
-  int offset_in_frame=logical_memories[logical].repeats[0].frame_bits[0].bit_loc[0];
-  int slots_per_frame=logical_memories[logical].repeats[0].slots_in_repeat;
+  int offset_in_frame=logical_memories[logical].repeats[0][0].frame_seq[0].frame_bits[0].bit_loc[0];
+  int frame_word_offset=offset_in_frame/32;
+  int slots_per_frame=logical_memories[logical].repeats[0][0].slots_in_repeat;
   uint64_t *new_frame_data=(uint64_t *)malloc(sizeof(uint64_t)*(u64_per_lookup));
   if (new_frame_data == NULL)
     return BST_NULL_PTR;
@@ -758,6 +889,21 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
 	printf("\n");
       }  
 #endif  
+
+  // mask for bits that should be written for this memory
+  //  useful for ramb18 case where u64s may overlap between intended memory bits
+  //  and the partner memory bits
+  uint64_t *write_mask=(uint32_t *)malloc(sizeof(uint32_t)*(2*u64_per_lookup));
+  for (int i=0;i<2*u64_per_lookup;i++)
+    {
+      write_mask[i]=0;
+      for (int j=0;j<32;j++)
+	{
+	  int current_bit=(frame_word_offset+i)*32+j;
+	  if ((current_bit>=bit_low) && (current_bit<=bit_high))
+	    write_mask[i]|=(0x01<<j);
+	}
+    }
   
   for (int i=0;i<the_frame_set->ranges[0].len;i++)
     {
@@ -797,7 +943,6 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
 #endif	      
 	    }
 	}
-      int frame_word_offset=offset_in_frame/32;
       // int frame_bit_offset=offset_in_frame%32; -- assume already taken care of
       // may not be zero -- assume table was built to be aligned
       // TODO ...could record that data and check here to make sure consistent
@@ -810,8 +955,12 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
 #ifdef DEBUG
 	  printf("frame_data[%d]\n",(offset+i*WORDS_PER_FRAME+frame_word_offset+j*2));
 #endif	  
-	      frame_data[offset+i*WORDS_PER_FRAME+frame_word_offset+j*2]=new_frame_data[j]&((uint64_t)0xFFFFFFFF);
-	      frame_data[offset+i*WORDS_PER_FRAME+frame_word_offset+j*2+1]=(new_frame_data[j]>>32)&((uint64_t)0xFFFFFFFF);
+	      frame_data[offset+i*WORDS_PER_FRAME+frame_word_offset+j*2]=
+		((new_frame_data[j]&((uint64_t)0xFFFFFFFF))&write_mask[j*2])
+		|((frame_data[offset+i*WORDS_PER_FRAME+frame_word_offset+j*2])&~write_mask[j*2]);
+	      frame_data[offset+i*WORDS_PER_FRAME+frame_word_offset+j*2+1]=
+		((new_frame_data[j]>>32)&((uint64_t)0xFFFFFFFF)&write_mask[j*2+1])
+		|((frame_data[offset+i*WORDS_PER_FRAME+frame_word_offset+j*2+1])&~write_mask[j*2+1]);
 	}
     }
 

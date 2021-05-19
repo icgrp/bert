@@ -45,7 +45,7 @@ Then, select 'Create a new platform from hardware (XSA)', then the '+' button, t
 
 ![Example of new application project](../images/newplatform_vitis.png)
 
-Now click Next again, select the 'Hello World' template, click Finish and you are brought back to the Project Explorer.  At this point you should have two items in the SDK left-side Project Explorer pane:
+Now click Next again, select the 'Empty Application' template, click Finish and you are brought back to the Project Explorer.  At this point you should have two items in the SDK left-side Project Explorer pane:
 - One will be `top` and is the hardware for the project.  
 - The other will be `huffman_demo_system` which is the board support package for your project.  Inside it is `huffman_demo` which is the actual software application for the project.  
 

@@ -2,6 +2,8 @@
 ## Overview
 This tutorial will lead you through using BERT to read and write memories in a hardware design.  
 
+NOTE: this tutorial was written for Linux.  While the basic steps will work in Windows, how SDK and Vitis organize things might be different and you should adjust your procedures accordingly.  Also, the tutorial has been verified to work for Xilinx tools 2018.3 (the SDK portions) and 2019.2 (the Vitis portions).  Future versions may require further adjustments.  Specifically, if you use a later version of the Xilinx tools you will need to re-implement the design with with the newer tools according to the instructions in the [second tutorial on file preparation](fileprep.md) that is a part of this system.  You will then need to use the .xsa file created in those steps with this tutorial.
+
 The tutorial covers the use of BERT with both Xilinx SDK (Xilinx tools 2019.1 and earlier) as well as with Vitis (Xilinx tools 2019.2 and later).  At times below, there will be instructions to copy files from a particular directory or to run a particular script within the repo.  An example would be copying the sample hardware design files: `.../bert/docs/tutorials/huffman/hw_huffman_sdk` or `.../bert/docs/tutorials/huffman/hw_huffman_vitis` (depending on which tool is used). To simplify the discussion, that location would be listed as `.../bert/docs/tutorials/huffman/hw_huffman_TOOL` - you would need to replace the word `TOOL` with either `sdk` or `vitis`.  In addition the `.../bert/` represents the location where your BERT repository exists on your computer.
 
 The hardware for the project is a Huffman Encoder design where 4 memories are used:
@@ -75,9 +77,10 @@ Now that you have an application project and BSP established, you need to assemb
 
 To copy these all into your source directory now do this:
 ```
-python3 .../bert/docs/tutorials/huffman/copyappfiles_TOOL.py WORK
+cd .../bert/docs/tutorials/huffman
+python3 ./copyappfiles.py WORK
 ```
-where `TOOL` is either `sdk` or `vitis`.
+where `...` is where your bert repository is found.
 
 Next, you may also see that your application source directory has a `helloworld.c` file in it (often automatically created by SDK/Vitis when you create the application).  If so, remove that file before proceeding.
 ### The Application
@@ -92,11 +95,11 @@ The application allocates memory to use for its activities.  Before executing it
 * Click on triangle to the left of src to list its contents
 * Double-click the on `lscript.ld` file to open.
 
-The default heap size of the program is too small to store the configuration frames needed to write to memories. In the worst case, all 4 memories exist in different frame ranges. The bits of a BRAM36/18 span 256 frames (+1 dummy frame for flushing the data). Thus, we need enough memory to hold 4 x 257 frames, and each frame is 93 x 4 bytes. So the approximate memory usage is 382,416 bytes. Round up and set the heap size to 0x60000 (6 followed by 4 zeros -- this is hex for roughly 400 kilobytes).  For more discussion on how to size the heap, see the 'Dynamic Memory Usage' section in [the BERT API documentation](../../embedded/bert.md). Once changed, select File->Save from top menu to apply the changes and rebuild the program.
+The default heap size of the program is too small to store the configuration frames needed to write to memories. In the worst case, all 4 memories exist in different frame ranges. The bits of a BRAM36/18 span 256 frames (+1 dummy frame for flushing the data). Thus, we need enough memory to hold 4 x 257 frames, and each frame is 93 x 4 bytes. So the approximate memory usage is 382,416 bytes. Round up and set the heap size to 0x60000 (6 followed by 4 zeros -- this is hex for roughly 400 kilobytes).  For more discussion on how to size the heap, see the 'Dynamic Memory Usage' section in [the BERT API documentation](../../embedded/bert.md). Next, change the stack size from its default of 0x2000 to 0x20000.  Once these both have been changed, select File->Save from top menu to apply the changes and rebuild the program.
 
 At this point you have a complete application.  Right-click the application (`huffman_demo`) in the Project Explorer and select 'Build Project' to get a complete build done.
 
-Note: the `copyappfiles_TOOL.py` script you ran above copied a number of source files to assemble what you need for a BERT application to run.  By examining the output printed out while running that script you should be able to determine what pieces of source code were copied into your SDK application project (`huffman_demo`).  You can use the output of `copyappfiles_TOOL.py` as a guide when you get ready to do your new design later and have to assemble the source code files yourself.
+Note: the `copyappfiles.py` script you ran above copied a number of source files to assemble what you need for a BERT application to run.  By examining the output printed out while running that script you should be able to determine what pieces of source code were copied into your SDK application project (`huffman_demo`).  You can use the output of `copyappfiles.py` as a guide when you get ready to do your new design later and have to assemble the source code files yourself.
 
 ## Step 5. Test on hardware
 
@@ -126,7 +129,7 @@ Alternatively, you can run the debugger using the debug icon just to the left of
 
 If all goes well, the program will run and will print results to the SDK Terminal as shown below:
 
-![Printout of successful run](../../images/finalresults.png)
+![Printout of successful run](../../images/finalresults_corrected.png)
 
 Congratulations!  You have run a successful demo application using BERT.
 
@@ -185,18 +188,15 @@ This will prevent Vivado from optimizing the memory away if it is not read from.
 You can run an [accelerated version of translation](accel/README.md) to speed up
   translation on simpler memories (all the memories in this design are
   simple enough)
-* To change the DMA transfer speed, modify PCAP_READ_DIV or PCAP_WRITE_DIV in xilfpga_extension.c in the project src
+* To change the DMA transfer speed, modify PCAP_READ_DIV or PCAP_WRITE_DIV in `xilfpga_extension.c` in the project src
   * By default, we have it set to a high speed that works for us
     * set it lower (higher values) if that times out for you
     * set it higher (lower values) if you want to try running faster
     * default value of 10 corresponds to about 150MHz; highest value of 63 (default from Xilinx) is about 24MHz
   * On the project navigator plane on left
-    * open huffman_demo_bsp
-    * open psu_cortexa53_0
-    * open libsrc
-    * open xilfpga_v5_1
-    * open source
-    * double click on `xilfpga_pcap.h`
+    * open `huffman_demo` project
+    * open `src` directory
+    * double click on `xilfpga_extension.c` to open it
   * look for `#define` for `PCAP_READ_DIV` (`PCA_WRITE_DIV` is right after it)
   * change values there
   * save file (File>Save)

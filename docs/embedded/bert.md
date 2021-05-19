@@ -1,7 +1,7 @@
 Using BERT API
 ========================
 
-## Adding BERT to application project
+## Compiling BERT with an embedded application
 
 All the files that need to be added to an application are found at `bert/embedded/src/bert`. Code using the BERT API should `#include` `xilfpga_extension.h`, `bert.h`, and the design's `mydesign.h` produced by `bert_gen`. The application project should be created after the [bsp is configured](bsp.md), so that linker-related flags are set properly. If the application will not compile, verify the SDK project's linker flags manually:
 
@@ -9,8 +9,6 @@ All the files that need to be added to an application are found at `bert/embedde
 *  `-Wl,--start-group,-lxilsecure,-lxil,-lgcc,-lc,--end-group`
 
 The linker flags are found under the project properties. Go to C/C++ Build -> Settings -> ARM v8 gcc linker -> Inferred Options -> Software Platform.
-
-TODO: Example images of linker flags
 
 ## Usage Overview
 
@@ -21,9 +19,7 @@ When testing BERT for functionality, it is important to allocate the right amoun
 Since BRAM frame data is transferred into DDR memory, the size of the heap is something to consider. The default heap size is 2 * 16^3 = 8192 bytes, or just around 8kB. BRAMs take up more space in the physical format (as configuration frames), so the heap size should be set accordingly. For example, using all 216 BRAMs on the xczu3eg will take 216 / 12 BRAMs per frameset * 257 frames per set * 372 bytes per frame = 1.72MB of space on the heap. When including other sources of overhead, you are looking at 1.73MB. However, in the general case it cannot be assumed that BRAMs coincide within the same configuration frames. Thus, it is best to allocate one frameset's worth of space (~96kB) for each BRAM or 1.73MB for all BRAMs on the chip. Setting the heap and stack size in Xilinx SDK is covered in the [setup tutorial](../tutorials/sdksetup.md).
 
 ### Code for Testing BERT
-The basic test to check that BERT is working is to write and then read from a BRAM in the design. The following code can be used to verify BERT write operations.\
-TODO: Check that it compiles
-TODO: doe this need an associated design for them to use this with?
+The basic test to check that BERT is working is to write and then read from a BRAM in the design. The following code is written without a specific design in mind. However, the snippet can be adapted to a hardware design and associated output files from `bert_gen` to verify BERT write operations.
 
 ```c
 #include "bert.h"
@@ -45,7 +41,7 @@ XFpga XFpgaInstance = {0U};
 
 int main(int argc, char **argv) {
      
-    if (readback_Init(&XFpgaInstance, IDCODE) != 0) { // IDCODE should be defined in mydesign.h
+    if (readback_Init(&XFpgaInstance, PART_ID) != 0) { // PART_ID should be defined in mydesign.h
         xil_printf("readback_Init failed\r\n");
         exit(1);
     }
@@ -69,6 +65,7 @@ int main(int argc, char **argv) {
     return 0;
 }
 ```
+### `bert_transfuse` for More Throughput
 `bert_read` and `bert_write` can be used in loops to operate on all memories, but they are inefficient to use on BRAMs that coincide within the same frames. Thus, using `bert_transfuse` can limit the amount of redundant DMA operations. Furthermore, `bert_tranfuse` allows the `meminfo` struct to be saved and reused. This will achieve higher throughput than individual BERT read/write calls, because each `bert_read` and `bert_write` call is a wrapper around `bert_transfuse`.
 
 The following function is an example of how you could write a function to initalize BRAMs in a design in one fell swoop.

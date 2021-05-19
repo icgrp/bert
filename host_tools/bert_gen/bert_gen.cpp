@@ -10,6 +10,22 @@
 using namespace std;
 using namespace Color;
 
+
+void print_usage()
+{
+    cerr << Modifier{Code::FG_MAGENTA} << Modifier{Code::SET_BOLD};
+    cerr << "[Usage]: " << Modifier{Code::RESET_ALL};
+
+    cerr << "bert_gen - an xbert dedicated FPGA resource header generator" << endl << endl;
+
+    cerr << Modifier{Code::FG_CYAN};
+    cerr << "         ./bert_gen [path] [headerName]" << endl << endl;
+    cerr << Modifier{Code::RESET_ALL};
+
+    cerr << "         [path]           Path to folder that has bert resources from bert.tcl" << endl;
+    cerr << "         [headerName]     Custom header name for generated resource header" << endl;
+}
+
 int main(int argc, char **argv)
 {
     Modifier red{Code::FG_RED};
@@ -20,7 +36,8 @@ int main(int argc, char **argv)
     if (argc == 1 || argc == 2)
     {
         cerr << red << bold << "[ERROR]: " << normal;
-        cerr << "insufficient parameter" << endl;
+        cerr << "insufficient parameter" << endl << endl;
+        print_usage();
         exit(1);
     }
     else if (argc > 3)

@@ -27,4 +27,7 @@ void calcNFrameRanges_generic(set<uint32_t> &allFrameAddr, list <pair<uint32_t, 
 
 void findPart(fpga_PL &XfpgaInstance, char* part);
 
+int xilinxSeries7(fpga_PL &XfpgaInstance);
+int xilinxUltraScale(fpga_PL &XfpgaInstance);
+
 #endif //BERT_GEN_FPGA_HELPER_H

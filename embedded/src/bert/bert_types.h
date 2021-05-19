@@ -58,6 +58,8 @@ struct accel_memory {
   int u64_per_lookup;
   int lookup_quanta;
   int frame_bit_offset;
+  int bit_low;
+  int bit_high; // for RAMB18 case
   uint64_t **trans_tables;
 };
 #endif
