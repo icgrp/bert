@@ -8,7 +8,8 @@ uint32_t swap(uint32_t in) {
 }
 
 int XFpga_GetPlConfigDataRange(XFpga *XFpgaInstance, UINTPTR frame_data, int words, int frame_base) {
-    return XST_SUCCESS;
+    fprintf(stderr, "bitstream_gen does not support configurations where BRAM18s have a live partner\n");
+    return XST_FAILURE;
 }
 
 int XFpga_PL_Frames_Load(XFpga *InstancePtr, UINTPTR ReadbackAddr, u32 Flags, u32 WrdCnt) {

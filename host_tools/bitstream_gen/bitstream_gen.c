@@ -161,7 +161,7 @@ void prepData(int mem, FILE* input) {
         long int fin = ftell(input);
         fseek(input, 0, SEEK_END);
         long int end = ftell(input);
-        fprintf(stderr, "WARNING: File size mismatch. Input file for mem %d is larger than the memory by %ld bytes\n", mem, end - fin);
+        fprintf(stderr, "WARNING: File size mismatch. Input file for mem %d is larger than the memory by %ld bytes (This can be ignored)\n", mem, end - fin);
     }
 
     prepDataEpilogue :
@@ -173,7 +173,7 @@ void prepData(int mem, FILE* input) {
     op->start_addr = 0;
     op->logical_mem = mem;
 
-    fprintf(stderr, "Mem %d staged for writing\n", mem);
+    fprintf(stderr, "Mem %d staged for writing of %d words\n", mem, words);
 
 }
 
