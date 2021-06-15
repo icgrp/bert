@@ -1,7 +1,9 @@
+#ifndef _MSC_VER
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunknown-pragmas"
 #pragma ide diagnostic ignored "hicpp-exception-baseclass"
 #pragma ide diagnostic ignored "misc-throw-by-value-catch-by-reference"
+#endif
 //
 // Created by zhiyaot on 7/17/2020.
 //
@@ -19,7 +21,6 @@ using namespace std;
 using namespace bertType;
 
 
-//#define USE_DATABASE
 
 void gen_header(const char *path, const char *header_name)
 {
@@ -66,14 +67,13 @@ void gen_header(const char *path, const char *header_name)
 
     fprintf(header_h, "#define X_PART_NUMBER \"%s\" // this is the part-number for board\n", part);
     if (xilinxSeries7(XfpgaInstance))
-      fprintf(header_h,"#define XILINX_SERIES7\n");
+        fprintf(header_h, "#define XILINX_SERIES7\n");
     else
-      fprintf(header_h,"#undef XILINX_SERIES7\n");
+        fprintf(header_h, "#undef XILINX_SERIES7\n");
     if (xilinxUltraScale(XfpgaInstance))
-      fprintf(header_h,"#define XILINX_ULTRASCALE\n");
+        fprintf(header_h, "#define XILINX_ULTRASCALE\n");
     else
-      fprintf(header_h,"#undef XILINX_ULTRASCALE\n");
-    
+        fprintf(header_h, "#undef XILINX_ULTRASCALE\n");
 
 
     print_header(header_h);
