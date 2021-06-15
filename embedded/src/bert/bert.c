@@ -887,7 +887,7 @@ int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logi
   // mask for bits that should be written for this memory
   //  useful for ramb18 case where u64s may overlap between intended memory bits
   //  and the partner memory bits
-  uint64_t *write_mask=(uint64_t *)malloc(sizeof(uint32_t)*(2*u64_per_lookup));
+  uint32_t *write_mask=(uint32_t *)malloc(sizeof(uint32_t)*(2*u64_per_lookup));
   for (int i=0;i<2*u64_per_lookup;i++)
     {
       write_mask[i]=0;
@@ -1009,7 +1009,6 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 	time_us_transfuse=-2; // for error exits
 	XTime_GetTime(&tstart);
 #endif
-
   s32 Status;
 
   struct frame_set *the_frame_set=bert_union(num,meminfo);

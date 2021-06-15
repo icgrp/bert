@@ -13,6 +13,7 @@ int XFpga_GetPlConfigDataRange(XFpga *XFpgaInstance, UINTPTR frame_data, int wor
 }
 
 int XFpga_PL_Frames_Load(XFpga *InstancePtr, UINTPTR ReadbackAddr, u32 Flags, u32 WrdCnt) {
+    
     UINTPTR ContentAddr = ReadbackAddr + CFGDATA_DSTDMA_OFFSET + BIN_READBACK_OFFSET - 7*4;
     UINTPTR BitstreamAddr = ContentAddr - header_LEN * 4;
     UINTPTR Size = (UINTPTR) ((WrdCnt + header_LEN + footer_LEN) * 4);
@@ -31,6 +32,10 @@ int XFpga_PL_Frames_Load(XFpga *InstancePtr, UINTPTR ReadbackAddr, u32 Flags, u3
     for (int i = 0; i < Size/4; i++)
         arr[i] = swap(arr[i]);
 
+    if (InstancePtr->file == NULL) {
+        fprintf(stderr, "XFpga_PL_Frames_Load: Given null pointer!\n");
+        return XST_SUCCESS;
+    }
     fwrite((void *) BitstreamAddr, 1, Size, InstancePtr->file);
     return XST_SUCCESS;
 }
