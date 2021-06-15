@@ -6,3 +6,4 @@ host_tools/bert_gen/cmake-build-debug/
 host_tools/bert_gen/.idea/
 
 host_tools/bert_gen/test/
+host_tools/bert_gen/venv/
