@@ -71,7 +71,7 @@ void calcNFrameRanges_generic(set<uint32_t> &allFrameAddr, list<pair<uint32_t, u
     }
 }
 
-
+// TODO: fix this function and allow searching by struct (overloading struct operator)
 uint64_t calcBitPosition_generic(uint32_t x_pos, uint32_t y_pos, uint32_t bit_num, uint32_t bramType, uint32_t yMax)
 {
     if (bramType == 36)

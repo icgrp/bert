@@ -5,7 +5,7 @@
 #define BERT_GEN_FPGA_ERR_H
 
 #ifndef BUGDREE
-#define ASSERT(condition, message, error)                                             \
+#define ASSERT(condition, message, error)                                      \
     do                                                                         \
     {                                                                          \
         if (!(condition))                                                      \

@@ -24,7 +24,7 @@ namespace bertType
         Zynq7,
         Zynq7s
     };
-
+    // TODO: make this generic, populate with ll file from vivado (cautious! will not work in PR flow)
     const map<fpgaType, string> llFormat =
             {
                     {fpgaType::Zynq_USp_ZUEG, "Bit %s 0x%x %d %s %s Block=RAMB%d_X%dY%d RAM=B:%s\n"},
@@ -46,7 +46,7 @@ namespace bertType
             {
                     {fpgaType::Zynq_USp_ZUEG, {
                                                       {
-                                                          3,
+                                                              3,
                                                               {
                                                                       0x01000000, 0x01040000, 0x01080000,
                                                                       0x01000100, 0x01040100, 0x01080100,
@@ -57,7 +57,7 @@ namespace bertType
                                                               }
                                                       },
                                                       {
-                                                          9,
+                                                              9,
                                                               {
                                                                       0x01000000, 0x01040000, 0x01080000, 0x010c0000, 0x1100000, 0x1500000,
                                                                       0x01000100, 0x01040100, 0x01080100, 0x010c0010, 0x1100100, 0x1500100,
@@ -77,16 +77,16 @@ namespace bertType
                                               }
                     },
                     {
-                        fpgaType::Zynq7, {
-                                                 {
-                                                     2,
-                                                         {
-                                                                 0x00c20000, 0x00c20080, 0x00c20100, 0x00c20180, 0x00c20200, 0x00c20280,
-                                                                                         0x00c00100, 0x00c00180, 0x00c00200, 0x00c00280,
-                                                                                         0x00800100, 0x00800180, 0x00800200, 0x00800280
-                                                         }
-                                                 }
-                        }
+                     fpgaType::Zynq7,         {
+                                                      {
+                                                              2,
+                                                              {
+                                                                      0x00c20000, 0x00c20080, 0x00c20100, 0x00c20180, 0x00c20200, 0x00c20280,
+                                                                                              0x00c00100, 0x00c00180, 0x00c00200, 0x00c00280,
+                                                                                              0x00800100, 0x00800180, 0x00800200, 0x00800280
+                                                              }
+                                                      }
+                                              }
                     }
             };
 
@@ -110,14 +110,6 @@ namespace bertType
         uint32_t offset;
 
     } frame_pos;
-
-    typedef struct bram_marker_tag
-    {
-
-        uint32_t num_of_logical;
-        map<unsigned int, string> logical_names;
-
-    } bram_marker;
 
     typedef struct bram_tag
     {
@@ -150,7 +142,23 @@ namespace bertType
         fpgaType type;
         string llStrFormat;
     } fpga_PL;
+
+    typedef struct bit_xyz_tag
+    {
+        uint32_t ramType;
+        uint32_t ram_pos_x;
+        uint32_t ram_pos_y;
+        uint32_t bit_num;
+
+        bool operator==(const struct bit_xyz_tag &lhs)
+        {
+            return ramType == lhs.ramType &&
+                   ram_pos_x == lhs.ram_pos_x &&
+                   ram_pos_y == lhs.ram_pos_y &&
+                   bit_num == lhs.bit_num;
+        }
+
+    } bit_xyz;
+
 }
-
-
 #endif //BERT_GEN_FPGA_TYPE_H
