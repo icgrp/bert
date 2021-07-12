@@ -54,7 +54,6 @@ $(ODIR)/%.o: %.c $(DEPS)
 bitstream_gen: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
 	@if [ $(DESIGN_DIR) != "." ]; then mv -vf bitstream_gen $(DESIGN_DIR)/; fi
-	@if [ $(DESIGN_DIR) != "." ]; then cp -vf examplescript.txt $(DESIGN_DIR)/; fi
 	rm -f mydesign.c mydesign.h
 	@echo "DONE"
 	@echo "Try running $(DESIGN_DIR)/bitstream_gen --help"
