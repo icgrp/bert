@@ -1,10 +1,9 @@
-# The name of the .bit, .mdd, and .ll files in this directory
-DESIGNNAME=top
+# The directory containing the .bit, .mdd, and .ll files
+DESIGN_DIR=.
+DESIGN_NAME=top
 
 # Use aarch64-linux-gnu-gcc for petalinux build
 CC=gcc
-
-
 
 IDIR =../../embedded/src/bert
 CFLAGS=-I$(IDIR) -D HOST_SIDE -D DISABLE_ACCEL -g
@@ -19,25 +18,34 @@ DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 _OBJ = dummy_xilinx.o mydesign.o bitstream_gen.o $(LDIR)/bert.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
-$(DESIGNNAME).ll:
-	echo "Place $(DESIGNNAME).ll in this directory!"
+.PHONY: help
 
-$(DESIGNNAME).mdd:
-	echo "Place $(DESIGNNAME).mdd in this directory!"
+help:
+	@echo "1. Place your .ll, .mdd, and .bit in your directroy of choice, sharing the same name stem (i.e. top.ll, top.mdd, top.bit)"
+	@echo "2. Run make all DESIGN_NAME=<name stem> DESIGN_DIR=<directory containing files>"
+	@echo "   DESIGN_DIR defaults to current working directory."
 
-$(DESIGNNAME).bit:
-	echo "Place $(DESIGNNAME).bit in this directory!"
+$(DESIGN_DIR)/$(DESIGN_NAME).ll:
+	echo "$(DESIGN_DIR)/$(DESIGN_NAME).ll does not exist! Run make help"
 
-../../host_tools/bert_gen/$(DESIGNNAME)_src:
-	mkdir ../../host_tools/bert_gen/$(DESIGNNAME)_src
+$(DESIGN_DIR)/$(DESIGN_NAME).mdd:
+	echo "$(DESIGN_DIR)/$(DESIGN_NAME).mdd does not exist! Run make help"
 
-mydesign.c: $(DESIGNNAME).ll $(DESIGNNAME).mdd $(DESIGNNAME).bit | ../../host_tools/bert_gen/$(DESIGNNAME)_src
-	cp $(DESIGNNAME).ll $(DESIGNNAME).mdd $(DESIGNNAME).bit ../../host_tools/bert_gen/$(DESIGNNAME)_src
+$(DESIGN_DIR)/$(DESIGN_NAME).bit:
+	echo "$(DESIGN_DIR)/$(DESIGN_NAME).bit does not exist! Run make help"
+
+../../host_tools/bert_gen/$(DESIGN_NAME)_src:
+	mkdir ../../host_tools/bert_gen/$(DESIGN_NAME)_src
+
+mydesign.c: $(DESIGN_DIR)/$(DESIGN_NAME).ll $(DESIGN_DIR)/$(DESIGN_NAME).mdd $(DESIGN_DIR)/$(DESIGN_NAME).bit | ../../host_tools/bert_gen/$(DESIGN_NAME)_src
+	cp $(DESIGN_DIR)/$(DESIGN_NAME).ll ../../host_tools/bert_gen/$(DESIGN_NAME)_src/top.ll
+	cp $(DESIGN_DIR)/$(DESIGN_NAME).mdd ../../host_tools/bert_gen/$(DESIGN_NAME)_src/top.mdd
+	cp $(DESIGN_DIR)/$(DESIGN_NAME).bit ../../host_tools/bert_gen/$(DESIGN_NAME)_src/top.bit
 	cd ../../host_tools/bert_gen; cmake CMakeLists.txt
 	+$(MAKE) -C ../../host_tools/bert_gen
-	cd ../../host_tools/bert_gen; ./gen.sh -gen $(DESIGNNAME)_src
-	cp ../../host_tools/bert_gen/$(DESIGNNAME)_src/mydesign.c mydesign.c
-	cp ../../host_tools/bert_gen/$(DESIGNNAME)_src/mydesign.h mydesign.h
+	cd ../../host_tools/bert_gen; ./gen.sh -gen $(DESIGN_NAME)_src
+	cp ../../host_tools/bert_gen/$(DESIGN_NAME)_src/mydesign.c mydesign.c
+	cp ../../host_tools/bert_gen/$(DESIGN_NAME)_src/mydesign.h mydesign.h
 
 
 $(ODIR)/%.o: %.c $(DEPS)
@@ -45,6 +53,13 @@ $(ODIR)/%.o: %.c $(DEPS)
 
 bitstream_gen: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
+	@if [ $(DESIGN_DIR) != "." ]; then mv -vf bitstream_gen $(DESIGN_DIR)/; fi
+	@if [ $(DESIGN_DIR) != "." ]; then cp -vf examplescript.txt $(DESIGN_DIR)/; fi
+	rm -f mydesign.c mydesign.h
+	@echo "DONE"
+	@echo "Try running $(DESIGN_DIR)/bitstream_gen --help"
+
+all: bitstream_gen
 
 .PHONY: clean
 
