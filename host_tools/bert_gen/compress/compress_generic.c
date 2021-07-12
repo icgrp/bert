@@ -85,10 +85,10 @@ int has_live_ramb18_partner(int which_logical_memory,
 	    // target range overlaps start of some other memory
 	    //   or some other memory's range overlaps target
 	    if (((first_frame_addr<=clm[i].frame_ranges[j].first_frame)
-		&& ((first_frame_addr+len)>=clm[i].frame_ranges[j].first_frame))
+		&& ((first_frame_addr+len-1)>=clm[i].frame_ranges[j].first_frame))
 		 ||
 		 ((clm[i].frame_ranges[j].first_frame<=first_frame_addr)
-		  && ((clm[i].frame_ranges[j].first_frame+clm[i].frame_ranges[j].len)>=first_frame_addr))
+		  && ((clm[i].frame_ranges[j].first_frame+clm[i].frame_ranges[j].len-1)>=first_frame_addr))
 		)
 	      for (int k=0;k<WE_BITS_PER_FRAME;k++)
 		{
