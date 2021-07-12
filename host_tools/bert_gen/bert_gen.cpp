@@ -22,7 +22,7 @@ void print_usage()
     cerr << "         ./bert_gen [path] [headerName]" << endl << endl;
     cerr << Modifier{Code::RESET_ALL};
 
-    cerr << "         [path]           Path to folder that has bert resources from bert.tcl" << endl;
+    cerr << "         [path]           Path to folder that has bert resources from file_gen.tcl" << endl;
     cerr << "         [headerName]     Custom header name for generated resource header" << endl;
 }
 

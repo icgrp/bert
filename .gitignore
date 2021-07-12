@@ -7,3 +7,4 @@ host_tools/bert_gen/.idea/
 
 host_tools/bert_gen/test/
 host_tools/bert_gen/venv/
+host_tools/bert_gen/run.py
