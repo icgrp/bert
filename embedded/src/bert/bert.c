@@ -2,16 +2,20 @@
 #include "compressed_bert_types.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "xilfpga_extension.h"
-#include "strings.h"
-
 #include "bert.h"
 
+
+#ifdef HOST_SIDE
+#include <string.h>
+#include "dummy_xilinx.h"
+#define PRINT printf
+#else
+#include "xilfpga_extension.h"
+#include "strings.h"
 //DEBUG on Embedded Platform
 #include "xil_printf.h"
 #define PRINT xil_printf
-// maybe for host
-// #define PRINT printf
+#endif
 
 // for compatibility with how this was originally written
 //    -- these should now be defined in mydesign.c (linked mydesign.o) -- 
@@ -688,6 +692,7 @@ int bert_accelerated_to_logical(int logical,uint32_t *frame_data,uint64_t *logic
 }
 
 
+
 int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				int start_addr, int data_length, struct frame_set *the_frame_set)
 {
@@ -836,7 +841,6 @@ int bert_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
     } // replicas
   return BST_SUCCESS;
 }
-
 
 int bert_accelerated_to_physical(int logical,uint32_t *frame_data,uint64_t *logical_data,
 				 int start_addr, int data_length, struct frame_set *the_frame_set)
@@ -1003,7 +1007,6 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 	time_us_transfuse=-2; // for error exits
 	XTime_GetTime(&tstart);
 #endif
-
   s32 Status;
 
   struct frame_set *the_frame_set=bert_union(num,meminfo);
@@ -1065,6 +1068,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
     for (int i=0;i<num;i++)
     {
       if (meminfo[i].operation==BERT_OPERATION_READ) {
+
 	if ((accel_memories_logical!=(struct accel_memory *)NULL)
 	    && (accel_memories_logical[meminfo[i].logical_mem].lookup_quanta>1))
 	  status = bert_accelerated_to_logical(meminfo[i].logical_mem,
@@ -1072,6 +1076,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 				   meminfo[i].data,
 				   meminfo[i].start_addr, meminfo[i].data_length,
 				   the_frame_set);
+
 	else
 	  status = bert_to_logical(meminfo[i].logical_mem,
 				   frame_data,
@@ -1105,6 +1110,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
   for (int i=0;i<num;i++)
     {
       if (meminfo[i].operation==BERT_OPERATION_WRITE) {
+
 	if ((accel_memories_physical!=(struct accel_memory *)NULL)
 	    && (accel_memories_physical[meminfo[i].logical_mem].lookup_quanta>1))
 	  status = bert_accelerated_to_physical(meminfo[i].logical_mem,
@@ -1112,6 +1118,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 						meminfo[i].data,
 						meminfo[i].start_addr, meminfo[i].data_length,
 						the_frame_set);
+
 	else
 	  status = bert_to_physical(meminfo[i].logical_mem,
 				    frame_data,
@@ -1121,6 +1128,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 	if (status != BST_SUCCESS)
 	      return status;
       }
+
       if (meminfo[i].operation==BERT_OPERATION_ACCELERATED_WRITE) {
         status = bert_accelerated_to_physical(meminfo[i].logical_mem,
 				     frame_data,
@@ -1131,7 +1139,7 @@ int  bert_transfuse(int num, struct bert_meminfo *meminfo, XFpga* XFpgaInstance)
 				     );    
         if (status != BST_SUCCESS)
           return status;
-      }  
+	  }
     }
 
 #ifdef TIME_BERT
