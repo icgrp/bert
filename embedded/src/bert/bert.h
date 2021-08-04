@@ -1,5 +1,5 @@
 #ifdef HOST_SIDE
-#include "../../../host_tools/bitstream_gen/dummy_xilinx.h"
+#include "dummy_xilinx.h"
 #else
 #include "xilfpga.h"
 #endif
