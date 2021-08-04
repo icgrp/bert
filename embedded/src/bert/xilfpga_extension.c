@@ -16,7 +16,8 @@
 
 #define CFGREG_SRCDMA_OFFSET 0x8U
 #define CFGDATA_DSTDMA_OFFSET 0x1FCU
-#define BIN_READBACK_OFFSET (93 + 25) * 4
+#define WORDS_PER_FRAME words_per_frame
+#define BIN_READBACK_OFFSET (WORDS_PER_FRAME + 25) * 4
 
 #define XDC_TYPE_SHIFT 29U
 #define XDC_REGISTER_SHIFT 13U
@@ -39,6 +40,7 @@ static XFpga Instance = {0U};
 static u32 globalIDCODE = -1;
 static XCsuDma *CsuDmaPtr;
 static u32 XFpga_GetPLConfigDataRange(const XFpga *InstancePtr);
+extern int words_per_frame;
 
 // Fields missing from xilfpga
 static int globalFrameBase = 0;
