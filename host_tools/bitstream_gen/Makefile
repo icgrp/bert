@@ -6,7 +6,7 @@ DESIGN_NAME=top
 CC=gcc
 
 IDIR =../../embedded/src/bert
-CFLAGS=-I$(IDIR) -D HOST_SIDE -D DISABLE_ACCEL -g
+CFLAGS=-I$(IDIR) -I. -D HOST_SIDE -D DISABLE_ACCEL -D DESIGN_NAME=\"$(DESIGN_NAME)\" -g
 
 ODIR=.
 LDIR =../../embedded/src/bert

@@ -7,8 +7,7 @@
 
 #ifdef HOST_SIDE
 #include <string.h>
-#include "../../../host_tools/bitstream_gen/dummy_xilinx.h"
-// dummy_xilinx includes the #define's for the correct part (7series vs us+)
+#include "dummy_xilinx.h"
 #define PRINT printf
 #else
 #include "xilfpga_extension.h"

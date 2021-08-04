@@ -26,6 +26,10 @@
     }
 #endif
 
+#ifndef DESIGN_NAME
+#define DESIGN_NAME "undefined"
+#endif
+
 #define CEIL(x, y) (((x) + (y)-1) / (y))
 #define LINE_LEN 4096
 #define SCRIPT_LEN 4096
@@ -228,6 +232,7 @@ void parseArgs(int argc, char **argv)
         if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0)
         {
             fprintf(stdout, "BERT Bitstream Gen - matth2k@seas.upenn.edu\n"
+                            "Built %s %s for design name " DESIGN_NAME "\n"
                             "args:\n\n"
                             "--stage BY_<ID/NAME>:<mem>:<input file>    (i.e --stage BY_NAME:v1_buffer_U:deadbeef.dat)\n"
                             "                                           BY_NAME <mem> searches for memories containing the string <mem>\n"
@@ -236,7 +241,7 @@ void parseArgs(int argc, char **argv)
                             "--read_format <format>                     Values: 'bin' (default), 'dat'. File format used by reader when staging memories.\n"
                             "--mlist -l                                 List logical memories available to program\n"
                             "--help -h                                  Prints help info\n"
-                            "--verbose -v                               Debug print statements\n");
+                            "--verbose -v                               Debug print statements\n", __DATE__, __TIME__);
 
             exit(0);
         }
