@@ -274,15 +274,22 @@ void parseCMD(char *cmd)
         {
             if (strcmp(tok[1], "BY_NAME") == 0)
             {
-                int id = -1;
+                int matches = 0;
                 for (int j = 0; j < NUM_LOGICAL; j++)
                 {
+                    
                     if (strlen(tok[2]) > 2 && strstr(logical_names[j], tok[2]) != NULL)
                     {
                         printf("INFO: BY_NAME:%s matched memory '%s'\n", tok[2], logical_names[j]);
+                        matches++;
                         stageWithFname(j, tok[3]);
                     }
                 }
+                if (matches != 1) {
+                    fprintf(stderr, "stage: BY_NAME:%s failed to match one specific memory\n", tok[2]);
+                    exit(1);
+                }
+
             }
             else if (strcmp(tok[1], "BY_ID") == 0)
             {
